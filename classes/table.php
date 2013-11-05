@@ -175,17 +175,16 @@ abstract class table {
         foreach ($fields as $field) {
             if (strstr($field, '.') === false) {
                 foreach ($object->get_fields(false) as $object_field) {
-                    $class = get_class($object_field);
-                    if (($class == 'form\\field_link' || $class == 'form\\field_mlink') && get::__class_name($object_field->get_link_module()) == $field) {
+                    if ($object_field instanceof field_link && get::__class_name($object_field->get_link_module()) == $field) {
                         $sub_object = $object_field->get_link_object();
                         $sub_fields = [$sub_object->table_key];
                         if ($sub_object->has_field('title')) {
                             $sub_fields[] = 'title';
                         }
-                        if ($class == 'form\\field_link') {
-                            $links[$field] = ['field' => $object_field, 'retrieve' => $sub_fields];
-                        } else {
+                        if ($object_field instanceof \form\field_mlink) {
                             $mlinks[$field] = ['field' => $object_field, 'retrieve' => $sub_fields];
+                        } else {
+                            $links[$field] = ['field' => $object_field, 'retrieve' => $sub_fields];
                         }
                         continue 2;
                     }
@@ -193,23 +192,35 @@ abstract class table {
                 $new_fields[$field] = $field;
             } else {
                 $field = explode('.', $field);
-                foreach ($object->get_fields(false) as $object_field) {
-                    $class = get_class($object_field);
-                    if (($class == 'form\\field_link' || $class == 'form\\field_mlink') && get::__class_name($object_field->get_link_module()) == $field[0]) {
-                        if ($class == 'form\\field_link') {
-                            if (isset($links[$field[0]])) {
-                                $links[$field[0]]['retrieve'] = $field[1];
+                if ($field[0] != $object->class_name()) {
+                    foreach ($object->get_fields(false) as $object_field) {
+                        if ($object_field instanceof field_link && get::__class_name($object_field->get_link_module()) == $field[0]) {
+
+                            if ($object_field instanceof field_mlink) {
+                                if (isset($mlinks[$field[0]])) {
+                                    $mlinks[$field[0]]['retrieve'][] = $field[1];
+                                } else {
+                                    $sub_object = $object_field->get_link_object();
+                                    $sub_fields = [$sub_object->table_key, $field[1]];
+                                    if ($sub_object->has_field('title')) {
+                                        $sub_fields[] = 'title';
+                                    }
+                                    $mlinks[$field[0]] = ['field' => $object_field, 'retrieve' => $sub_fields];
+                                }
                             } else {
-                                $links[$field[0]] = ['field' => $object_field, 'retrieve' => [$field[1]]];
+                                if (isset($links[$field[0]])) {
+                                    $links[$field[0]]['retrieve'][] = $field[1];
+                                } else {
+                                    $sub_object = $object_field->get_link_object();
+                                    $sub_fields = [$sub_object->table_key, $field[1]];
+                                    if ($sub_object->has_field('title')) {
+                                        $sub_fields[] = 'title';
+                                    }
+                                    $links[$field[0]] = ['field' => $object_field, 'retrieve' => $sub_fields];
+                                }
                             }
-                        } else {
-                            if (isset($mlinks[$field[0]])) {
-                                $mlinks[$field[0]]['retrieve'] = $field[1];
-                            } else {
-                                $mlinks[$field[0]] = ['field' => $object_field, 'retrieve' => [$field[1]]];
-                            }
+                            continue 2;
                         }
-                        continue 2;
                     }
                 }
                 $new_fields[] = implode('.', $field);
@@ -334,7 +345,7 @@ abstract class table {
                         if (!$this->{$field->field_name} && $field instanceof field_fn && isset($this->title)) {
                             $this->{$field->field_name} = _get::unique_fn(_get::__class_name($this), $field->field_name, $this->title);
                         }
-                        if ($field instanceof field_mlink) {
+                        if (!($field instanceof field_mlink)) {
                             try {
                                 $data = $field->get_save_sql();
                                 $query->add_value($field->field_name, $data);
@@ -360,7 +371,7 @@ abstract class table {
 
         $this->get_fields()->iterate(function ($field) {
                 if ($field->field_name != $this->table_key) {
-                    if (isset($this->{$field->field_name}) && $field instanceof \form\field_mlink) {
+                    if (isset($this->{$field->field_name}) && $field instanceof field_mlink) {
                         $source_module = new _cms_module(['table_name', 'primary_key'], $field->get_link_mid());
                         $module = new _cms_module(['table_name', 'primary_key'], static::$module_id);
                         db::query('DELETE FROM ' . $module->table_name . '_link_' . $source_module->table_name . ' WHERE ' . $module->primary_key . '=:key', ['key' => $this->{$this->table_key}]);
