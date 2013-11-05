@@ -98,6 +98,7 @@ table_array extends \classes\collection {
         $res = db::query($sql, $parameters);
         if (_db::num($res)) {
             while ($row = _db::fetch($res, null)) {
+                /** @var table $class */
                 $class = new $class;
                 $class->set_from_row($row, $links);
                 foreach ($mlinks as $module => $blah) {
@@ -110,11 +111,13 @@ table_array extends \classes\collection {
         $this->reset_iterator();
         if ($mlinks) {
             foreach ($mlinks as $module => $link_info) {
+                /** @var \form\field_link $field */
                 $field = $link_info['field'];
                 $retrieves = $link_info['retrieve'];
                 $retrieves[] = 'l.' . $obj->table_key . ' AS linked_id';
                 $sub_class = $field->get_link_object();
                 $classes = $sub_class::get_all($retrieves, ['join' => [get::__class_name($class) . '_link_' . get::__class_name($sub_class) . ' l' => 'l.link_' . $sub_class->table_key . '=' . get::__class_name($sub_class) . '.' . $sub_class->table_key], 'where' => 'l.' . $obj->table_key . ' IN(' . implode(',', $this->get_table_keys()) . ')']);
+                /** @var table $sub_object */
                 foreach ($classes as $sub_object) {
                     $object = $this->find_table_key($sub_object->linked_id);
                     if ($object) {
