@@ -524,7 +524,7 @@ abstract class table {
      * @param bool $clone whether to return a cloned copy of the fields our the singleton set.
      * @return field_collection
      */
-    public function get_fields($clone = true) {
+    public function get_fields($clone = false) {
         $fields = static::_get_fields($clone);
         $fields->iterate(function ($field) {
                 $field->parent_form = $this;
