@@ -4,6 +4,7 @@ namespace core\classes;
 
 use classes\ajax as _ajax;
 use classes\get as _get;
+use classes\ini as _ini;
 use classes\push_state;
 use html\node;
 use module\pages\object\page;
@@ -34,7 +35,7 @@ abstract class module {
         $this->set_view();
 
         try {
-            _get::ini('database', 'mysql');
+            _ini::get('database', 'mysql');
             $this->set_page();
         } catch (\Exception $e) {
 
