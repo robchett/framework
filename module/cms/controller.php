@@ -273,7 +273,7 @@ abstract class controller extends module {
         );
         if (isset($this->mid)) {
             $html->nest(node::create('li.right a', ['href' => '/cms/admin_edit/' . $this->mid, 'title' => 'Edit ' . get_class($this->current)], 'Edit Module'));
-            $html->nest(node::create('li.right a', ['href' => '/cms/edit/' . $this->mid, 'title' => 'Add new ' . get_class($this->current)], 'Add new ' . get_class($this->current)));
+            $html->nest(node::create('li.right a', ['href' => '/cms/edit/' . $this->mid, 'title' => 'Add new ' . get::__class_name($this->current)], 'Add new ' . get::__class_name($this->current)));
         } else if ($this->view === 'module_list') {
             $html->nest(node::create('li.right a', ['href' => '/cms/new_module/', 'title' => 'Add new module'], 'Add new module'));
             $html->nest(node::create('li.right a', ['href' => "/cms/edit/" . \module\cms\object\_cms_group::$module_id, 'title' => 'Add new module group'], 'Add new module group'));
