@@ -45,6 +45,7 @@ abstract class new_module_form extends form {
             `cms_created` timestamp NOT NULL DEFAULT "0000-00-00 00:00:00",
             `live` tinyint(1) NOT NULL DEFAULT "0",
             `deleted` tinyint(1) NOT NULL DEFAULT "0",
+            `position` int(6) NOT NULL DEFAULT "0",
             `' . \classes\get::fn($this->title_label) . '` varchar(255) NOT NULL,
             PRIMARY KEY (`' . $this->primary_key . '`)
             ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0;'
