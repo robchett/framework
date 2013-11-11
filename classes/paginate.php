@@ -28,7 +28,7 @@ class paginate {
             } else {
                 $node = node::create('ul#pagi.cf');
                 for ($i = 1; $i <= $pages; $i++) {
-                    $node->add_child(node::create('li' . ($this->page == $i ? '.sel' : '') . ' a', ['href' =>'/' . rtrim($this->base_url, '/') . '/page/' . $i], $i));
+                    $node->add_child(node::create('li' . ($this->page == $i ? '.sel' : '') . ' a', ['href' =>'/' . trim($this->base_url, '/') . '/page/' . $i], $i));
                 }
             }
         }
