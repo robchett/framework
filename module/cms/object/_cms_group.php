@@ -20,7 +20,7 @@ abstract class _cms_group extends table {
     /**
      * @var int
      */
-    public static $module_id = 19;
+    public static $module_id = 2;
     public $title;
 
 

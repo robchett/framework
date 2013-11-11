@@ -10,7 +10,7 @@ abstract class page extends table {
 
     use table_trait;
 
-    public static $module_id = 1;
+    public static $module_id = 5;
     public $nav_title;
     public $pid;
     public $table_key = 'pid';

@@ -8,7 +8,7 @@ use module\cms\object\field_type;
 
 class cms_builder {
 
-    public static $current_version = 1;
+    public static $current_version = 2;
 
     public function __construct() {
         $this->_cms_module_fields = new collection([
@@ -331,6 +331,71 @@ class cms_builder {
                 }
                 $previous_key = $key;
             }
+        }
+    }
+
+    public function patch_v2() {
+        if (!db::table_exists('page')) {
+            db::create_table('page', [
+                    'pid' => 'SMALLINT NOT NULL AUTO_INCREMENT',
+                    'parent_pid' => 'SMALLINT NOT NULL',
+                    'live' => 'tinyint(1) NOT NULL DEFAULT \'1\'',
+                    'deleted' => 'tinyint(1) NOT NULL DEFAULT \'0\'',
+                    'position' => 'SMALLINT NOT NULL',
+                    'created' => 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP()',
+                    'ts' => 'TIMESTAMP NOT NULL',
+                    'title' => 'varchar(255) NOT NULL',
+                    'body' => 'TEXT NOT NULL',
+                    'fn' => 'varchar(255) NOT NULL',
+                ], ['PRIMARY KEY (`pid`)']
+            );
+            $_group_id = db::insert('_cms_group')
+                ->add_value('title', 'Page')
+                ->execute();
+            $_module_insert_id = db::insert('_cms_module')
+                ->add_value('gid', $_group_id)
+                ->add_value('primary_key', 'pid')
+                ->add_value('title', 'Pages')
+                ->add_value('table_name', 'page')
+                ->add_value('namespace', 'pages')
+                ->execute();
+            $_module_table_key = db::insert('_cms_field')
+                ->add_value('field_name', 'pid')
+                ->add_value('title', 'Page ID')
+                ->add_value('type', 'int')
+                ->add_value('mid', $_module_insert_id)
+                ->add_value('position', 0)
+                ->execute();
+            db::insert('_cms_field')
+                ->add_value('field_name', 'parent_pid')
+                ->add_value('title', 'Parent page ID')
+                ->add_value('type', 'link')
+                ->add_value('mid', $_module_insert_id)
+                ->add_value('link_module', $_module_insert_id)
+                ->add_value('link_field', $_module_table_key)
+                ->add_value('position', 1)
+                ->execute();
+            db::insert('_cms_field')
+                ->add_value('field_name', 'title')
+                ->add_value('title', 'Title')
+                ->add_value('type', 'string')
+                ->add_value('mid', $_module_insert_id)
+                ->add_value('position', 2)
+                ->execute();
+            db::insert('_cms_field')
+                ->add_value('field_name', 'body')
+                ->add_value('title', 'Content')
+                ->add_value('type', 'html')
+                ->add_value('mid', $_module_insert_id)
+                ->add_value('position', 3)
+                ->execute();
+            db::insert('_cms_field')
+                ->add_value('field_name', 'fn')
+                ->add_value('title', 'Filename')
+                ->add_value('type', 'fn')
+                ->add_value('mid', $_module_insert_id)
+                ->add_value('position', 4)
+                ->execute();
         }
     }
 
