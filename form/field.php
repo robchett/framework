@@ -149,7 +149,7 @@ abstract class field extends node {
         );
         $cols[] = node::create('td', [], $this->title);
         $cols[] = node::create('td', [], $this->field_name);
-        $cols[] = node::create('td', [], get_class($this));
+        $cols[] = node::create('td', [], get::__class_name($this));
 
         $fields = ['list', 'required', 'filter'];
         foreach ($fields as $field) {
