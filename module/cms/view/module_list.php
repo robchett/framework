@@ -24,7 +24,7 @@ abstract class module_list extends cms_view {
                         function (_cms_module $module) {
                             return node::create('tr', [],
                                 node::create('td', [], $module->mid) .
-                                node::create('td', [], $module->_cms_group_title) .
+                                node::create('td', [], $module->_cms_group->title) .
                                 node::create('td', [], $module->title) .
                                 node::create('td', [], $module->table_name) .
                                 node::create('td', [], $module->primary_key)
