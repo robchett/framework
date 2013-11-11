@@ -5,6 +5,7 @@ use classes\ajax;
 use classes\db;
 use classes\get;
 use form\form;
+use module\cms\object\cms_builder;
 
 abstract class cms_builder_form extends form {
 
@@ -26,17 +27,24 @@ abstract class cms_builder_form extends form {
             db::connect_root();
             db::query('CREATE DATABASE IF NOT EXISTS `' . get::fn($this->username) . '`');
             db::query('CREATE USER \'' . get::fn($this->username) . '\'@\'127.0.0.1\' IDENTIFIED BY \'' . $this->password . '\'', [], true);
-            db::query('GRANT ALL PRIVILEGES ON `' . get::fn($this->username) . '`.* TO \'' . get::fn($this->username) . '\'@\'localhost\'', [], true);
+            db::query('CREATE USER \'' . get::fn($this->username) . '\'@\'localhost\' IDENTIFIED BY \'' . $this->password . '\'', [], true);
+            db::query('GRANT ALL PRIVILEGES ON `' . get::fn($this->username) . '`.* TO \'' . get::fn($this->username) . '\'@\'127.0.0.1\'', [], true);
             if (!is_dir(root . '/.conf')) {
                 mkdir(root . '/.conf');
             }
-            file_put_contents(root . '/.conf/config.ini', '[mysql]
+            file_put_contents(root . '/.conf/config.ini', '
+[mysql]
 server = \'127.0.0.1\'
 username = \'' . get::fn($this->username) . '\'
 password = \'' . $this->password . '\'
-database = \'' . get::fn($this->username) . '\''
+database = \'' . get::fn($this->username) . '\'
+
+[site]
+building = true
+
+'
             );
-            ajax::$redirect = '/cms';
+            ajax::$redirect = '/cms/login';
         }
     }
 
