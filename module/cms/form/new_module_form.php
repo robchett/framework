@@ -80,6 +80,47 @@ abstract class new_module_form extends form {
                 ->add_value('mid', $mid)
                 ->execute();
         }
+        $file = null;
+        if (!$this->namespace) {
+            if (!is_dir(root . '/inc/object/')) {
+                mkdir(root . '/inc/object/');
+            }
+            if (!file_exists(root . '/inc/object/' . $this->table_name)) {
+                $file = root . '/inc/object/' . $this->table_name;
+            }
+        } else {
+            if (!is_dir(root . '/inc/module/')) {
+                mkdir(root . '/inc/module/');
+            }
+            if (!is_dir(root . '/inc/module/' . $this->namespace)) {
+                mkdir(root . '/inc/module/' . $this->namespace);
+            }
+            if (!is_dir(root . '/inc/module/' . $this->namespace . '/object/')) {
+                mkdir(root . '/inc/module/' . $this->namespace . '/object');
+            }
+            if (!file_exists(root . '/inc/module/' . $this->namespace . '/object/' . $this->table_name)) {
+                $file = root . '/inc/module/' . $this->namespace . '/object/' . $this->table_name;
+            }
+        }
+        if ($file) {
+            file_put_contents($file, '
+<?php
+namespace ' . ($this->namespace ? 'module\\' . $this->namespace . '\\' : '') . 'object;
+
+use classes\table;
+use traits\table_trait;
+
+class ' . $this->table_name . ' extends table {
+
+    use table_trait;
+
+    public static $module_id = ' . $mid . ';
+    public $table_key = ' . $this->primary_key . ';
+    public $' . $this->title . ';
+
+}'
+            );
+        }
         ajax::add_script('window.location = window.location');
     }
 }
