@@ -7,8 +7,7 @@ use classes\filter_form;
 use form\field_link;
 use html\node;
 
-trait filterable
-{
+trait filterable {
 
 
     /** @var  filter_form */
@@ -30,8 +29,7 @@ trait filterable
 
     abstract function setIterator(\Iterator $iterator);
 
-    public function set_filters()
-    {
+    public function set_filters() {
         if (!isset($this->filters)) {
             $this->filters = new filter_form($this->get_filterable_fields(), $this);
             $this->filters->set_from_request();
@@ -47,16 +45,14 @@ trait filterable
         }
     }
 
-    public function do_filter_submit()
-    {
+    public function do_filter_submit() {
         $this->filterable_get_all();
         $this->set_filters();
         $this->filter();
         ajax::update($this->get_filterable_list());
     }
 
-    public function get_filters()
-    {
+    public function get_filters() {
         $this->set_filters();
         $html = node::create('div#filters', [],
             node::create('h3', [], 'Filters') .
@@ -65,14 +61,12 @@ trait filterable
         return $html;
     }
 
-    public function get_filters_ajax()
-    {
+    public function get_filters_ajax() {
         $this->filterable_get_all();
         $this->get_filters();
     }
 
-    public function filter()
-    {
+    public function filter() {
         $res = $this->getIterator();
         if (!isset($this->filters)) {
             $this->set_filters();
@@ -81,7 +75,7 @@ trait filterable
             if ($field->field_name != 'identifier' && isset($this->filters->{$field->field_name}) && $this->filters->{$field->field_name}) {
                 $key = $field->field_name;
                 if ($field->original_field instanceof field_link) {
-                    $key = [\classes\get::__class_name($field->original_field->get_link_module()), $field->field_name];
+                    $key = \classes\get::__class_name($field->original_field->get_link_module());
                 }
                 $res = new collection_filter($res, $key, $this->filters->{$field->field_name});
             }
