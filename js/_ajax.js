@@ -154,7 +154,41 @@ $(document).ready(function () {
         complete: [],
         load_pages_ajax: false
     };
+
+    $('select[multiple=multiple]').each(function () {
+        var id = $(this).attr('name');
+        $(this).hide();
+        $(this).after('<select id="' + id + '_select" onchange="addMlink(\'' + id + '\',this.value)"><option value=\'-1\'>Select Another</option></select><ul id="' + id + '_selected" class="mlink_selected_wrapper"></ul>');
+        $(this).find('option:not(optgroup > option) ,optgroup').each(function () {
+            $(this).clone().appendTo($('#' + id + '_select'));
+            if ($(this).is(':selected')) {
+                addMlink(id, $(this).val());
+            }
+        })
+    });
 });
+
+function addMlink(id, value) {
+    if (value != -1 && value != 0) {
+        var $option = $('#' + id + '_select option[value=' + value + ']');
+        var title = $option.html();
+        $option.attr('disabled', 'disabled');
+        $('select[name="' + id + '"] option[value=' + value + ']').attr('selected', 'selected');
+        $('#' + id + '_select').val(-1);
+        $('#' + id + '_selected').append('<li data-value="' + value + '">' + title + '<a onclick="removeMlink(\'' + id + '\',\'' + value + '\')">Remove</a></li>');
+    }
+}
+
+function removeMlink(id, value) {
+    if (value != -1 && value != 0) {
+        var $option = $('#' + id + '_select option[value=' + value + ']');
+        $option.removeAttr('disabled');
+        $('select[name="' + id + '"] option[value=' + value + ']').removeAttr('selected');
+        $('select[name="' + id + '"]').trigger('change');
+        $('#' + id + '_selected [data-value=' + value + ']').remove();
+
+    }
+}
 
 function colorbox_recenter() {
     var $cb = $('#colorbox');
@@ -210,4 +244,3 @@ Array.prototype.count = function () {
 String.prototype.isNumber = function () {
     return !isNaN(parseFloat(this)) && isFinite(this);
 };
-
