@@ -24,6 +24,21 @@ abstract class get {
         return substr($name, $pos);
     }
 
+    public static function recursive_glob($root, $pattern, $flags = 0) {
+        $files = [];
+        $directories = glob(trim($root, '/') . '/*', GLOB_ONLYDIR);
+        if ($directories) {
+            foreach ($directories as $dir) {
+                $files = array_merge($files, self::recursive_glob($dir, $pattern, $flags));
+            }
+        }
+        $root_files = glob(trim($root, '/') . '/' . $pattern);
+        if ($root_files) {
+            $files = array_merge($files, $root_files);
+        }
+        return $files;
+    }
+
     public static function setting($setting, $default = '') {
         if (!self::$cms_settings) {
             $res = db::select('_cms_setting')
