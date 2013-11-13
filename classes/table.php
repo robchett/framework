@@ -255,7 +255,7 @@ abstract class table {
         }
         /** @var field_link $field */
         foreach ($mlinks as $module => $fields) {
-            $this->retrieve_link($module, $fields);
+            $this->retrieve_link($fields['field'], $fields['retrieve']);
         }
         //print_r('memory usage: ' . $this->class_name() . ' ' . (memory_get_usage() - $before) . "\n");
     }
@@ -444,6 +444,10 @@ abstract class table {
                 $form->action = '/index.php?module=' . get_class($this) . '&act=do_submit&no_ajax=on&ajax_origin=' . $form->id;
             } else if ($field instanceof field_textarea) {
                 \core::$inline_script[] = 'CKEDITOR.replace("' . $field->field_name . '");';
+            } else if ($field instanceof field_mlink) {
+                $class = $field->get_link_object();
+                $class_name = get::__class_name($class);
+                $this->do_retrieve_from_id([$class_name . '.' . $class->table_key], $this->get_primary_key());
             } else if ($field instanceof field_link) {
                 $field->order = 'title';
             }
