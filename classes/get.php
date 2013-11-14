@@ -62,7 +62,7 @@ abstract class get {
     }
 
     public static function fn($str) {
-        return str_replace(array(' ', '.', ',', '-'), '_', strtolower($str));
+        return trim(str_replace([' ', '.', ',', '-', '?', '#'], '_', strtolower($str)), '_');
     }
 
     public static function unique_fn($table, $field, $str) {
