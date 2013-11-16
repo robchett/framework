@@ -18,6 +18,7 @@ abstract class core {
     /** @var core */
     public static $singleton;
     public static $inline_script = [];
+    public static $global_script = [];
     public static $js = ['/js/'];
     public static $css = ['/css/'];
     public static $cms_modules;
@@ -146,7 +147,7 @@ abstract class core {
         $uri_no_qs = parse_url($uri, PHP_URL_PATH);
         $this->path = explode('/', trim($uri_no_qs, '/'));
         if (!$this->path[0]) {
-            $this->path[0] = get::ini('default_module', 'site_settings', 'pages');
+            $this->path[0] = get::ini('default_module', 'site', 'pages');
         }
         $this->pagination_page = $this->get_page_from_path();
         define('clean_uri', implode('/', $this->path));
@@ -215,7 +216,7 @@ abstract class core {
             $inner .= $js;
         }
         if (!empty($inner))
-            $script .= '<script>$(document).ready(function(){' . $inner . '});</script>';
+            $script .= '<script>' . implode(';', self::$global_script) . ';$(document).ready(function(){' . $inner . '});</script>';
         return $script;
     }
 
