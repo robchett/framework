@@ -7,22 +7,26 @@ use form\field_link;
 use form\field_mlink;
 
 abstract class
-collection extends \ArrayObject {
+collection extends \ArrayObject
+{
 
     private $first_index = 0;
     /** @var  \arrayIterator */
     public $iterator;
 
 
-    public function __construct($input = [], $flags = 0, $iterator_class = "\\classes\\collection_iterator") {
+    public function __construct($input = [], $flags = 0, $iterator_class = "\\classes\\collection_iterator")
+    {
         parent::__construct($input, $flags, $iterator_class);
     }
 
-    public function first() {
+    public function first()
+    {
         return $this[0];
     }
 
-    public function first_index() {
+    public function first_index()
+    {
         return $this->first_index;
     }
 
@@ -30,7 +34,8 @@ collection extends \ArrayObject {
      * @param string $key
      * @return bool|mixed
      */
-    public function next(&$key = '') {
+    public function next(&$key = '')
+    {
         if ($this->iterator->valid()) {
             $key = $this->iterator->key();
             $value = $this->iterator->current();
@@ -41,25 +46,29 @@ collection extends \ArrayObject {
         return $value;
     }
 
-    public function push($object) {
+    public function push($object)
+    {
         $this[] = $object;
     }
 
-    public function getIterator() {
+    public function getIterator()
+    {
         if (!isset($this->iterator)) {
             $this->iterator = parent::getIterator();
         }
         return $this->iterator;
     }
 
-    public function setIterator(\Iterator $iterator) {
+    public function setIterator(\Iterator $iterator)
+    {
         $this->iterator = $iterator;
     }
 
     /**
      *
      */
-    public function reset_iterator() {
+    public function reset_iterator()
+    {
         $this->getIterator()->rewind();
     }
 
@@ -67,14 +76,16 @@ collection extends \ArrayObject {
      * @param $function
      * @param int $cnt
      */
-    public function iterate($function, &$cnt = 0) {
+    public function iterate($function, &$cnt = 0)
+    {
         foreach ($this as $object) {
             call_user_func_array($function, [$object, $cnt]);
             $cnt++;
         }
     }
 
-    public function iterate_return($function, &$cnt = 0) {
+    public function iterate_return($function, &$cnt = 0)
+    {
         $res = '';
         foreach ($this as $object) {
             $res .= call_user_func_array($function, [$object, $cnt]);
@@ -83,15 +94,24 @@ collection extends \ArrayObject {
         return $res;
     }
 
-    public function last() {
+    public function last()
+    {
         return $this[$this->count() - 1];
     }
 
-    public function remove_first($int = 1) {
-        parent::__construct($this->subset($int));
+    public function unshift($int = 1)
+    {
+        $sub_array = [];
+        foreach ($this as $key => $index) {
+            if ($key >= $int) {
+                $sub_array[] = $index;
+            }
+        }
+        $this->exchangeArray($sub_array);
     }
 
-    public function remove_last($int = 0) {
+    public function remove_last($int = 0)
+    {
         if ($int) {
             for ($i = 0; $i < $int; $i++)
                 $this->remove_last();
@@ -105,13 +125,16 @@ collection extends \ArrayObject {
      * @param int $end
      * @return \LimitIterator
      */
-    public function subset($start = 0, $end = null) {
+    public function subset($start = 0, $end = null)
+    {
         $count = ($end ? : $this->count()) - $start;
         $res = new \LimitIterator($this->getIterator(), $start, $count);
+        $res->count = $count;
         return $res;
     }
 
-    public function filter_unique(filter_field $field) {
+    public function filter_unique(filter_field $field)
+    {
         $values = [];
         $objects = [];
         if ($field->inner_field() instanceof field_mlink) {
@@ -171,7 +194,8 @@ collection extends \ArrayObject {
         return $return;
     }
 
-    public function get_id() {
+    public function get_id()
+    {
         return str_replace('\\', '_', _get::__class_name($this));
     }
 }
