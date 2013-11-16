@@ -2,7 +2,7 @@
 
 namespace core\classes;
 
-use \classes\get as _get;
+use classes\get as _get;
 
 abstract class kml {
 
@@ -35,12 +35,12 @@ abstract class kml {
 
     /**
      * @param $colour
-     * @param \track\track_point[] $coordinates
+     * @param collection_iterator $coordinates
      * @param string $altitude_mode
      * @param bool $extrude
      * @return string
      */
-    public static function create_linestring($colour, array $coordinates, $altitude_mode = 'absolute', $extrude = false) {
+    public static function create_linestring($colour, $coordinates, $altitude_mode = 'absolute', $extrude = false) {
         $xml = '';
         $xml .= '<Placemark>';
         $xml .= '<styleUrl>' . $colour . '</styleUrl>';
@@ -49,6 +49,7 @@ abstract class kml {
         if ($extrude)
             $xml .= '<extrude>' . $extrude . '</extrude>';
         $xml .= '<coordinates>';
+        $coordinates->rewind();
         foreach ($coordinates as $coord) {
             $xml .= $coord->get_kml_coordinate();
         }
