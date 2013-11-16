@@ -116,6 +116,7 @@ abstract class table {
 
     /**
      * @param $row
+     * @param $links
      */
     public function set_from_row($row, $links) {
         foreach ($row as $key => $val) {
@@ -173,57 +174,61 @@ abstract class table {
     public static function organise_links(table $object, array &$fields, &$links = [], &$mlinks = []) {
         $new_fields = [];
         foreach ($fields as $field) {
-            if (strstr($field, '.') === false) {
-                foreach ($object->get_fields(false) as $object_field) {
-                    if ($object_field instanceof field_link && get::__class_name($object_field->get_link_module()) == $field) {
-                        $sub_object = $object_field->get_link_object();
-                        $sub_fields = [$sub_object->table_key];
-                        if ($sub_object->has_field('title')) {
-                            $sub_fields[] = 'title';
-                        }
-                        if ($object_field instanceof \form\field_mlink) {
-                            $mlinks[$field] = ['field' => $object_field, 'retrieve' => $sub_fields];
-                        } else {
-                            $links[$field] = ['field' => $object_field, 'retrieve' => $sub_fields];
-                        }
-                        continue 2;
-                    }
-                }
-                $new_fields[$field] = $field;
-            } else {
-                $field = explode('.', $field);
-                if ($field[0] != $object->class_name()) {
+            if (strstr($field, ' AS ') === false) {
+                if (strstr($field, '.') === false) {
                     foreach ($object->get_fields(false) as $object_field) {
-                        if ($object_field instanceof field_link && get::__class_name($object_field->get_link_module()) == $field[0]) {
-
-                            if ($object_field instanceof field_mlink) {
-                                if (isset($mlinks[$field[0]])) {
-                                    $mlinks[$field[0]]['retrieve'][] = $field[1];
-                                } else {
-                                    $sub_object = $object_field->get_link_object();
-                                    $sub_fields = [$sub_object->table_key, $field[1]];
-                                    if ($sub_object->has_field('title')) {
-                                        $sub_fields[] = 'title';
-                                    }
-                                    $mlinks[$field[0]] = ['field' => $object_field, 'retrieve' => $sub_fields];
-                                }
+                        if ($object_field instanceof field_link && get::__class_name($object_field->get_link_module()) == $field) {
+                            $sub_object = $object_field->get_link_object();
+                            $sub_fields = [$sub_object->table_key];
+                            if ($sub_object->has_field('title')) {
+                                $sub_fields[] = 'title';
+                            }
+                            if ($object_field instanceof \form\field_mlink) {
+                                $mlinks[$field] = ['field' => $object_field, 'retrieve' => $sub_fields];
                             } else {
-                                if (isset($links[$field[0]])) {
-                                    $links[$field[0]]['retrieve'][] = $field[1];
-                                } else {
-                                    $sub_object = $object_field->get_link_object();
-                                    $sub_fields = [$sub_object->table_key, $field[1]];
-                                    if ($sub_object->has_field('title')) {
-                                        $sub_fields[] = 'title';
-                                    }
-                                    $links[$field[0]] = ['field' => $object_field, 'retrieve' => $sub_fields];
-                                }
+                                $links[$field] = ['field' => $object_field, 'retrieve' => $sub_fields];
                             }
                             continue 2;
                         }
                     }
+                    $new_fields[$field] = $field;
+                } else {
+                    $field = explode('.', $field);
+                    if ($field[0] != $object->class_name()) {
+                        foreach ($object->get_fields(false) as $object_field) {
+                            if ($object_field instanceof field_link && get::__class_name($object_field->get_link_module()) == $field[0]) {
+
+                                if ($object_field instanceof field_mlink) {
+                                    if (isset($mlinks[$field[0]])) {
+                                        $mlinks[$field[0]]['retrieve'][] = $field[1];
+                                    } else {
+                                        $sub_object = $object_field->get_link_object();
+                                        $sub_fields = [$sub_object->table_key, $field[1]];
+                                        if ($sub_object->has_field('title')) {
+                                            $sub_fields[] = 'title';
+                                        }
+                                        $mlinks[$field[0]] = ['field' => $object_field, 'retrieve' => $sub_fields];
+                                    }
+                                } else {
+                                    if (isset($links[$field[0]])) {
+                                        $links[$field[0]]['retrieve'][] = $field[1];
+                                    } else {
+                                        $sub_object = $object_field->get_link_object();
+                                        $sub_fields = [$sub_object->table_key, $field[1]];
+                                        if ($sub_object->has_field('title')) {
+                                            $sub_fields[] = 'title';
+                                        }
+                                        $links[$field[0]] = ['field' => $object_field, 'retrieve' => $sub_fields];
+                                    }
+                                }
+                                continue 2;
+                            }
+                        }
+                    }
+                    $new_fields[] = implode('.', $field);
                 }
-                $new_fields[] = implode('.', $field);
+            } else {
+                $new_fields[] = $field;
             }
         }
         $fields = $new_fields;
