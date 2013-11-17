@@ -118,7 +118,7 @@ class image_resizer {
         $heightRatio = $this->height / $newHeight;
         $widthRatio = $this->width / $newWidth;
 
-        if ($heightRatio > $widthRatio) {
+        if ($heightRatio < $widthRatio) {
             $optimalRatio = $heightRatio;
         } else {
             $optimalRatio = $widthRatio;

@@ -14,6 +14,7 @@ use module\cms\form\add_field_form;
 use module\cms\form\cms_filter_form;
 use module\cms\form\new_module_form;
 use module\cms\object;
+use object\image_size;
 
 /**
  * Class controller
@@ -68,6 +69,13 @@ abstract class controller extends module {
     public static function do_database_repair() {
         $database_manager = new \module\cms\object\cms_builder();
         $database_manager->manage();
+    }
+
+    public static function image_reprocess() {
+        if(isset($_REQUEST['fid'])) {
+            $image_size = new image_size([], $_REQUEST['fid']);
+            $image_size->reprocess();
+        }
     }
 
 

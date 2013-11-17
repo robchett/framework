@@ -37,5 +37,4 @@ abstract class field_file extends field {
     public function do_validate(&$error_array) {
 
     }
-
 }

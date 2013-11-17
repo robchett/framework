@@ -2,6 +2,7 @@
 namespace core\form;
 
 use classes\ajax;
+use classes\get;
 use form\field_file as _field_file;
 use html\node;
 
@@ -85,6 +86,7 @@ abstract class form {
      * @var string
      */
     public $wrapper_class = '.form_wrapper';
+    protected $table_object;
 
     /**
      * @param array $fields
@@ -116,12 +118,24 @@ abstract class form {
      * @param $object
      */
     public function set_from_object($object) {
+        $this->table_object = $object;
         foreach ($this->fields as $field) {
             if (isset($object->{$field->field_name})) {
                 $this->{$field->field_name} = $object->{$field->field_name};
             }
         }
         $this->action = get_class($object) . ':do_submit';
+    }
+
+    public function get_table_object() {
+        if (!$this->table_object) {
+            trigger_error('Trying to access a forms table object before set_from_object has been called.');
+        }
+        return $this->table_object;
+    }
+
+    public function get_table_class() {
+        return get::__class_name($this->get_table_object());
     }
 
     /**

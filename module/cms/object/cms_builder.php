@@ -8,7 +8,7 @@ use module\cms\object\field_type;
 
 class cms_builder {
 
-    public static $current_version = 2;
+    public static $current_version = 3;
 
     public function __construct() {
         $this->_cms_module_fields = new collection([
@@ -395,6 +395,241 @@ class cms_builder {
                 ->add_value('type', 'fn')
                 ->add_value('mid', $_module_insert_id)
                 ->add_value('position', 4)
+                ->execute();
+        }
+    }
+
+    public function patch_v3() {
+
+        /** Add
+         * ---Image Format
+         * ---Image Crop
+         * ---Image Size
+         * */
+        if (!db::table_exists('image_format')) {
+            $_group_id = db::insert('_cms_group')
+                ->add_value('title', 'Images')
+                ->execute();
+            db::create_table('image_format', [
+                    'ifid' => 'SMALLINT NOT NULL AUTO_INCREMENT',
+                    'parent_ifid' => 'SMALLINT NOT NULL',
+                    'live' => 'tinyint(1) NOT NULL DEFAULT \'1\'',
+                    'deleted' => 'tinyint(1) NOT NULL DEFAULT \'0\'',
+                    'position' => 'SMALLINT NOT NULL',
+                    'created' => 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP()',
+                    'ts' => 'TIMESTAMP NOT NULL',
+                    'title' => 'varchar(255) NOT NULL'
+                ], ['PRIMARY KEY (`ifid`)']
+            );
+            $_module_insert_id = db::insert('_cms_module')
+                ->add_value('gid', $_group_id)
+                ->add_value('primary_key', 'ifid')
+                ->add_value('title', 'Image Format')
+                ->add_value('table_name', 'image_format')
+                ->add_value('namespace', '')
+                ->execute();
+            $_field_insert_id = db::insert('_cms_field')
+                ->add_value('field_name', 'ifid')
+                ->add_value('title', 'Image Format ID')
+                ->add_value('type', 'int')
+                ->add_value('mid', $_module_insert_id)
+                ->add_value('position', 0)
+                ->execute();
+            db::insert('_cms_field')
+                ->add_value('field_name', 'parent_ifid')
+                ->add_value('title', 'Parent Image Format')
+                ->add_value('type', 'int')
+                ->add_value('mid', $_module_insert_id)
+                ->add_value('link_module', $_module_insert_id)
+                ->add_value('link_field', $_field_insert_id)
+                ->add_value('position', 1)
+                ->execute();
+            db::insert('_cms_field')
+                ->add_value('field_name', 'title')
+                ->add_value('title', 'Extension')
+                ->add_value('type', 'string')
+                ->add_value('mid', $_module_insert_id)
+                ->add_value('position', 1)
+                ->execute();
+            db::insert('image_format')
+                ->add_value('title', 'PNG')
+                ->execute();
+            db::insert('image_format')
+                ->add_value('title', 'JPG')
+                ->execute();
+            db::insert('image_format')
+                ->add_value('title', 'GIF')
+                ->execute();
+
+            db::create_table('image_crop', [
+                    'icid' => 'SMALLINT NOT NULL AUTO_INCREMENT',
+                    'parent_icid' => 'SMALLINT NOT NULL',
+                    'live' => 'tinyint(1) NOT NULL DEFAULT \'1\'',
+                    'deleted' => 'tinyint(1) NOT NULL DEFAULT \'0\'',
+                    'position' => 'SMALLINT NOT NULL',
+                    'created' => 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP()',
+                    'ts' => 'TIMESTAMP NOT NULL',
+                    'title' => 'varchar(255) NOT NULL'
+                ], ['PRIMARY KEY (`icid`)']
+            );
+            $_cropmodule_insert_id = db::insert('_cms_module')
+                ->add_value('gid', $_group_id)
+                ->add_value('primary_key', 'icid')
+                ->add_value('title', 'Image Crop')
+                ->add_value('table_name', 'image_crop')
+                ->add_value('namespace', '')
+                ->execute();
+            $_cropfield_insert_id = db::insert('_cms_field')
+                ->add_value('field_name', 'icid')
+                ->add_value('title', 'Image Crop ID')
+                ->add_value('type', 'int')
+                ->add_value('mid', $_cropmodule_insert_id)
+                ->add_value('position', 0)
+                ->execute();
+            db::insert('_cms_field')
+                ->add_value('field_name', 'parent_icid')
+                ->add_value('title', 'Parent Image Crop')
+                ->add_value('type', 'int')
+                ->add_value('mid', $_cropmodule_insert_id)
+                ->add_value('link_module', $_cropmodule_insert_id)
+                ->add_value('link_field', $_cropfield_insert_id)
+                ->add_value('position', 1)
+                ->execute();
+            db::insert('_cms_field')
+                ->add_value('field_name', 'title')
+                ->add_value('title', 'Method')
+                ->add_value('type', 'string')
+                ->add_value('mid', $_cropmodule_insert_id)
+                ->add_value('position', 1)
+                ->execute();
+            db::insert('image_crop')
+                ->add_value('title', 'Crop')
+                ->execute();
+            db::insert('image_crop')
+                ->add_value('title', 'Scale Within Bounds')
+                ->execute();
+            db::insert('image_crop')
+                ->add_value('title', 'Scale Within Height')
+                ->execute();
+            db::insert('image_crop')
+                ->add_value('title', 'Scale Within Width')
+                ->execute();
+
+            db::create_table('image_size', [
+                    'isid' => 'SMALLINT NOT NULL AUTO_INCREMENT',
+                    'parent_isid' => 'SMALLINT NOT NULL',
+                    'live' => 'tinyint(1) NOT NULL DEFAULT \'1\'',
+                    'deleted' => 'tinyint(1) NOT NULL DEFAULT \'0\'',
+                    'position' => 'SMALLINT NOT NULL',
+                    'created' => 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP()',
+                    'ts' => 'TIMESTAMP NOT NULL',
+                    'title' => 'varchar(255) NOT NULL',
+                    'reference' => 'varchar(10) NOT NULL',
+                    'min_width' => 'SMALLINT NOT NULL',
+                    'min_height' => 'SMALLINT NOT NULL',
+                    'max_width' => 'SMALLINT NOT NULL',
+                    'max_heights' => 'SMALLINT NOT NULL',
+                    'icid' => 'tinyint(1) NOT NULL',
+                    'ifid' => 'SMALLINT NOT NULL',
+                    'fid' => 'SMALLINT NOT NULL',
+                    'default' => 'tinyint(1) NOT NULL',
+                ], ['PRIMARY KEY (`isid`)']
+            );
+            $_sizes_module_insert_id = db::insert('_cms_module')
+                ->add_value('gid', $_group_id)
+                ->add_value('primary_key', 'isid')
+                ->add_value('title', 'Image Size')
+                ->add_value('table_name', 'image_size')
+                ->execute();
+            $__sizes_field_insert_key = db::insert('_cms_field')
+                ->add_value('field_name', 'isid')
+                ->add_value('title', 'Image Size ID')
+                ->add_value('type', 'int')
+                ->add_value('mid', $_sizes_module_insert_id)
+                ->add_value('position', 0)
+                ->execute();
+            db::insert('_cms_field')
+                ->add_value('field_name', 'parent_isid')
+                ->add_value('title', 'Parent Image Size')
+                ->add_value('type', 'link')
+                ->add_value('mid', $_sizes_module_insert_id)
+                ->add_value('link_module', $_sizes_module_insert_id)
+                ->add_value('link_field', $__sizes_field_insert_key)
+                ->add_value('position', 1)
+                ->execute();
+            db::insert('_cms_field')
+                ->add_value('field_name', 'title')
+                ->add_value('title', 'Title')
+                ->add_value('type', 'string')
+                ->add_value('mid', $_sizes_module_insert_id)
+                ->add_value('position', 2)
+                ->execute();
+            db::insert('_cms_field')
+                ->add_value('field_name', 'reference')
+                ->add_value('title', 'Reference')
+                ->add_value('type', 'string')
+                ->add_value('mid', $_sizes_module_insert_id)
+                ->add_value('position', 3)
+                ->execute();
+            db::insert('_cms_field')
+                ->add_value('field_name', 'min_width')
+                ->add_value('title', 'Minimum Width')
+                ->add_value('type', 'int')
+                ->add_value('mid', $_sizes_module_insert_id)
+                ->add_value('position', 4)
+                ->execute();
+            db::insert('_cms_field')
+                ->add_value('field_name', 'min_height')
+                ->add_value('title', 'Minimum Height')
+                ->add_value('type', 'int')
+                ->add_value('mid', $_sizes_module_insert_id)
+                ->add_value('position', 5)
+                ->execute();
+            db::insert('_cms_field')
+                ->add_value('field_name', 'max_width')
+                ->add_value('title', 'Maximum Width')
+                ->add_value('type', 'int')
+                ->add_value('mid', $_sizes_module_insert_id)
+                ->add_value('position', 6)
+                ->execute();
+            db::insert('_cms_field')
+                ->add_value('field_name', 'max_height')
+                ->add_value('title', 'Maximum Height')
+                ->add_value('type', 'int')
+                ->add_value('mid', $_sizes_module_insert_id)
+                ->add_value('position', 7)
+                ->execute();
+            db::insert('_cms_field')
+                ->add_value('field_name', 'ifid')
+                ->add_value('title', 'Format Type')
+                ->add_value('type', 'link')
+                ->add_value('mid', $_sizes_module_insert_id)
+                ->add_value('link_module', $_module_insert_id)
+                ->add_value('link_field', (int)$_field_insert_id + 2)
+                ->add_value('position', 8)
+                ->execute();
+            db::insert('_cms_field')
+                ->add_value('field_name', 'icid')
+                ->add_value('title', 'Crop Type')
+                ->add_value('type', 'link')
+                ->add_value('mid', $_sizes_module_insert_id)
+                ->add_value('link_module', $_cropmodule_insert_id)
+                ->add_value('link_field', (int)$_cropfield_insert_id + 2)
+                ->add_value('position', 9)
+                ->execute();
+            db::insert('_cms_field')
+                ->add_value('field_name', 'fid')
+                ->add_value('title', 'Field')
+                ->add_value('type', 'int')
+                ->add_value('mid', $_sizes_module_insert_id)
+                ->add_value('position', 9)
+                ->execute();
+            db::insert('_cms_field')
+                ->add_value('field_name', 'default')
+                ->add_value('title', 'Is Default')
+                ->add_value('type', 'boolean')
+                ->add_value('mid', $_sizes_module_insert_id)
+                ->add_value('position', 10)
                 ->execute();
         }
     }

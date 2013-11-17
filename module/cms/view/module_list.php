@@ -20,6 +20,13 @@ abstract class module_list extends cms_view {
         if ($modules) {
             $html = node::create('div', [],
                 node::create('table.module', [],
+                    node::create('thead', [],
+                        node::create('th', [], 'Module ID') .
+                        node::create('th', [], 'Group') .
+                        node::create('th', [], 'Title') .
+                        node::create('th', [], 'Table Name') .
+                        node::create('th', [], 'Primary Key')
+                    ) .
                     $modules->iterate_return(
                         function (_cms_module $module) {
                             return node::create('tr', [],
@@ -30,14 +37,8 @@ abstract class module_list extends cms_view {
                                 node::create('td', [], $module->primary_key)
                             );
                         }
-                    ) .
-                    node::create('thead', [],
-                        node::create('th', [], 'Module ID') .
-                        node::create('th', [], 'Group') .
-                        node::create('th', [], 'Title') .
-                        node::create('th', [], 'Table Name') .
-                        node::create('th', [], 'Primary Key')
                     )
+
                 )
             );
             return $html;

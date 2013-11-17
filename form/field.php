@@ -2,7 +2,9 @@
 namespace core\form;
 
 use classes\get;
+use classes\table;
 use core\classes\db;
+use form\field_image;
 use html\node;
 
 abstract class field extends node {
@@ -25,6 +27,7 @@ abstract class field extends node {
     public $class = array();
     public $title;
     public $wrapper_class = array();
+    /** @var  form|table */
     public $parent_form;
     public $value = '';
 
@@ -163,6 +166,7 @@ abstract class field extends node {
             }
             $cols[] = node::create('td input#' . $this->fid . '_list', $list_options);
         }
+        $cols[] = node::create('td', [], ($this instanceof field_image) ? $this->get_image_edit_link() : '');
         return $cols;
     }
 

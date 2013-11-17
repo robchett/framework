@@ -4,6 +4,9 @@ namespace core\classes;
 
 use classes\ajax as _ajax;
 use classes\get as _get;
+use classes\image_resizer;
+use form\field_image;
+use object\image_size;
 use db\insert;
 use db\update;
 use form\field;
@@ -54,6 +57,10 @@ abstract class table {
             /** @var table $class */
             $class::_set_fields();
         }
+    }
+
+    public function get_table_class() {
+        return get::__class_name($this);
     }
 
     public static function get_all(array $fields, array $options = []) {
@@ -417,6 +424,13 @@ abstract class table {
         return $fallback;;
     }
 
+    protected function do_process_image($source, image_size $size) {
+        $ext = pathinfo($source, PATHINFO_EXTENSION);
+        $resize = new image_resizer($source);
+        $resize->resizeImage($size->max_width, $size->max_height, 'crop');
+        $resize->saveImage(str_replace('.' . $ext, '', $source) . '_' . $size->reference . '.' . $size->get_format());
+    }
+
     /**
      * @param field_file $field
      * @return string file path
@@ -432,9 +446,20 @@ abstract class table {
             if (!is_dir(root . '/uploads/' . _get::__class_name($this) . '/' . $field->fid)) {
                 mkdir(root . '/uploads/' . _get::__class_name($this) . '/' . $field->fid);
             }
-            move_uploaded_file($tmp_name, root . '/uploads/' . _get::__class_name($this) . '/' . $field->fid . '/' . $this->get_primary_key() . '.' . $ext);
+            $file_name = root . '/uploads/' . _get::__class_name($this) . '/' . $field->fid . '/' . $this->get_primary_key() . '.' . $ext;
+            move_uploaded_file($tmp_name, $file_name);
+
+            if($field instanceof field_image && $ext == 'jpg' || $ext == 'jpeg' || $ext == 'png' || $ext == 'gif') {
+                $image_sizes = $field->get_image_sizes();
+                $image_sizes->iterate(
+                    function (\object\image_size $image) use ($file_name) {
+                        $this->do_process_image($file_name, $image);
+                    }
+                );
+            }
             return root . '/uploads/' . _get::__class_name($this) . '/' . $field->fid . '/' . $this->get_primary_key() . '.' . $ext;
         }
+        return false;
     }
 
     /**
@@ -497,7 +522,8 @@ abstract class table {
                 node::create('th', [], 'Type') .
                 node::create('th', [], 'List') .
                 node::create('th', [], 'Required') .
-                node::create('th', [], 'Filter')
+                node::create('th', [], 'Filter') .
+                node::create('th', [], '')
             ) .
             $this->get_fields()->iterate_return(function ($field) {
                     return (node::create('tr', [], $field->get_cms_admin_edit()));
