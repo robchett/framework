@@ -4,10 +4,12 @@ namespace core\classes;
 class error_handler {
 
     public static $file_handler;
+    public static $file_name;
 
     public static function handle_error($errno, $errstr, $errfile, $errline) {
         if (!self::$file_handler) {
-            self::$file_handler = fopen(root . '/log/error.log', 'w+');
+            self::$file_name = root . '/log/error_' . time() . '.log';
+            self::$file_handler = fopen(self::$file_name, 'w+');
         }
         if (strpos($errfile, 'xdebug') !== 0) {
             if (function_exists('xdebug_break')) {
@@ -29,7 +31,10 @@ class error_handler {
 
     public static function shutdown() {
         if (self::$file_handler) {
-            mail('robchett@gmail.com', 'Error on site', fread(self::$file_handler, 30000));
+            if (!(dev || debug)) {
+                mail('robchett@gmail.com', 'Error on site ' . $_SERVER['HTTP_HOST'], file_get_contents(self::$file_name));
+            }
+            unlink(self::$file_name);
         }
     }
 }
