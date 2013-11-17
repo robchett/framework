@@ -30,6 +30,7 @@ include(root . '/.core/dependent/classes/auto_loader.php');
 $auto_loader = new \classes\auto_loader();
 
 set_error_handler(['\classes\error_handler', 'handle_error']);
+register_shutdown_function(['\classes\error_handler', 'shutdown']);
 
 if (!defined('load_core') || load_core) {
     include(core_dir . '/core.php');
