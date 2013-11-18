@@ -4,6 +4,7 @@ namespace core\classes;
 use classes\filter_field;
 use form\field_collection;
 use form\form;
+use object\filter;
 
 class filter_form extends form {
 
@@ -13,11 +14,11 @@ class filter_form extends form {
     public function __construct(field_collection $fields, collection $source_data) {
         $final_fields = [];
         $this->source_data = $source_data;
-        $fields->iterate(function (filter_field $field) use (&$final_fields, $source_data) {
+        $fields->iterate(function (filter $field) use (&$final_fields, $source_data) {
                 $values = $source_data->filter_unique($field);
                 $new_field = form::create('field_checkboxes', $field->inner_field()->field_name, $values);
                 $new_field->original_field = $field->inner_field();
-                $new_field->label = $field->label;
+                $new_field->label = $field->title;
                 $final_fields[] = $new_field;
             }
         );

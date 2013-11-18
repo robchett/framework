@@ -99,13 +99,13 @@ table_array extends \classes\collection {
         if (_db::num($res)) {
             while ($row = _db::fetch($res, null)) {
                 /** @var table $class */
-                $class = new $class;
-                $class->set_from_row($row, $links);
+                $object = new $class;
+                $object->set_from_row($row, $links);
                 foreach ($mlinks as $module => $blah) {
-                    $class->{$module . '_elements'} = new \classes\table_array();
-                    $class->$module = new \classes\collection();
+                    $object->{$module . '_elements'} = new \classes\table_array();
+                    $object->$module = new \classes\collection();
                 }
-                $this[] = $class;
+                $this[] = $object;
             }
         }
         $this->reset_iterator();

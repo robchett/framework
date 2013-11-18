@@ -5,14 +5,13 @@ namespace core\classes;
 use classes\ajax as _ajax;
 use classes\get as _get;
 use classes\image_resizer;
-use form\field_image;
-use object\image_size;
 use db\insert;
 use db\update;
 use form\field;
 use form\field_collection as field_collection;
 use form\field_file;
 use form\field_fn;
+use form\field_image;
 use form\field_link;
 use form\field_mlink;
 use form\field_textarea;
@@ -20,8 +19,12 @@ use form\form;
 use html\node;
 use module\cms\object\_cms_field;
 use module\cms\object\_cms_module;
+use object\filter;
+use object\image_size;
 
-/** @property string table_key */
+/**
+ * @property string table_key
+ */
 abstract class table {
 
     /**
@@ -61,6 +64,22 @@ abstract class table {
 
     public function get_table_class() {
         return get::__class_name($this);
+    }
+
+    public function get_filters() {
+        $filters = filter::get_all(['title', 'link_mid AS link_mid', 'link_fid AS link_fid', 'order'], ['where_equals' => ['link_mid' => static::$module_id]]);
+        $filters->iterate(
+            function (filter $filter) {
+                foreach ($this->get_fields() as $field) {
+                    if ($field->fid == $filter->link_fid) {
+                        $filter->set_field($field);
+                        return;
+                    }
+                }
+                throw new \RuntimeException('Filter field ' . $filter->fid . ' is linked to a field that doesn\'t belong to its module');
+            }
+        );
+        return $filters;
     }
 
     public static function get_all(array $fields, array $options = []) {
@@ -449,7 +468,7 @@ abstract class table {
             $file_name = root . '/uploads/' . _get::__class_name($this) . '/' . $field->fid . '/' . $this->get_primary_key() . '.' . $ext;
             move_uploaded_file($tmp_name, $file_name);
 
-            if($field instanceof field_image && $ext == 'jpg' || $ext == 'jpeg' || $ext == 'png' || $ext == 'gif') {
+            if ($field instanceof field_image && $ext == 'jpg' || $ext == 'jpeg' || $ext == 'png' || $ext == 'gif') {
                 $image_sizes = $field->get_image_sizes();
                 $image_sizes->iterate(
                     function (\object\image_size $image) use ($file_name) {
