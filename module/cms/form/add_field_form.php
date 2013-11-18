@@ -60,7 +60,7 @@ abstract class add_field_form extends form {
             /** @var \form\field $field_type */
             $field_type = new $type('');
             if ($inner = $field_type->get_database_create_query()) {
-                db::query('ALTER TABLE ' . $module->table_name . ' ADD ' . $this->field_name . ' ' . $field_type->get_database_create_query(), array(), 1);
+                db::query('ALTER TABLE ' . $module->table_name . ' ADD `' . $this->field_name . '` ' . $field_type->get_database_create_query(), array(), 1);
             }
 
             if ($field->title == 'mlink') {
