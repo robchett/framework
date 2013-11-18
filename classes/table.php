@@ -158,7 +158,7 @@ abstract class table {
     public function set_from_row($row, $links) {
         foreach ($row as $key => $val) {
             if (isset(static::$fields[$key])) {
-                $class = get_class(static::$fields[$key]);
+                $class = static::$fields[$key];
                 /** @var field $class */
                 $this->$key = $class::sanitise_from_db($val);
             } else if (strstr($key, '@')) {
