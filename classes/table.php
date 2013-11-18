@@ -104,11 +104,22 @@ abstract class table {
     }
 
     /**
-     * @return bool
+     * @return int|bool
      */
     public function get_primary_key() {
         if (isset($this->{$this->table_key}) && $this->{$this->table_key}) {
             return $this->{$this->table_key};
+        }
+        return false;
+    }
+
+
+    /**
+     * @return int|bool
+     */
+    public function get_parent_primary_key() {
+        if (isset($this->{'parent_' . $this->table_key}) && $this->{'parent_' . $this->table_key}) {
+            return $this->{'parent_' . $this->table_key};
         }
         return false;
     }
