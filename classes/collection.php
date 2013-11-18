@@ -128,6 +128,7 @@ collection extends \ArrayObject {
                         if (!isset($values[$link])) {
                             $values[$link]['count'] = 1;
                             $values[$link]['title'] = $object->{$field->field_name . '_elements'}[$key]->get_title();
+                            $values[$link]['value'] = $link;
                         } else {
                             $values[$link]['count']++;
                         }
@@ -141,6 +142,7 @@ collection extends \ArrayObject {
                     if (!isset($values[$key])) {
                         $values[$key]['count'] = 1;
                         $values[$key]['title'] = $object->$field_name->get_title();
+                        $values[$key]['value'] = $key;
                     } else {
                         $values[$key]['count']++;
                     }
@@ -151,6 +153,7 @@ collection extends \ArrayObject {
                     if (!isset($values[$object->{$field->field_name}])) {
                         $values[$object->{$field->field_name}]['count'] = 1;
                         $values[$object->{$field->field_name}]['title'] = $object->get_title();
+                        $values[$object->{$field->field_name}]['value'] = $object->{$field->field_name};
                     } else {
                         $values[$object->{$field->field_name}]['count']++;
                     }
@@ -173,7 +176,7 @@ collection extends \ArrayObject {
 
         $return = [];
         foreach ($values as $key => $value) {
-            $return[$key] = $value['title'] . ' (' . $value['count'] . ')';
+            $return[$value['value']] = $value['title'] . ' (' . $value['count'] . ')';
         }
 
         return $return;
