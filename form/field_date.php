@@ -5,8 +5,8 @@ abstract class field_date extends field {
 
     public function __construct($title, $options = array()) {
         parent::__construct($title, $options);
-        $this->attributes['pattern'] = '[0-9]{2}/[0-9]{2}/[0-9]{4}';
-        //$this->attributes['type'] = 'date';
+        //$this->attributes['pattern'] = '[0-9]{2}/[0-9]{2}/[0-9]{4}';
+        $this->attributes['type'] = 'date';
     }
 
     public function set_value($val) {
@@ -21,6 +21,10 @@ abstract class field_date extends field {
         $this->parent_form->{$this->field_name} = isset($_REQUEST[$this->field_name]) ? strtotime($_REQUEST[$this->field_name]) : '';
     }
 
+    public function get_cms_list_wrapper($value, $object_class, $id) {
+        return date('d-m-Y', $value);
+    }
+
     public function mysql_value($value) {
         if (!is_numeric($value)) {
             $value = strtotime($value);
@@ -29,7 +33,7 @@ abstract class field_date extends field {
     }
 
     public function get_value() {
-        return date('d/m/Y', (float) $this->parent_form->{$this->field_name});
+        return date('Y-m-d', (float) $this->parent_form->{$this->field_name});
     }
 
 }
