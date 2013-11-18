@@ -1,6 +1,7 @@
 <?php
 namespace core\form;
 
+use classes\collection;
 use core\classes\table;
 
 abstract class field_link extends field {
@@ -12,7 +13,7 @@ abstract class field_link extends field {
 
     public $order;
 
-    public $options = array();
+    public $options = [];
 
     public function __construct($title, $options = array()) {
         parent::__construct($title, $options);
@@ -75,32 +76,60 @@ abstract class field_link extends field {
 
     public function get_options() {
         $html = '';
-        /** @var $class \classes\table_array */
+        /** @var $class \classes\table */
         $class = $this->get_link_module();
         $fields = $this->get_link_fields();
 
         /** @var $object table */
         $obj = new $class();
 
-        $options = $class::get_all(array_merge($fields, [$obj->table_key]), $this->options);
+        if (!isset($this->options['order'])) {
+            $this->options['order'] = $obj->table_key;
+        }
+        $options = $class::get_all(array_merge($fields, [$obj->table_key, 'parent_' . $obj->table_key]), $this->options);
         if (!$this->required) {
             $html .= '<option value="0">- Please Select -</option>';
         }
 
-        $options->iterate(function (table $object) use (&$html, $fields) {
-                if (is_array($fields)) {
-                    $parts = array();
-                    foreach ($fields as $part) {
-                        $parts[] = $object->{str_replace('.', '_', $part)};
-                    }
-                    $title = implode(' - ', $parts);
-                } else {
-                    $title = $object->$title_fields;
+        $parents = new collection();
+        $options->iterate(
+            function (table $object) use (&$parents) {
+                if (!$object->get_parent_primary_key()) {
+                    $object->_children = new collection();
+                    $parents[$object->get_primary_key()] = $object;
+                } else if(isset($parents[$object->get_parent_primary_key()])){
+                    $parents[$object->get_parent_primary_key()]->_children[] = $object;
                 }
-                $html .= '<option value="' . $object->{$object->table_key} . '" ' . ($this->is_selected($object->{$object->table_key}) ? 'selected="selected"' : '') . '>' . $title . '</option>';
+            }
+        );
+        $parents->iterate(function (table $object) use (&$html, $fields) {
+                $html .= '<option value="' . $object->{$object->table_key} . '" ' . ($this->is_selected($object->{$object->table_key}) ? 'selected="selected"' : '') . '>' . $this->get_object_title($object, $fields) . '</option>';
+                if ($object->_children->count()) {
+                    $object->_children->iterate(
+                        function (table $sub_object) use (&$html, $fields) {
+                            $html .= '<option value="' . $sub_object->{$sub_object->table_key} . '" ' . ($this->is_selected($sub_object->{$sub_object->table_key}) ? 'selected="selected"' : '') . '>' . $this->get_object_title($sub_object, $fields, 1) . '</option>';
+                        }
+                    );
+                }
             }
         );
         return $html;
+    }
+
+    protected function get_object_title(table $object, $fields, $depth = 0) {
+        if (is_array($fields)) {
+            $parts = array();
+            foreach ($fields as $part) {
+                $parts[] = $object->{str_replace('.', '_', $part)};
+            }
+            $title = implode(' - ', $parts);
+        } else {
+            $title = $object->$title_fields;
+        }
+        for ($i = 0; $i < $depth; $i++) {
+            $title = ' - ' . $title;
+        }
+        return $title;
     }
 
     protected function is_selected($id) {
