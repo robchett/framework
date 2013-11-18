@@ -530,6 +530,7 @@ abstract class table {
         if (isset($form->attributes['target'])) {
             $form->attributes['target'] = 'form_target_' . $form->id;
         }
+        $form->get_field_from_name($this->table_key)->hidden = true;
         return $form;
     }
 
