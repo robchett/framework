@@ -606,7 +606,7 @@ class cms_builder {
                 ->add_value('type', 'link')
                 ->add_value('mid', $_sizes_module_insert_id)
                 ->add_value('link_module', $_module_insert_id)
-                ->add_value('link_field', (int)$_field_insert_id + 2)
+                ->add_value('link_field', (int) $_field_insert_id + 2)
                 ->add_value('position', 8)
                 ->execute();
             db::insert('_cms_field')
@@ -615,7 +615,7 @@ class cms_builder {
                 ->add_value('type', 'link')
                 ->add_value('mid', $_sizes_module_insert_id)
                 ->add_value('link_module', $_cropmodule_insert_id)
-                ->add_value('link_field', (int)$_cropfield_insert_id + 2)
+                ->add_value('link_field', (int) $_cropfield_insert_id + 2)
                 ->add_value('position', 9)
                 ->execute();
             db::insert('_cms_field')

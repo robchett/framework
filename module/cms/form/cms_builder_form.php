@@ -5,7 +5,6 @@ use classes\ajax;
 use classes\db;
 use classes\get;
 use form\form;
-use module\cms\object\cms_builder;
 
 abstract class cms_builder_form extends form {
 

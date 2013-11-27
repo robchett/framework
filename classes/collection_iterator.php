@@ -14,7 +14,7 @@ class collection_iterator extends \ArrayIterator {
     public function iterate_return($function, &$count = 0) {
         $this->rewind();
         $res = '';
-        while($this->valid()) {
+        while ($this->valid()) {
             $count++;
             $res .= call_user_func($function, $this->current(), $count);
             $this->next();

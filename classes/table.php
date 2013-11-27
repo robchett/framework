@@ -452,7 +452,7 @@ abstract class table {
                 return str_replace(root, '', $file) . $extension;
             }
         }
-        return $fallback;;
+        return $fallback;
     }
 
     protected function do_process_image($source, image_size $size) {

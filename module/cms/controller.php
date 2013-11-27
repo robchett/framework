@@ -72,7 +72,7 @@ abstract class controller extends module {
     }
 
     public static function image_reprocess() {
-        if(isset($_REQUEST['fid'])) {
+        if (isset($_REQUEST['fid'])) {
             $image_size = new image_size([], $_REQUEST['fid']);
             $image_size->reprocess();
         }
@@ -203,7 +203,7 @@ abstract class controller extends module {
      * @return node
      */
     public function get_inner() {
-        /** @var table_array $class */
+        /** @var \classes\table $class */
         $class = $this->module->get_class_name();
         $options = ['where_equals' => $this->where, 'order' => $this->order ? : 'position'];
         if ($this->npp) {

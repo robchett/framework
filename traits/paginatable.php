@@ -11,7 +11,10 @@ trait paginatable {
     public $paginate_act;
     public $paginate_page;
 
-    /** @return \core\classes\paginate */
+    /**
+     * @param string $id_suffix
+     * @return \core\classes\paginate
+     */
     public function get_paginate($id_suffix) {
         $paginate = new paginate();
         $paginate->npp = $this->paginate_npp;

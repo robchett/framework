@@ -24,7 +24,7 @@ abstract class image_reprocess extends cms_view {
                             return node::create('tr', [],
                                 node::create('td', [], $image_size->fid) .
                                 node::create('td', [], $image_size->title) .
-                                node::create('td a.button', ['href'=>'?module=cms&act=image_reprocess&fid=' . $image_size->isid], 'Reprocess')
+                                node::create('td a.button', ['href' => '?module=cms&act=image_reprocess&fid=' . $image_size->isid], 'Reprocess')
                             );
                         }
                     )

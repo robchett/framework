@@ -2,7 +2,7 @@
 
 namespace classes;
 
-class paginate extends \core\classes\paginate{
+class paginate extends \core\classes\paginate {
 
 }
  

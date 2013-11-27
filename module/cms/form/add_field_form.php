@@ -81,7 +81,7 @@ abstract class add_field_form extends form {
                 ->add_value('field_name', $this->field_name)
                 ->add_value('mid', $this->mid)
                 ->add_value('position', $res->pos + 1);
-            if($field->title == 'link' || $field->title == 'mlink') {
+            if ($field->title == 'link' || $field->title == 'mlink') {
                 $insert->add_value('link_module', $this->link_module)
                     ->add_value('link_field', $this->link_field);
             }

@@ -97,7 +97,7 @@ abstract class field_link extends field {
                 if (!$object->get_parent_primary_key()) {
                     $object->_children = new collection();
                     $parents[$object->get_primary_key()] = $object;
-                } else if(isset($parents[$object->get_parent_primary_key()])){
+                } else if (isset($parents[$object->get_parent_primary_key()])) {
                     $parents[$object->get_parent_primary_key()]->_children[] = $object;
                 }
             }
