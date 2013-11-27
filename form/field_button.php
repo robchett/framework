@@ -8,7 +8,7 @@ abstract class field_button extends field {
     /** @var string */
     public $title;
 
-    public function __construct($title = '', $options = array()) {
+    public function __construct($title = '', $options = []) {
         parent::__construct($title, $options);
     }
 

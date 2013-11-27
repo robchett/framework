@@ -4,9 +4,9 @@ namespace core\form;
 abstract class field_select extends field {
 
     public $default = 'Please Choose';
-    public $options = array();
+    public $options = [];
 
-    public function  __construct($title, $options = array()) {
+    public function  __construct($title, $options = []) {
         parent::__construct($title, $options);
         $this->class[] = 'picker';
     }

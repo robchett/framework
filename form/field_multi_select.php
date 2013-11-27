@@ -4,7 +4,7 @@ namespace core\form;
 abstract class field_multi_select extends field {
 
     public $default = 'Please Choose';
-    public $options = array();
+    public $options = [];
 
     public function get_html() {
         $html = '';

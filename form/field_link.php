@@ -15,7 +15,7 @@ abstract class field_link extends field {
 
     public $options = [];
 
-    public function __construct($title, $options = array()) {
+    public function __construct($title, $options = []) {
         parent::__construct($title, $options);
         $this->attributes['type'] = 'number';
     }
@@ -118,7 +118,7 @@ abstract class field_link extends field {
 
     protected function get_object_title(table $object, $fields, $depth = 0) {
         if (is_array($fields)) {
-            $parts = array();
+            $parts = [];
             foreach ($fields as $part) {
                 $parts[] = $object->{str_replace('.', '_', $part)};
             }

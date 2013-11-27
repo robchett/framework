@@ -3,7 +3,7 @@ namespace core\form;
 
 abstract class field_float extends field {
 
-    public function __construct($title, $options = array()) {
+    public function __construct($title, $options = []) {
         parent::__construct($title, $options);
     }
 

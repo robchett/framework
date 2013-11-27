@@ -30,7 +30,7 @@ abstract class table {
     /**
      * @var array
      */
-    public static $define_table = array();
+    public static $define_table = [];
     public $live;
     public $deleted;
     public $ts;
@@ -83,7 +83,7 @@ abstract class table {
     }
 
     public static function get_all(array $fields, array $options = []) {
-        $array = new \classes\table_array();
+        $array = new \classes\table_[];
         $array->get_all(get_called_class(), $fields, $options);
         return $array;
     }
@@ -277,7 +277,7 @@ abstract class table {
      */
     public function do_retrieve(array $fields, array $options) {
         $options['limit'] = 1;
-        $parameters = (isset($options['parameters']) ? $options['parameters'] : array());
+        $parameters = (isset($options['parameters']) ? $options['parameters'] : []);
         $this->set_default_retrieve($fields, $options);
         $links = $mlinks = [];
         table::organise_links($this, $fields, $links, $mlinks);
@@ -608,7 +608,7 @@ abstract class table {
         $fields->iterate(function (_cms_field $row) use (&$final_fields) {
                 $class = 'form\field_' . $row->type;
                 /** @var field $field */
-                $field = new $class($row->field_name, array());
+                $field = new $class($row->field_name, []);
                 $field->label = $row->title;
                 $field->set_from_row($row);
                 $final_fields[$row->field_name] = $field;

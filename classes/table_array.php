@@ -19,11 +19,11 @@ table_array extends \classes\collection {
     /**
      * @var array
      */
-    protected $retrieved_fields = array();
+    protected $retrieved_fields = [];
     /**
      * @var array
      */
-    protected $original_retrieve_options = array();
+    protected $original_retrieve_options = [];
 
     /**
      *
@@ -46,7 +46,7 @@ table_array extends \classes\collection {
      * @param array $keys
      */
     public function lazy_load(array $keys) {
-        $fields_to_retrieve = array();
+        $fields_to_retrieve = [];
         foreach ($keys as $key) {
             if (!$this->has_field($key)) {
                 $fields_to_retrieve[] = $key;
@@ -102,7 +102,7 @@ table_array extends \classes\collection {
                 $object = new $class;
                 $object->set_from_row($row, $links);
                 foreach ($mlinks as $module => $blah) {
-                    $object->{$module . '_elements'} = new \classes\table_array();
+                    $object->{$module . '_elements'} = new \classes\table_[];
                     $object->$module = new \classes\collection();
                 }
                 $this[] = $object;

@@ -49,7 +49,7 @@ abstract class cache implements interfaces\cache_interface {
      * Load the table dependencies for dynamic cache breaking.
      */
     private static function load_dependants() {
-        self::$dependants = array();
+        self::$dependants = [];
         if (class_exists('db')) {
             if (!db::table_exists('_cache_dependants')) {
                 db::create_table('_cache_dependants',

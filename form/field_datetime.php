@@ -3,7 +3,7 @@ namespace core\form;
 
 abstract class field_datetime extends field {
 
-    public function __construct($title, $options = array()) {
+    public function __construct($title, $options = []) {
         parent::__construct($title, $options);
         $this->attributes['pattern'] = '[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}:[0-9]{2}';
     }

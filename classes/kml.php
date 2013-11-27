@@ -21,7 +21,7 @@ abstract class kml {
     /**
      * @var array
      */
-    private $path = array();
+    private $path = [];
     /**
      * @var string
      */

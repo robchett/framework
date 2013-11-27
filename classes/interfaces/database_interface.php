@@ -36,7 +36,7 @@ interface database_interface {
      * @param array $parameters
      * @return mixed
      */
-    public static function get_query($object, array $fields_to_retrieve, $options, &$parameters = array());
+    public static function get_query($object, array $fields_to_retrieve, $options, &$parameters = []);
 
     /**
      * @return mixed
@@ -55,7 +55,7 @@ interface database_interface {
      * @param string $class
      * @return mixed
      */
-    public static function result($sql, $params = array(), $class = 'stdClass');
+    public static function result($sql, $params = [], $class = 'stdClass');
 
     /**
      * @param $sql
@@ -63,7 +63,7 @@ interface database_interface {
      * @param bool $throwable
      * @return mixed
      */
-    public static function query($sql, $params = array(), $throwable = false);
+    public static function query($sql, $params = [], $throwable = false);
 
     /**
      * @param $res

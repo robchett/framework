@@ -3,7 +3,7 @@ namespace core\form;
 
 abstract class field_radio extends field {
 
-    public $options = array();
+    public $options = [];
 
     public function get_html() {
         $html = '';

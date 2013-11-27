@@ -25,7 +25,7 @@ abstract class form {
      */
     public $content = '';
     /** @var field[] $fields */
-    public $fields = array();
+    public $fields = [];
     /**
      * @var string
      */
@@ -77,11 +77,11 @@ abstract class form {
     /**
      * @var array
      */
-    public $attributes = array();
+    public $attributes = [];
     /**
      * @var array
      */
-    public $validation_errors = array();
+    public $validation_errors = [];
     /**
      * @var string
      */

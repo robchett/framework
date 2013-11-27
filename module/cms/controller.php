@@ -98,7 +98,7 @@ abstract class controller extends module {
                 $this->npp = isset($_SESSION['cms'][$this->module->get_class_name()]['npp']) ? $_SESSION['cms'][$this->module->get_class_name()]['npp'] : 25;
                 $this->page = isset($path[4]) ? $path[4] : 1;
                 $this->current_class = $this->module->get_class();
-                $this->where = array();
+                $this->where = [];
                 foreach ($this->current_class->get_fields() as $field) {
                     if (isset($_SESSION['cms'][$this->module->get_class_name()][$field->field_name]) && $_SESSION['cms'][$this->module->get_class_name()][$field->field_name]) {
                         $this->where[$field->field_name] = $_SESSION['cms'][$this->module->get_class_name()][$field->field_name];
@@ -108,7 +108,7 @@ abstract class controller extends module {
             }
         }
         if (isset($path[3]) && !empty($path[3]) && admin) {
-            $this->current->do_retrieve_from_id(array(), $path[3]);
+            $this->current->do_retrieve_from_id([], $path[3]);
         }
         parent::__controller($path);
     }
@@ -345,7 +345,7 @@ abstract class controller extends module {
      */
     public function get_table_rows($objects) {
         $nodes = node::create('tbody');
-        $new_collection = new table_array();
+        $new_collection = new table_[];
         /** @var \classes\table $table */
         $objects->iterate(function ($table) use ($new_collection) {
                 if ($table->{'parent_' . $table->table_key} == 0) {

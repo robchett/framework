@@ -132,9 +132,9 @@ abstract class core {
     public function set_page_from_path() {
         $this->page = new page();
         if (is_numeric($this->path[0])) {
-            $this->page->do_retrieve_from_id(array(), (int) $this->path[0]);
+            $this->page->do_retrieve_from_id([], (int) $this->path[0]);
         } else {
-            $this->page->do_retrieve(array(), array('where_equals' => array('module_name' => $this->path[0])));
+            $this->page->do_retrieve([], array('where_equals' => array('module_name' => $this->path[0])));
         }
         $this->pid = (isset($this->page->pid) ? $this->page->pid : 0);
 

@@ -12,7 +12,7 @@ class gradient {
     }
 
     public function create_default_heat_map_gradient() {
-        $this->color = new \classes\table_array();
+        $this->color = new \classes\table_[];
         $this->color[] = new ColorPoint(1, 0, 0, 0.0); // blue
         $this->color[] = new ColorPoint(1, 1, 0, 0.25); // cyan
         $this->color[] = new ColorPoint(0, 1, 0, 0.5); // green

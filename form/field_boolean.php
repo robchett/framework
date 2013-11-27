@@ -3,7 +3,7 @@ namespace core\form;
 
 abstract class field_boolean extends field {
 
-    public function  __construct($title = '', $options = array()) {
+    public function  __construct($title = '', $options = []) {
         parent::__construct($title, $options);
         $this->value = false;
         $this->attributes['type'] = 'checkbox';

@@ -53,7 +53,7 @@ abstract class module {
     }
 
     function get_main_nav() {
-        $pages = page::get_all(array(), array('where' => 'nav=1'));
+        $pages = page::get_all([], array('where' => 'nav=1'));
         return $pages->iterate_return(
             function (page $page) {
                 return node::create('li' . ($page->pid == \core::$singleton->pid ? '.sel' : ''), [],

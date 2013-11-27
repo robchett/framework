@@ -22,7 +22,7 @@ abstract class db implements interfaces\database_interface {
     /**
      * @var array
      */
-    public static $con_arr = array();
+    public static $con_arr = [];
     /**
      * @var int
      */
@@ -152,8 +152,8 @@ abstract class db implements interfaces\database_interface {
      * @param array $parameters
      * @return string
      */
-    public static function get_query($object, array $fields_to_retrieve, $options, &$parameters = array()) {
-        $fields = array();
+    public static function get_query($object, array $fields_to_retrieve, $options, &$parameters = []) {
+        $fields = [];
         $where = 'WHERE 1 ';
         $order = '';
         $limit = '';
@@ -236,7 +236,7 @@ abstract class db implements interfaces\database_interface {
      * @param string $class
      * @return bool|mixed
      */
-    public static function result($sql, $params = array(), $class = 'stdClass') {
+    public static function result($sql, $params = [], $class = 'stdClass') {
         $res = _db::query($sql, $params);
         if ($res) {
             return _db::fetch($res, $class);
@@ -257,7 +257,7 @@ abstract class db implements interfaces\database_interface {
      * @param bool $throwable
      * @return \PDOStatement
      */
-    static function query($sql, $params = array(), $throwable = false) {
+    static function query($sql, $params = [], $throwable = false) {
         // Attempt to reconnect if connection has gone away.
         if (!_db::connected()) {
             _db::reconnect();
@@ -346,16 +346,16 @@ abstract class db implements interfaces\database_interface {
     }
 
     public static function add_column($table, $name, $type, $additional_options) {
-        _db::query('ALTER TABLE ' . $table . ' ADD `' . $name . '` ' . $type . ' ' . $additional_options, array(), 1);
+        _db::query('ALTER TABLE ' . $table . ' ADD `' . $name . '` ' . $type . ' ' . $additional_options, [], 1);
     }
 
     public static function move_column($table, $name, $type, $additional_options) {
-        _db::query('ALTER TABLE ' . $table . ' MODIFY `' . $name . '` ' . $type . ' ' . $additional_options, array(), 1);
+        _db::query('ALTER TABLE ' . $table . ' MODIFY `' . $name . '` ' . $type . ' ' . $additional_options, [], 1);
     }
 
     public static function create_table($table_name, $fields = [], $keys = [], $settings = []) {
         $sql = 'CREATE TABLE IF NOT EXISTS ' . $table_name;
-        $column_strings = array();
+        $column_strings = [];
         foreach ($fields as $field => $structure) {
             $column_strings[] = '`' . $field . '` ' . $structure;
         }
@@ -363,7 +363,7 @@ abstract class db implements interfaces\database_interface {
             $column_strings[] = $key;
         }
         $sql .= ' (' . implode(',', $column_strings) . ') ';
-        $setting_strings = array();
+        $setting_strings = [];
         $settings = array_merge(_db::$default_table_settings, $settings);
         foreach ($settings as $setting => $value) {
             if (is_numeric($setting)) {

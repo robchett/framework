@@ -24,14 +24,14 @@ abstract class field extends node {
     );
     public $hidden;
     public $disabled = false;
-    public $class = array();
+    public $class = [];
     public $title;
-    public $wrapper_class = array();
+    public $wrapper_class = [];
     /** @var  form|table */
     public $parent_form;
     public $value = '';
 
-    public function __construct($name, $options = array()) {
+    public function __construct($name, $options = []) {
         if (!empty($options)) {
             foreach ($options as $key => $val) {
                 $this->$key = $val;
@@ -143,7 +143,7 @@ abstract class field extends node {
     }
 
     public function get_cms_admin_edit() {
-        $cols = array();
+        $cols = [];
         $cols[] = node::create('td', [], ($this->live ? 'Live' : 'Not Live'));
         $cols[] = node::create('td', [], $this->fid);
         $cols[] = node::create('td', [],

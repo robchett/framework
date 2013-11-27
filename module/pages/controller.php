@@ -32,7 +32,7 @@ abstract class controller extends module {
     }
 
     public function ajax_load() {
-        $this->current->do_retrieve_from_id(array(), $_REQUEST['page']);
+        $this->current->do_retrieve_from_id([], $_REQUEST['page']);
         parent::ajax_load();
     }
 

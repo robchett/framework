@@ -6,10 +6,10 @@ use classes\push_state;
 
 abstract class ajax {
 
-    public static $inject = array();
-    public static $inject_script = array();
-    public static $update = array();
-    public static $remove = array();
+    public static $inject = [];
+    public static $inject_script = [];
+    public static $update = [];
+    public static $remove = [];
     public static $push_state;
     public static $redirect = null;
 

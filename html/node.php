@@ -35,9 +35,9 @@ abstract class node {
     protected $type = '';
     protected $id = '';
     protected $content = '';
-    protected $class = array();
-    protected $attributes = array();
-    protected $children = array();
+    protected $class = [];
+    protected $attributes = [];
+    protected $children = [];
     protected $pointer;
 
     /**
