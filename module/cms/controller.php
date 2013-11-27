@@ -85,8 +85,8 @@ abstract class controller extends module {
     public function __controller(array $path) {
         error_reporting(-1);
         \core::$page_config->title_tag = 'Admin Login - UKNXCL';
-        \core::$css = array('/inc/module/cms/css/');
-        \core::$js = array('/.core/js/jquery.js', '/.core/js/_ajax.js', ' /.core/module/cms/js/cms.js', '/.core/js/colorbox.js', '/.core/plugins/ckeditor/ckeditor.js');
+        \core::$css = ['/inc/module/cms/css/'];
+        \core::$js = ['/.core/js/jquery.js', '/.core/js/_ajax.js', ' /.core/module/cms/js/cms.js', '/.core/js/colorbox.js', '/.core/plugins/ckeditor/ckeditor.js'];
         if (admin && !isset($path[1])) {
             $path[1] = 'dashboard';
         }
@@ -104,7 +104,7 @@ abstract class controller extends module {
                         $this->where[$field->field_name] = $_SESSION['cms'][$this->module->get_class_name()][$field->field_name];
                     }
                 }
-                $this->tot = db::result(db::get_query($this->module->table_name, array('count(*) AS count'), array('where_equals' => $this->where), $parameters), $parameters)->count;
+                $this->tot = db::result(db::get_query($this->module->table_name, ['count(*) AS count'], ['where_equals' => $this->where], $parameters), $parameters)->count;
             }
         }
         if (isset($path[3]) && !empty($path[3]) && admin) {
@@ -345,7 +345,7 @@ abstract class controller extends module {
      */
     public function get_table_rows($objects) {
         $nodes = node::create('tbody');
-        $new_collection = new table_[];
+        $new_collection = new table_array();
         /** @var \classes\table $table */
         $objects->iterate(function ($table) use ($new_collection) {
                 if ($table->{'parent_' . $table->table_key} == 0) {

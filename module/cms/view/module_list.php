@@ -16,7 +16,7 @@ abstract class module_list extends cms_view {
     }
 
     public function get_module_list() {
-        $modules = _cms_module::get_all(array('mid', 'title', 'primary_key', '_cms_group.title', 'table_name'), array('join' => array('_cms_group' => '_cms_group.gid = _cms_module.gid')));
+        $modules = _cms_module::get_all(['mid', 'title', 'primary_key', '_cms_group.title', 'table_name'], ['join' => ['_cms_group' => '_cms_group.gid = _cms_module.gid']]);
         if ($modules) {
             $html = node::create('div', [],
                 node::create('table.module', [],

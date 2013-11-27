@@ -102,7 +102,7 @@ table_array extends \classes\collection {
                 $object = new $class;
                 $object->set_from_row($row, $links);
                 foreach ($mlinks as $module => $blah) {
-                    $object->{$module . '_elements'} = new \classes\table_[];
+                    $object->{$module . '_elements'} = new \classes\table_array();
                     $object->$module = new \classes\collection();
                 }
                 $this[] = $object;

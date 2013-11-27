@@ -53,10 +53,10 @@ abstract class cache implements interfaces\cache_interface {
         if (class_exists('db')) {
             if (!db::table_exists('_cache_dependants')) {
                 db::create_table('_cache_dependants',
-                    array(
+                    [
                         'key' => 'INT',
                         'hash' => 'BINARY(16)'
-                    )
+                    ]
                 );
             }
             $res = db::query('SELECT * FROM _cache_dependants');
@@ -72,7 +72,7 @@ abstract class cache implements interfaces\cache_interface {
      * @throws \Exception Throws \Exceptions if the cache node could not be connected or the key is not set.
      * @return mixed
      */
-    public static function get($key, array $dependencies = array('global')) {
+    public static function get($key, array $dependencies = ['global']) {
         if (self::$current == null) {
             self::connect(get::ini('instance', 'memcached'), get::ini('server', 'memcached'), get::ini('port', 'memcached'));
         }
@@ -91,7 +91,7 @@ abstract class cache implements interfaces\cache_interface {
      * @param int $cache_time Cache time in seconds, 0 for not breaking
      * @return bool returns true on successful add or false on failure.
      */
-    public static function set(array $data, array $dependencies = array('global'), $cache_time = null) {
+    public static function set(array $data, array $dependencies = ['global'], $cache_time = null) {
         if (self::$current == null) {
             try {
                 self::connect(get::ini('instance', 'memcached'), get::ini('server', 'memcached'), get::ini('port', 'memcached'));

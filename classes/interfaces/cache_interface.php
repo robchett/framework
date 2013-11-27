@@ -12,14 +12,14 @@ interface cache_interface {
      * @throws \Exception Throws \Exceptions if the cache node could not be connected or the key is not set.
      * @return mixed
      */
-    public static function get($key, array $dependencies = array('global'));
+    public static function get($key, array $dependencies = ['global']);
 
     /**
      * @param array $data associative array of key => value to be added the the cache table.
      * @param array $dependencies table dependencies.
      * @return bool
      */
-    public static function set(array $data, array $dependencies = array('global'));
+    public static function set(array $data, array $dependencies = ['global']);
 
     /**
      * @param string $instance_id

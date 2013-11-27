@@ -25,7 +25,7 @@ abstract class field_link extends field {
         $field_name = (is_numeric($this->link_field) ? \core::get_field_from_fid($this->link_field)->field_name : $this->link_field);
         $object = new $class();
         /** @var table $object */
-        $object->do_retrieve_from_id(array($field_name, $object->table_key), $value);
+        $object->do_retrieve_from_id([$field_name, $object->table_key], $value);
         return (isset($object->{$object->table_key}) && $object->{$object->table_key} ? $object->$field_name : '-');
     }
 

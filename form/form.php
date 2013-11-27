@@ -231,12 +231,12 @@ abstract class form {
             $this->attributes['enctype'] = 'multipart/form-data';
         }
         $html = node::create('div#' . $this->id . '_wrapper' . trim($this->wrapper_class));
-        $this->attributes = array_merge(array(
+        $this->attributes = array_merge([
                 'name' => $this->id,
                 'method' => $this->method,
                 'action' => !empty($this->action) ? $this->action : get_class($this) . ':' . 'do_submit',
                 'data-ajax-shroud' => '#' . $this->id,
-            ), $this->attributes
+            ], $this->attributes
         );
         if ($this->h2) {
             $html->nest(node::create('h2.form_title', [], $this->h2));

@@ -17,14 +17,14 @@ abstract class cms_filter_form extends form {
         /** @var \classes\table $class */
         $class = new $class_name;
         $super_fields = $class->get_fields();
-        $fields = array(
+        $fields = [
             form::create('field_select', 'npp')
                 ->set_attr('label', 'Number per page')
-                ->set_attr('options', array(25 => 25, 50 => 50, 75 => 75, 100 => 100, 0 => 'All'))
+                ->set_attr('options', [25 => 25, 50 => 50, 75 => 75, 100 => 100, 0 => 'All'])
                 ->set_attr('required', false),
             form::create('field_string', '_class_name')
                 ->set_attr('hidden', true)
-        );
+        ];
         foreach ($super_fields as $field) {
             if ($field->filter) {
                 $field->required = false;

@@ -19,9 +19,9 @@ abstract class field extends node {
     public $post_text;
     public $raw = false;
     public $required = true;
-    public $attributes = array(
+    public $attributes = [
         'type' => 'text',
-    );
+    ];
     public $hidden;
     public $disabled = false;
     public $class = [];

@@ -83,7 +83,7 @@ abstract class table {
     }
 
     public static function get_all(array $fields, array $options = []) {
-        $array = new \classes\table_[];
+        $array = new \classes\table_array();
         $array->get_all(get_called_class(), $fields, $options);
         return $array;
     }
@@ -100,7 +100,7 @@ abstract class table {
      * @param $id
      */
     public function do_retrieve_from_id(array $fields, $id) {
-        $this->do_retrieve($fields, array('limit' => '1', 'where_equals' => [$this->table_key => $id]));
+        $this->do_retrieve($fields, ['limit' => '1', 'where_equals' => [$this->table_key => $id]]);
     }
 
     /**

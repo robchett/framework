@@ -75,7 +75,7 @@ class image_resizer {
                 $optimalHeight = $optionArray['optimalHeight'];
                 break;
         }
-        return array('optimalWidth' => $optimalWidth, 'optimalHeight' => $optimalHeight);
+        return ['optimalWidth' => $optimalWidth, 'optimalHeight' => $optimalHeight];
     }
 
     private function getSizeByFixedHeight($newHeight) {
@@ -109,7 +109,7 @@ class image_resizer {
                 $optimalHeight = $newHeight;
             }
         }
-        return array('optimalWidth' => $optimalWidth, 'optimalHeight' => $optimalHeight);
+        return ['optimalWidth' => $optimalWidth, 'optimalHeight' => $optimalHeight];
     }
 
 
@@ -127,7 +127,7 @@ class image_resizer {
         $optimalHeight = $this->height / $optimalRatio;
         $optimalWidth = $this->width / $optimalRatio;
 
-        return array('optimalWidth' => $optimalWidth, 'optimalHeight' => $optimalHeight);
+        return ['optimalWidth' => $optimalWidth, 'optimalHeight' => $optimalHeight];
     }
 
     private function crop($optimalWidth, $optimalHeight, $newWidth, $newHeight) {

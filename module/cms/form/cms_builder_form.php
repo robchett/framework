@@ -13,10 +13,10 @@ abstract class cms_builder_form extends form {
     public $username;
 
     public function __construct() {
-        $fields = array(
+        $fields = [
             form::create('field_string', 'username')->set_attr('label', 'Username'),
             form::create('field_password', 'password')->set_attr('label', 'Password')
-        );
+        ];
         parent::__construct($fields);
         $this->h2 = 'Database Creation';
         $this->submit = 'Create';

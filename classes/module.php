@@ -11,7 +11,7 @@ use module\pages\object\page;
 
 abstract class module {
 
-    public static $page_fields_to_retrieve = array('pid', 'body', 'title');
+    public static $page_fields_to_retrieve = ['pid', 'body', 'title'];
     /** @var table */
     public $current;
     public $view = '_default';
@@ -46,14 +46,14 @@ abstract class module {
     function set_page() {
         $this->page_object = new page();
         if (!isset($this->pid)) {
-            $this->page_object->do_retrieve(self::$page_fields_to_retrieve, array('where_equals' => array('module_name' => _get::__namespace($this, 0))));
+            $this->page_object->do_retrieve(self::$page_fields_to_retrieve, ['where_equals' => ['module_name' => _get::__namespace($this, 0)]]);
         } else {
             $this->page_object->do_retrieve_from_id(self::$page_fields_to_retrieve, $this->pid);
         }
     }
 
     function get_main_nav() {
-        $pages = page::get_all([], array('where' => 'nav=1'));
+        $pages = page::get_all([], ['where' => 'nav=1']);
         return $pages->iterate_return(
             function (page $page) {
                 return node::create('li' . ($page->pid == \core::$singleton->pid ? '.sel' : ''), [],

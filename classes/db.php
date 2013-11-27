@@ -28,10 +28,10 @@ abstract class db implements interfaces\database_interface {
      */
     public static $timeout = 30;
 
-    public static $default_table_settings = array(
+    public static $default_table_settings = [
         'ENGINE' => 'innoDB',
         'CHARACTER SET' => 'utf8',
-    );
+    ];
 
     public static function select($table_name) {
         return new _select($table_name);
@@ -57,10 +57,10 @@ abstract class db implements interfaces\database_interface {
         } catch (\PDOException $e) {
             die('Could not connect to database, please try again shortly...');
         }
-        _db::$con_arr['root'] = array(
+        _db::$con_arr['root'] = [
             'connection' => $var,
             'created' => time()
-        );
+        ];
         _db::$con_name = 'root';
         _db::$con = _db::$con_arr['root']['connection'];
         _db::$con->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
@@ -80,16 +80,16 @@ abstract class db implements interfaces\database_interface {
         } catch (\PDOException $e) {
             die('Could not connect to database, please try again shortly...' . $e->getMessage());
         }
-        _db::$con_arr[$name] = array(
+        _db::$con_arr[$name] = [
             'connection' => $var,
-            'settings' => array(
+            'settings' => [
                 'host' => $host,
                 'database' => $db,
                 'username' => $username,
                 'password' => $password,
-            ),
+            ],
             'created' => time()
-        );
+        ];
         _db::$con_name = $name;
         _db::$con = _db::$con_arr[$name]['connection'];
         _db::$con->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);

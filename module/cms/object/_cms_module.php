@@ -41,6 +41,6 @@ abstract class _cms_module extends table {
         $form = new cms_change_group_form();
         $form->mid = $_REQUEST['mid'];
 
-        jquery::colorbox(array('html' => $form->get_html()->get()));
+        jquery::colorbox(['html' => $form->get_html()->get()]);
     }
 }

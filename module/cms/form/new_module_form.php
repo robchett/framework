@@ -25,13 +25,13 @@ abstract class new_module_form extends form {
     public function __construct() {
         parent::__construct(
             [
-                form::create('field_link', 'gid', array('link_module' => '\module\cms\object\_cms_group', 'link_field' => 'title', 'label' => 'Group')),
-                new field_string('primary_key', array('label' => 'Primary Key')),
-                new field_string('title', array('label' => 'Title')),
-                new field_string('title_label', array('label' => 'Title Label')),
-                new field_string('table_name', array('label' => 'Table Name')),
+                form::create('field_link', 'gid', ['link_module' => '\module\cms\object\_cms_group', 'link_field' => 'title', 'label' => 'Group']),
+                new field_string('primary_key', ['label' => 'Primary Key']),
+                new field_string('title', ['label' => 'Title']),
+                new field_string('title_label', ['label' => 'Title Label']),
+                new field_string('table_name', ['label' => 'Table Name']),
                 form::create('field_string', 'namespace')->set_attr('label', 'Namespace <small>can be blank</small>')->set_attr('required', false),
-                new field_boolean('nestable', array('label' => 'Nestable')),
+                new field_boolean('nestable', ['label' => 'Nestable']),
             ]
         );
     }
