@@ -4,6 +4,7 @@ namespace core\module\cms\object;
 use classes\collection;
 use classes\db;
 use classes\get;
+use module\cms\object\_cms_module;
 use module\cms\object\field_type;
 
 class cms_builder {
@@ -305,7 +306,7 @@ class cms_builder {
             'ts' => 'TIMESTAMP NOT NULL',
         ];
 
-        $modules = \module\cms\object\_cms_module::get_all(['table_name', 'primary_key']);
+        $modules = _cms_module::get_all(['table_name', 'primary_key']);
         while ($table = $modules->next()) {
             $fields = new collection(array_merge(
                 [

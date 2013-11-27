@@ -4,6 +4,7 @@ namespace core\traits;
 use classes\ajax;
 use classes\collection_filter;
 use classes\filter_form;
+use classes\get;
 use form\field_link;
 use html\node;
 
@@ -75,7 +76,7 @@ trait filterable {
             if ($field->field_name != 'identifier' && isset($this->filters->{$field->field_name}) && $this->filters->{$field->field_name}) {
                 $key = $field->field_name;
                 if ($field->original_field instanceof field_link) {
-                    $key = \classes\get::__class_name($field->original_field->get_link_module());
+                    $key = get::__class_name($field->original_field->get_link_module());
                 }
                 $res = new collection_filter($res, $key, $this->filters->{$field->field_name});
             }

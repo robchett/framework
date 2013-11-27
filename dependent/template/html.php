@@ -1,13 +1,14 @@
 <?php
 namespace template;
 
+use classes\module;
 use html\node;
 
 class html {
 
     protected $module;
 
-    public function __construct(\classes\module $module) {
+    public function __construct(module $module) {
         $this->module = $module;
     }
 

@@ -1,7 +1,9 @@
 <?php
 namespace core\form;
 
-class field_collection extends \classes\table_array {
+use classes\table_array;
+
+class field_collection extends table_array {
 
     public function get_field($field_name) {
         foreach ($this as $field) {

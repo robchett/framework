@@ -2,9 +2,10 @@
 
 namespace core\classes\css;
 
+use classes\css\compiler;
 use classes\css\less_compiler as _less_compiler;
 
-class less_compiler extends \classes\css\compiler {
+class less_compiler extends compiler {
 
     public $source = '';
 
@@ -1064,8 +1065,11 @@ class less_compiler extends \classes\css\compiler {
     }
 
     protected function assertNumber($value, $error = "expecting number") {
-        if ($value[0] == "number") return $value[1];
+        if ($value[0] == "number") {
+            return $value[1];
+        }
         $this->throwError($error);
+        return null;
     }
 
     protected function toHSL($color) {
@@ -1345,6 +1349,7 @@ class less_compiler extends \classes\css\compiler {
                 }
                 return null;
         }
+        return null;
     }
 
     // make something string like into a string
@@ -1430,6 +1435,7 @@ class less_compiler extends \classes\css\compiler {
             array_unshift($strRight[2], $left);
             return $strRight;
         }
+        return null;
     }
 
 
@@ -1447,6 +1453,7 @@ class less_compiler extends \classes\css\compiler {
         if ($op == '+' || $op == '*') {
             return $this->op_color_number($op, $rgt, $lft);
         }
+        return null;
     }
 
     protected function op_color_number($op, $lft, $rgt) {
@@ -2542,6 +2549,7 @@ class lessc_parser {
             $out = ["import", $value];
             return true;
         }
+        return null;
     }
 
     protected function mediaQueryList(&$out) {

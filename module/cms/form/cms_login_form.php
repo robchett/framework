@@ -3,6 +3,7 @@ namespace core\module\cms\form;
 
 use classes\ajax as _ajax;
 use form\form;
+use module\cms\controller;
 
 abstract class cms_login_form extends form {
 
@@ -31,7 +32,7 @@ abstract class cms_login_form extends form {
         if (parent::do_submit()) {
             $_SESSION['admin'] = true;
             _ajax::$redirect = '/cms/dashboard';
-            \module\cms\controller::do_database_repair();
+            controller::do_database_repair();
         }
     }
 

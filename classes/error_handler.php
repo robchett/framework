@@ -1,6 +1,8 @@
 <?php
 namespace core\classes;
 
+use classes\ajax;
+
 class error_handler {
 
     public static $file_handler;
@@ -21,7 +23,7 @@ class error_handler {
             if (dev || debug) {
                 if (ajax) {
                     require_once(root . '/.core/classes/ajax.php');
-                    \classes\ajax::inject('body', 'append', $error);
+                    ajax::inject('body', 'append', $error);
                 } else {
                     echo $error;
                 }

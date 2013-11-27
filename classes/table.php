@@ -5,6 +5,7 @@ namespace core\classes;
 use classes\ajax as _ajax;
 use classes\get as _get;
 use classes\image_resizer;
+use classes\table_array;
 use db\insert;
 use db\update;
 use form\field;
@@ -83,7 +84,7 @@ abstract class table {
     }
 
     public static function get_all(array $fields, array $options = []) {
-        $array = new \classes\table_array();
+        $array = new table_array();
         $array->get_all(get_called_class(), $fields, $options);
         return $array;
     }
@@ -220,7 +221,7 @@ abstract class table {
                             if ($sub_object->has_field('title')) {
                                 $sub_fields[] = 'title';
                             }
-                            if ($object_field instanceof \form\field_mlink) {
+                            if ($object_field instanceof field_mlink) {
                                 $mlinks[$field] = ['field' => $object_field, 'retrieve' => $sub_fields];
                             } else {
                                 $links[$field] = ['field' => $object_field, 'retrieve' => $sub_fields];
@@ -482,7 +483,7 @@ abstract class table {
             if ($field instanceof field_image && $ext == 'jpg' || $ext == 'jpeg' || $ext == 'png' || $ext == 'gif') {
                 $image_sizes = $field->get_image_sizes();
                 $image_sizes->iterate(
-                    function (\object\image_size $image) use ($file_name) {
+                    function (image_size $image) use ($file_name) {
                         $this->do_process_image($file_name, $image);
                     }
                 );

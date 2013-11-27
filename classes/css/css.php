@@ -1,7 +1,9 @@
 <?php
 namespace core\classes\css;
 
-class css extends \classes\interfaces\asset {
+use classes\interfaces\asset;
+
+class css extends asset {
 
     protected $files = [];
 

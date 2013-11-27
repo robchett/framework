@@ -2,6 +2,7 @@
 namespace core\module\cms\form;
 
 use classes\ajax;
+use classes\get;
 use core\classes\db;
 use form\field_boolean;
 use form\field_string;
@@ -46,7 +47,7 @@ abstract class new_module_form extends form {
             `live` tinyint(1) NOT NULL DEFAULT "0",
             `deleted` tinyint(1) NOT NULL DEFAULT "0",
             `position` int(6) NOT NULL DEFAULT "0",
-            `' . \classes\get::fn($this->title_label) . '` varchar(255) NOT NULL,
+            `' . get::fn($this->title_label) . '` varchar(255) NOT NULL,
             PRIMARY KEY (`' . $this->primary_key . '`)
             ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=0;'
             );
@@ -74,7 +75,7 @@ abstract class new_module_form extends form {
                     ->execute();
             }
             db::insert('_cms_field')
-                ->add_value('field_name', \classes\get::fn($this->title_label))
+                ->add_value('field_name', get::fn($this->title_label))
                 ->add_value('title', $this->title_label)
                 ->add_value('type', 'string')
                 ->add_value('mid', $mid)

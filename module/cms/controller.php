@@ -67,7 +67,7 @@ abstract class controller extends module {
     }
 
     public static function do_database_repair() {
-        $database_manager = new \module\cms\object\cms_builder();
+        $database_manager = new object\cms_builder();
         $database_manager->manage();
     }
 
@@ -284,7 +284,7 @@ abstract class controller extends module {
             $html->nest(node::create('li.right a', ['href' => '/cms/edit/' . $this->mid, 'title' => 'Add new ' . get::__class_name($this->current)], 'Add new ' . get::__class_name($this->current)));
         } else if ($this->view === 'module_list') {
             $html->nest(node::create('li.right a', ['href' => '/cms/new_module/', 'title' => 'Add new module'], 'Add new module'));
-            $html->nest(node::create('li.right a', ['href' => "/cms/edit/" . \module\cms\object\_cms_group::$module_id, 'title' => 'Add new module group'], 'Add new module group'));
+            $html->nest(node::create('li.right a', ['href' => "/cms/edit/" . object\_cms_group::$module_id, 'title' => 'Add new module group'], 'Add new module group'));
         }
         $html->nest(node::create('li.right a', ['href' => '/cms/module_list/', 'title' => 'View all modules'], 'All Modules'));
         return $html;
@@ -325,6 +325,7 @@ abstract class controller extends module {
                     if ($field->list) {
                         return node::create('th.' . get_class($field) . '.' . $field->field_name . ($field->field_name == $obj->table_key ? '.primary' : ''), [], $field->title);
                     }
+                    return '';
                 }
             ) .
             node::create('th.delete')

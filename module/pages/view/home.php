@@ -3,7 +3,9 @@
 namespace core\module\pages\view;
 
 
-abstract class home extends \module\pages\view\_default {
+use module\pages\view\_default;
+
+abstract class home extends _default {
 
     /** @var \module\cms\controller */
     public $module;
