@@ -44,7 +44,7 @@ abstract class ajax {
             }
         }
         if (isset(self::$redirect)) {
-            self::inject('body', 'append', '<script>window.location.href = "' . self::$redirect . '";</script>');
+            self::inject('body', 'append', '<script id="ajax">window.location.href = "' . self::$redirect . '";</script>', true);
         }
         $o = new \stdClass();
         $o->update = self::$update;
@@ -87,8 +87,8 @@ abstract class ajax {
         $o = new \stdClass();
         $o->id = 'body';
         $o->pos = 'append';
-        $o->html = '<script>' . $script . '</script>';
-        $o->over = '';
+        $o->html = '<script id="ajax_script">' . $script . '</script>';
+        $o->over = '#ajax_script';
         self::$inject_script[] = $o;
     }
 }

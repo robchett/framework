@@ -10,6 +10,6 @@ abstract class jquery {
 
     public static function colorbox($options = []) {
         $options = array_merge($options, self::$colourbox_defaults);
-        _ajax::inject('body', 'append', '<script>$.colorbox(' . json_encode($options) . ')</script>');
+        _ajax::add_script('$.colorbox(' . json_encode($options) . ')');
     }
 }
