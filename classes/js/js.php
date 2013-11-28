@@ -1,44 +1,80 @@
 <?php
 namespace core\classes\js;
 
+use classes\get;
 use classes\interfaces\asset;
 
 class js extends asset {
 
-    public function compile() {
-        // TODO: Implement compile() method.
-    }
+    public $cached_name;
+    protected $files;
+    public $last_modified;
 
-    public static function get_js() {
-        $output = "";
-        $core_files = ['jquery', '_ajax', '_default', 'colorbox'];
-        if (isset($core_files)) {
-            foreach ($core_files as $file) {
-                $output .= file_get_contents($_SERVER['DOCUMENT_ROOT'] . '/.core/js/' . $file . '.js');
+    public function compile() {
+        if ($this->cached_name) {
+            $file_name = root . '/.cache/' . $this->cached_name . $this->last_modified . '.js';
+            if (file_exists($file_name)) {
+                return file_get_contents($file_name);
             }
         }
-        $files = glob($_SERVER['DOCUMENT_ROOT'] . "/js/*.js", GLOB_MARK);
-        foreach ($files as $file) {
-            $output .= file_get_contents($file);
+        if ($this->cached_name) {
+            foreach(glob(root . '/.cache/' . $this->cached_name . '*.js') as $link) {
+                unlink($link);
+            };
+            $js = '';
+            foreach ($this->files as $file) {
+                if(debug) {
+                    $js .= '/* ' . $file . ' */';
+                }
+                $js .= file_get_contents($file);
+            }
+            $file_name = root . '/.cache/' . $this->cached_name . $this->last_modified . '.js';
+            file_put_contents($file_name, $js);
         }
-        ob_start();
-        echo $output;
+        return $js;
+    }
+
+    public function add_files($files) {
+        if (is_array($files)) {
+            foreach ($files as $file) {
+                if (($time = filemtime($file)) > $this->last_modified) {
+                    $this->last_modified = $time;
+                }
+            }
+            $this->files = array_merge($this->files, $files);
+        } else {
+            $this->files[] = $files;
+            if (($time = filemtime($files)) > $this->last_modified) {
+                $this->last_modified = $time;
+            }
+            $this->files[] = $files;
+        }
+    }
+
+
+    public static function get_js() {
         $expires = 60 * 60 * 24;
         header('Content-type: text/javascript');
         header('Content-Length: ' . ob_get_length());
         header('Cache-Control: max-age=' . $expires . ', must-revalidate');
         header('Pragma: public');
-        ob_end_flush();
+
+        $output = new self;
+        $output->cached_name = 'global';
+        foreach (get::ini('files', 'js',  []) as $file) {
+            $output->add_files(core_dir . '/js/' . $file . '.js');
+        }
+        $output->add_resource_root(root . '/js');
+        echo $output->compile();
         die();
 
     }
 
-    public function add_files($files) {
-        // TODO: Implement add_files() method.
-    }
-
     public function add_resource_root($root) {
-        // TODO: Implement add_resource_root() method.
+        $files = glob(trim($root, '/') . '/*.js', GLOB_MARK);
+        foreach ($files as $file) {
+            $this->add_files($file);
+        }
     }
 }
  

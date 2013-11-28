@@ -61,6 +61,9 @@ class css extends asset {
         }
         $css = $this->compiler_class->compile();
         if ($this->cached_name) {
+            foreach(glob(root . '/.cache/' . $this->cached_name . '*.js') as $link) {
+                unlink($link);
+            };
             $file_name = root . '/.cache/' . $this->cached_name . $this->last_modified . '.css';
             file_put_contents($file_name, $css);
         }
