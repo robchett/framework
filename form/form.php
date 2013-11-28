@@ -91,7 +91,7 @@ abstract class form {
     /**
      * @param array $fields
      */
-    public function  __construct(array $fields) {
+    public function  __construct($fields) {
         $this->fields = $fields;
         foreach ($this->fields as $field) {
             $field->parent_form = $this;
