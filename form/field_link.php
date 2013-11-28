@@ -120,7 +120,12 @@ abstract class field_link extends field {
         if (is_array($fields)) {
             $parts = [];
             foreach ($fields as $part) {
-                $parts[] = $object->{str_replace('.', '_', $part)};
+                if(strpos($part,'.')) {
+                    $part = explode('.', $part);
+                    $parts[] = $object->$part[0]->$part[1];
+                } else {
+                    $parts[] = $object->$part;
+                }
             }
             $title = implode(' - ', $parts);
         } else {
