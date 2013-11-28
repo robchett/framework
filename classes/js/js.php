@@ -24,7 +24,7 @@ class js extends asset {
             $js = '';
             foreach ($this->files as $file) {
                 if(debug) {
-                    $js .= '/* ' . $file . ' */';
+                    //$js .= '/* ' . $file . ' */';
                 }
                 $js .= file_get_contents($file);
             }
@@ -43,7 +43,6 @@ class js extends asset {
             }
             $this->files = array_merge($this->files, $files);
         } else {
-            $this->files[] = $files;
             if (($time = filemtime($files)) > $this->last_modified) {
                 $this->last_modified = $time;
             }
@@ -67,7 +66,6 @@ class js extends asset {
         $output->add_resource_root(root . '/js');
         echo $output->compile();
         die();
-
     }
 
     public function add_resource_root($root) {
