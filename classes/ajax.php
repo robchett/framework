@@ -8,6 +8,7 @@ abstract class ajax {
 
     public static $inject = [];
     public static $inject_script = [];
+    public static $inject_script_before = [];
     public static $update = [];
     public static $remove = [];
     public static $push_state;
@@ -47,8 +48,25 @@ abstract class ajax {
             self::inject('body', 'append', '<script id="ajax">window.location.href = "' . self::$redirect . '";</script>', true);
         }
         $o = new \stdClass();
+        $o->pre_inject = [];
+        if(self::$inject_script_before) {
+            $s = new \stdClass();
+            $s->id = 'body';
+            $s->pos = 'append';
+            $s->html = '<script id="ajax_script_pre">' . implode(';',self::$inject_script_before) . '</script>';
+            $s->over = '#ajax_script_pre';
+            $o->pre_inject[] = $s;
+        }
         $o->update = self::$update;
-        $o->inject = array_merge(self::$inject, self::$inject_script);
+        $o->inject = self::$inject;
+        if(self::$inject_script) {
+            $s = new \stdClass();
+            $s->id = 'body';
+            $s->pos = 'append';
+            $s->html = '<script id="ajax_script">' . implode(';',self::$inject_script) . '</script>';
+            $s->over = '#ajax_script';
+            $o->inject[] = $s;
+        }
         if (isset(self::$push_state)) {
             $o->push_state = self::$push_state;
         }
@@ -83,12 +101,7 @@ abstract class ajax {
         self::$push_state = $push_state;
     }
 
-    public static function add_script($script) {
-        $o = new \stdClass();
-        $o->id = 'body';
-        $o->pos = 'append';
-        $o->html = '<script id="ajax_script">' . $script . '</script>';
-        $o->over = '#ajax_script';
-        self::$inject_script[] = $o;
+    public static function add_script($script, $before = false) {
+        self::${'inject_script' . ($before ? '_before' : '')}[] = $script;
     }
 }

@@ -197,6 +197,25 @@ function colorbox_recenter() {
 
 function handle_json_response(json) {
     $('.loading_shroud').remove();
+    json.pre_inject.each(function (inj) {
+        if (inj.over != '') {
+            $(inj.over).remove();
+        }
+        switch (inj.pos) {
+            case 'append':
+                $(inj.id).append(inj.html);
+                break;
+            case 'prepend':
+                $(inj.id).prepend(inj.html);
+                break;
+            case 'before':
+                $(inj.id).before(inj.html);
+                break;
+            case 'after':
+                $(inj.id).after(inj.html);
+                break;
+        }
+    });
     json.update.each(function (upd) {
         $(upd.id).html(upd.html);
     });
