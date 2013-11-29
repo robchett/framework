@@ -36,7 +36,6 @@ abstract class table {
     public $live;
     public $deleted;
     public $ts;
-    //public $table_key;
     /**
      * @var int
      */
@@ -100,15 +99,15 @@ abstract class table {
      * @param $id
      */
     public function do_retrieve_from_id(array $fields, $id) {
-        $this->do_retrieve($fields, ['limit' => '1', 'where_equals' => [$this->table_key => $id]]);
+        $this->do_retrieve($fields, ['limit' => '1', 'where_equals' => [$this->get_primary_key_name() => $id]]);
     }
 
     /**
      * @return int|bool
      */
     public function get_primary_key() {
-        if (isset($this->{$this->table_key}) && $this->{$this->table_key}) {
-            return $this->{$this->table_key};
+        if (isset($this->{$this->get_primary_key_name()}) && $this->{$this->get_primary_key_name()}) {
+            return $this->{$this->get_primary_key_name()};
         }
         return false;
     }
@@ -118,8 +117,8 @@ abstract class table {
      * @return int|bool
      */
     public function get_parent_primary_key() {
-        if (isset($this->{'parent_' . $this->table_key}) && $this->{'parent_' . $this->table_key}) {
-            return $this->{'parent_' . $this->table_key};
+        if (isset($this->{'parent_' . $this->get_primary_key_name()}) && $this->{'parent_' . $this->get_primary_key_name()}) {
+            return $this->{'parent_' . $this->get_primary_key_name()};
         }
         return false;
     }
@@ -130,7 +129,7 @@ abstract class table {
     public static function get_count() {
         $class = get_called_class();
         $return = new $class();
-        return db::count($class, $return->table_key)->execute();
+        return db::count($class, $return->get_primary_key_name())->execute();
     }
 
     /**
@@ -138,7 +137,7 @@ abstract class table {
      */
     public function do_cms_update() {
         if (admin) {
-            db::update(_get::__class_name($this))->add_value($_REQUEST['field'], $_REQUEST['value'])->filter_field($this->table_key, $_REQUEST['id'])->execute();
+            db::update(_get::__class_name($this))->add_value($_REQUEST['field'], $_REQUEST['value'])->filter_field($this->get_primary_key_name(), $_REQUEST['id'])->execute();
         }
         return 1;
     }
@@ -184,7 +183,7 @@ abstract class table {
 
     public function set_default_retrieve(&$fields, &$options) {
         if ($fields) {
-            $fields = array_unique(array_merge($fields, ['live', 'deleted', 'position', 'ts', $this->table_key]));
+            $fields = array_unique(array_merge($fields, ['live', 'deleted', 'position', 'ts', $this->get_primary_key_name()]));
         }
         if (!static::$retrieve_unlive) {
             $options['where_equals'][_get::__class_name($this) . '.live'] = 1;
@@ -216,7 +215,7 @@ abstract class table {
                     foreach ($object->get_fields(false) as $object_field) {
                         if ($object_field instanceof field_link && get::__class_name($object_field->get_link_module()) == $field) {
                             $sub_object = $object_field->get_link_object();
-                            $sub_fields = [$sub_object->table_key];
+                            $sub_fields = [$sub_object->get_primary_key_name()];
                             if ($sub_object->has_field('title')) {
                                 $sub_fields[] = 'title';
                             }
@@ -240,7 +239,7 @@ abstract class table {
                                         $mlinks[$field[0]]['retrieve'][] = $field[1];
                                     } else {
                                         $sub_object = $object_field->get_link_object();
-                                        $sub_fields = [$sub_object->table_key, $field[1]];
+                                        $sub_fields = [$sub_object->get_primary_key_name(), $field[1]];
                                         if ($sub_object->has_field('title')) {
                                             $sub_fields[] = 'title';
                                         }
@@ -251,7 +250,7 @@ abstract class table {
                                         $links[$field[0]]['retrieve'][] = $field[1];
                                     } else {
                                         $sub_object = $object_field->get_link_object();
-                                        $sub_fields = [$sub_object->table_key, $field[1]];
+                                        $sub_fields = [$sub_object->get_primary_key_name(), $field[1]];
                                         if ($sub_object->has_field('title')) {
                                             $sub_fields[] = 'title';
                                         }
@@ -306,7 +305,7 @@ abstract class table {
         $full_class = $field->get_link_module();
         $class = get::__class_name($full_class);
         $object = new $full_class();
-        $retrieve = array_merge($fields, [$object->table_key]);
+        $retrieve = array_merge($fields, [$object->get_primary_key_name()]);
         if ($object->has_field('title')) {
             $retrieve[] = 'title';
         }
@@ -314,8 +313,8 @@ abstract class table {
             $link_table = $this->class_name() . '_link_' . $class;
             $this->$class = [];
             $this->{$class . '_elements'} = $full_class::get_all($retrieve, [
-                    'join' => [$link_table => $object->class_name() . '.' . $object->table_key . '=' . $link_table . '.link_' . $object->table_key],
-                    'where_equals' => [$link_table . '.' . $this->table_key => $this->get_primary_key()]
+                    'join' => [$link_table => $object->class_name() . '.' . $object->get_primary_key_name() . '=' . $link_table . '.link_' . $object->get_primary_key_name()],
+                    'where_equals' => [$link_table . '.' . $this->get_primary_key_name() => $this->get_primary_key()]
                 ]
             );
             $this->{$class . '_elements'}->iterate(function (table $object) use ($class) {
@@ -347,7 +346,7 @@ abstract class table {
         $form->action = get_class($this) . ':do_submit';
         $ok = $form->do_submit();
         if ($ok) {
-            $type = (!isset($this->{$this->table_key}) || !$this->{$this->table_key} ? 'Added' : 'Updated');
+            $type = (!isset($this->{$this->get_primary_key_name()}) || !$this->{$this->get_primary_key_name()} ? 'Added' : 'Updated');
             $this->do_save();
             _ajax::inject('#' . $_REQUEST['ajax_origin'], 'before', node::create('p.success.boxed.' . strtolower($type), [], $type . ' successfully'));
         } else {
@@ -375,14 +374,14 @@ abstract class table {
      */
     public function do_save() {
         $class = _get::__class_name($this);
-        if (isset($this->{$this->table_key}) && $this->{$this->table_key}) {
+        if (isset($this->{$this->get_primary_key_name()}) && $this->{$this->get_primary_key_name()}) {
             $query = new update($class);
         } else {
             $query = new insert($class);
         }
         /** @var field $field */
         $this->get_fields()->iterate(function ($field) use ($query) {
-                if ($field->field_name != $this->table_key) {
+                if ($field->field_name != $this->get_primary_key_name()) {
                     if (isset($this->{$field->field_name}) && !($field instanceof field_file)) {
                         if (!$this->{$field->field_name} && $field instanceof field_fn && isset($this->title)) {
                             $this->{$field->field_name} = _get::unique_fn(_get::__class_name($this), $field->field_name, $this->title);
@@ -402,25 +401,25 @@ abstract class table {
         $query->add_value('live', isset($this->live) ? $this->live : true);
         $query->add_value('deleted', isset($this->live) ? $this->deleted : false);
         $query->add_value('ts', date('Y-m-d H:i:s'));
-        if (isset($this->{$this->table_key}) && $this->{$this->table_key}) {
-            $query->filter_field($this->table_key, $this->{$this->table_key});
+        if (isset($this->{$this->get_primary_key_name()}) && $this->{$this->get_primary_key_name()}) {
+            $query->filter_field($this->get_primary_key_name(), $this->{$this->get_primary_key_name()});
         }
         $res = $query->execute();
 
         if (!$this->get_primary_key()) {
-            $this->{$this->table_key} = $res;
+            $this->{$this->get_primary_key_name()} = $res;
         }
 
         $this->get_fields()->iterate(function ($field) {
-                if ($field->field_name != $this->table_key) {
+                if ($field->field_name != $this->get_primary_key_name()) {
                     if (isset($this->{$field->field_name}) && $field instanceof field_mlink) {
                         $source_module = new _cms_module(['table_name', 'primary_key'], $field->get_link_mid());
                         $module = new _cms_module(['table_name', 'primary_key'], static::get_module_id());
-                        db::query('DELETE FROM ' . $module->table_name . '_link_' . $source_module->table_name . ' WHERE ' . $module->primary_key . '=:key', ['key' => $this->{$this->table_key}]);
+                        db::query('DELETE FROM ' . $module->table_name . '_link_' . $source_module->table_name . ' WHERE ' . $module->primary_key . '=:key', ['key' => $this->{$this->get_primary_key_name()}]);
                         if ($this->{$field->field_name}) {
                             foreach ($this->{$field->field_name} as $value) {
                                 db::insert($module->table_name . '_link_' . $source_module->table_name)
-                                    ->add_value($module->primary_key, $this->{$this->table_key})
+                                    ->add_value($module->primary_key, $this->{$this->get_primary_key_name()})
                                     ->add_value('link_' . $source_module->primary_key, $value)
                                     ->add_value('fid', $field->fid)
                                     ->execute();
@@ -430,10 +429,10 @@ abstract class table {
                 }
             }
         );
-        if (!(isset($this->{$this->table_key}) && $this->{$this->table_key})) {
-            $this->{$this->table_key} = db::insert_id();
+        if (!(isset($this->{$this->get_primary_key_name()}) && $this->{$this->get_primary_key_name()})) {
+            $this->{$this->get_primary_key_name()} = db::insert_id();
         }
-        if ($this->{$this->table_key}) {
+        if ($this->{$this->get_primary_key_name()}) {
             $this->get_fields()->iterate(function ($field) {
                     if ($field instanceof field_file) {
                         $this->do_upload_file($field);
@@ -441,7 +440,7 @@ abstract class table {
                 }
             );
         }
-        return $this->{$this->table_key};
+        return $this->{$this->get_primary_key_name()};
     }
 
     public function get_file($fid, $size = '', $extensions = ['png', 'gif', 'jpg', 'jpeg'], $fallback = '/.core/images/no_image.png') {
@@ -507,16 +506,16 @@ abstract class table {
             } else if ($field instanceof field_mlink) {
                 $class = $field->get_link_object();
                 $class_name = get::__class_name($class);
-                $this->do_retrieve_from_id([$class_name . '.' . $class->table_key], $this->get_primary_key());
+                $this->do_retrieve_from_id([$class_name . '.' . $class->get_primary_key_name()], $this->get_primary_key());
             } else if ($field instanceof field_link) {
                 $field->order = 'title';
             }
             $field->label .= '<span class="field_name">' . $field->field_name . '</span>';
             $field->raw = true;
         }
-        if (!isset($this->{$this->table_key}) || !$this->{$this->table_key}) {
-            $form->get_field_from_name($this->table_key)->set_attr('hidden', true);
-            $form->{'parent_' . $this->table_key} = 0;
+        if (!isset($this->{$this->get_primary_key_name()}) || !$this->{$this->get_primary_key_name()}) {
+            $form->get_field_from_name($this->get_primary_key_name())->set_attr('hidden', true);
+            $form->{'parent_' . $this->get_primary_key_name()} = 0;
         }
         return $form->get_html();
     }
@@ -530,7 +529,7 @@ abstract class table {
         if (isset($form->attributes['target'])) {
             $form->attributes['target'] = 'form_target_' . $form->id;
         }
-        $form->get_field_from_name($this->table_key)->hidden = true;
+        $form->get_field_from_name($this->get_primary_key_name())->hidden = true;
         return $form;
     }
 
@@ -538,7 +537,7 @@ abstract class table {
      * @param $fields
      */
     public function lazy_load($fields) {
-        $this->do_retrieve_from_id($fields, $this->{$this->table_key});
+        $this->do_retrieve_from_id($fields, $this->{$this->get_primary_key_name()});
     }
 
     /** @return \html\node */
@@ -564,16 +563,31 @@ abstract class table {
         return $list;
     }
 
-    public static function get_module_id() {
-        if(!isset(self::$cms_modules)) {
+    private static function set_cms_modules() {
+        if (!isset(self::$cms_modules)) {
             $modules = _cms_module::get_all([]);
-            $modules->iterate(function(_cms_module $module) {
-                self::$cms_modules[trim($module->get_class_name(), '\\')] = $module->mid;
-            });
+            $modules->iterate(function (_cms_module $module) {
+                    self::$cms_modules[trim($module->get_class_name(), '\\')] = $module;
+                }
+            );
         }
+    }
+
+    public function get_primary_key_name() {
+        self::set_cms_modules();
         $class = get_called_class();
-        if(isset(self::$cms_modules[$class])) {
-            return self::$cms_modules[$class];
+        if (isset(self::$cms_modules[$class])) {
+            return self::$cms_modules[$class]->primary_key;
+        } else {
+            trigger_error('Attempting to get a primary key for a table that doesn\'t exist - ' . $class);
+        }
+    }
+
+    public static function get_module_id() {
+        self::set_cms_modules();
+        $class = get_called_class();
+        if (isset(self::$cms_modules[$class])) {
+            return self::$cms_modules[$class]->mid;
         } else {
             trigger_error('Attempting to get a module ID for a table that doesn\'t exist - ' . $class);
         }
@@ -660,10 +674,10 @@ abstract class table {
             $object = new static(['position'], $_REQUEST['id']);
             if (isset($_REQUEST['dir']) && $_REQUEST['dir'] == 'down') {
                 db::query('UPDATE ' . _get::__class_name($object) . ' SET position =' . $object->position . ' WHERE position=' . ($object->position + 1));
-                db::query('UPDATE ' . _get::__class_name($object) . ' SET position =' . ($object->position + 1) . ' WHERE ' . $object->table_key . '=' . $object->get_primary_key());
+                db::query('UPDATE ' . _get::__class_name($object) . ' SET position =' . ($object->position + 1) . ' WHERE ' . $object->get_primary_key_name() . '=' . $object->get_primary_key());
             } else {
                 db::query('UPDATE ' . _get::__class_name($object) . ' SET position =' . $object->position . ' WHERE position=' . ($object->position - 1));
-                db::query('UPDATE ' . _get::__class_name($object) . ' SET position =' . ($object->position - 1) . ' WHERE ' . $object->table_key . '=' . $object->get_primary_key());
+                db::query('UPDATE ' . _get::__class_name($object) . ' SET position =' . ($object->position - 1) . ' WHERE ' . $object->get_primary_key_name() . '=' . $object->get_primary_key());
             }
             ajax::add_script('document.location = document.location#' . _get::__class_name($object) . ($_REQUEST['id'] - 1));
         }

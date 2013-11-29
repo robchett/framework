@@ -115,9 +115,9 @@ table_array extends collection {
                 /** @var \form\field_link $field */
                 $field = $link_info['field'];
                 $retrieves = $link_info['retrieve'];
-                $retrieves[] = 'l.' . $obj->table_key . ' AS linked_id';
+                $retrieves[] = 'l.' . $obj->get_primary_key_name() . ' AS linked_id';
                 $sub_class = $field->get_link_object();
-                $classes = $sub_class::get_all($retrieves, ['join' => [get::__class_name($class) . '_link_' . get::__class_name($sub_class) . ' l' => 'l.link_' . $sub_class->table_key . '=' . get::__class_name($sub_class) . '.' . $sub_class->table_key], 'where' => 'l.' . $obj->table_key . ' IN(' . implode(',', $this->get_table_keys()) . ')']);
+                $classes = $sub_class::get_all($retrieves, ['join' => [get::__class_name($class) . '_link_' . get::__class_name($sub_class) . ' l' => 'l.link_' . $sub_class->get_primary_key_name() . '=' . get::__class_name($sub_class) . '.' . $sub_class->get_primary_key_name()], 'where' => 'l.' . $obj->get_primary_key_name() . ' IN(' . implode(',', $this->get_table_keys()) . ')']);
                 /** @var table $sub_object */
                 foreach ($classes as $sub_object) {
                     $object = $this->find_table_key($sub_object->linked_id);

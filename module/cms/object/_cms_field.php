@@ -10,7 +10,6 @@ abstract class _cms_field extends table {
 
     public $fid;
     public $field_name;
-    public $table_key = 'fid';
     public $title;
     public $type;
 }

@@ -320,7 +320,7 @@ abstract class controller extends module {
             node::create('th.position', [], 'Position') .
             $obj->get_fields()->iterate_return(function ($field) use ($obj) {
                     if ($field->list) {
-                        return node::create('th.' . get_class($field) . '.' . $field->field_name . ($field->field_name == $obj->table_key ? '.primary' : ''), [], $field->title);
+                        return node::create('th.' . get_class($field) . '.' . $field->field_name . ($field->field_name == $obj->get_primary_key_name() ? '.primary' : ''), [], $field->title);
                     }
                     return '';
                 }
@@ -333,7 +333,7 @@ abstract class controller extends module {
     public function do_delete() {
         /** @var \classes\table $object */
         $object = new $_REQUEST['object'];
-        db::update(get::__class_name($_REQUEST['object']))->add_value('deleted', 1)->filter($object->table_key . '=' . $_REQUEST['id'])->execute();
+        db::update(get::__class_name($_REQUEST['object']))->add_value('deleted', 1)->filter($object->get_primary_key_name() . '=' . $_REQUEST['id'])->execute();
         ajax::add_script('document.location = document.location');
     }
 
@@ -346,11 +346,11 @@ abstract class controller extends module {
         $new_collection = new table_array();
         /** @var \classes\table $table */
         $objects->iterate(function ($table) use ($new_collection) {
-                if ($table->{'parent_' . $table->table_key} == 0) {
+                if ($table->{'parent_' . $table->get_primary_key_name()} == 0) {
                     $table->children = new collection();
                     $new_collection[$table->get_primary_key()] = $table;
-                } else if (isset($new_collection[$table->{'parent_' . $table->table_key}])) {
-                    $new_collection[$table->{'parent_' . $table->table_key}]->children[] = $table;
+                } else if (isset($new_collection[$table->{'parent_' . $table->get_primary_key_name()}])) {
+                    $new_collection[$table->{'parent_' . $table->get_primary_key_name()}]->children[] = $table;
                 }
             }
         );

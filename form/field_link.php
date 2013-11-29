@@ -25,8 +25,8 @@ abstract class field_link extends field {
         $field_name = (is_numeric($this->link_field) ? \core::get_field_from_fid($this->link_field)->field_name : $this->link_field);
         $object = new $class();
         /** @var table $object */
-        $object->do_retrieve_from_id([$field_name, $object->table_key], $value);
-        return (isset($object->{$object->table_key}) && $object->{$object->table_key} ? $object->$field_name : '-');
+        $object->do_retrieve_from_id([$field_name, $object->get_primary_key_name()], $value);
+        return (isset($object->{$object->get_primary_key_name()}) && $object->{$object->get_primary_key_name()} ? $object->$field_name : '-');
     }
 
     public function get_database_create_query() {
@@ -84,9 +84,9 @@ abstract class field_link extends field {
         $obj = new $class();
 
         if (!isset($this->options['order'])) {
-            $this->options['order'] = $obj->table_key;
+            $this->options['order'] = $obj->get_primary_key_name();
         }
-        $options = $class::get_all(array_merge($fields, [$obj->table_key, 'parent_' . $obj->table_key]), $this->options);
+        $options = $class::get_all(array_merge($fields, [$obj->get_primary_key_name(), 'parent_' . $obj->get_primary_key_name()]), $this->options);
         if (!$this->required) {
             $html .= '<option value="0">- Please Select -</option>';
         }
@@ -103,11 +103,11 @@ abstract class field_link extends field {
             }
         );
         $parents->iterate(function (table $object) use (&$html, $fields) {
-                $html .= '<option value="' . $object->{$object->table_key} . '" ' . ($this->is_selected($object->{$object->table_key}) ? 'selected="selected"' : '') . '>' . $this->get_object_title($object, $fields) . '</option>';
+                $html .= '<option value="' . $object->{$object->get_primary_key_name()} . '" ' . ($this->is_selected($object->{$object->get_primary_key_name()}) ? 'selected="selected"' : '') . '>' . $this->get_object_title($object, $fields) . '</option>';
                 if ($object->_children->count()) {
                     $object->_children->iterate(
                         function (table $sub_object) use (&$html, $fields) {
-                            $html .= '<option value="' . $sub_object->{$sub_object->table_key} . '" ' . ($this->is_selected($sub_object->{$sub_object->table_key}) ? 'selected="selected"' : '') . '>' . $this->get_object_title($sub_object, $fields, 1) . '</option>';
+                            $html .= '<option value="' . $sub_object->{$sub_object->get_primary_key_name()} . '" ' . ($this->is_selected($sub_object->{$sub_object->get_primary_key_name()}) ? 'selected="selected"' : '') . '>' . $this->get_object_title($sub_object, $fields, 1) . '</option>';
                         }
                     );
                 }

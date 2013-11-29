@@ -9,6 +9,5 @@ class image_format extends table {
     use table_trait;
 
 
-    public $table_key = 'ifid';
 }
  

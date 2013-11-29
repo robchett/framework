@@ -13,7 +13,6 @@ abstract class page extends table {
 
     public $nav_title;
     public $pid;
-    public $table_key = 'pid';
     public $body;
     public $module_name = '';
     public $title;

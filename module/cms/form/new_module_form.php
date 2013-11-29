@@ -114,7 +114,6 @@ use traits\table_trait;
 class ' . $this->table_name . ' extends table {
 
     use table_trait;
-    public $table_key = ' . $this->primary_key . ';
     public $' . $this->title . ';
 
 }'

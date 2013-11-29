@@ -13,7 +13,6 @@ class filter extends table {
 
     public $link_fid;
     public $link_mid;
-    public $table_key = 'fid';
     public $parent_fid;
     protected $field;
     public $title;

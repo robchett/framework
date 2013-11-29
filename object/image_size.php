@@ -11,7 +11,6 @@ class image_size extends table {
     use table_trait;
 
 
-    public $table_key = 'isid';
 
     public $isid;
     public $title;
