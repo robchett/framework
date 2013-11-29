@@ -12,6 +12,8 @@ abstract class page extends table {
 
 
     public $nav_title;
+    public $direct_link;
+    public $nav;
     public $pid;
     public $body;
     public $module_name = '';
