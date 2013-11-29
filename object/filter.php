@@ -10,7 +10,7 @@ class filter extends table {
 
     use table_trait;
 
-    public static $module_id = 25;
+
     public $link_fid;
     public $link_mid;
     public $table_key = 'fid';

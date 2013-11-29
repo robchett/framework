@@ -13,6 +13,4 @@ abstract class _cms_field extends table {
     public $table_key = 'fid';
     public $title;
     public $type;
-
-    public static $module_id = '';
 }

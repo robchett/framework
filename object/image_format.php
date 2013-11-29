@@ -8,7 +8,7 @@ class image_format extends table {
 
     use table_trait;
 
-    public static $module_id = 23;
+
     public $table_key = 'ifid';
 }
  

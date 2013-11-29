@@ -10,7 +10,7 @@ class image_size extends table {
 
     use table_trait;
 
-    public static $module_id = 24;
+
     public $table_key = 'isid';
 
     public $isid;

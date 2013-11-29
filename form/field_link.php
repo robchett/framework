@@ -71,7 +71,7 @@ abstract class field_link extends field {
             return $this->link_module;
         }
         $class = $this->link_module;
-        return $class::$module_id;
+        return $class::get_module_id();
     }
 
     public function get_options() {

@@ -13,7 +13,6 @@ abstract class _cms_module extends table {
     public $namespace;
     public $primary_key;
     public $table_key = 'mid';
-    public static $module_id = 1;
     public $table_name;
     public $title;
     public $gid;

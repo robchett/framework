@@ -17,10 +17,6 @@ abstract class _cms_group extends table {
      * @var string
      */
     public $table_key = 'gid';
-    /**
-     * @var int
-     */
-    public static $module_id = 2;
     public $title;
 
 

@@ -38,10 +38,7 @@ abstract class controller extends module {
      * @var object\_cms_module
      */
     public $module;
-    /**
-     * @var int
-     */
-    public $module_id = 0;
+
     /**
      * @var
      */
@@ -224,7 +221,7 @@ abstract class controller extends module {
                     $object_collection = $class::get_all([], ['where_equals' => [$this->module->primary_key => $this->current->get_primary_key()]]);
                     return node::create('div.sub_module', [],
                         node::create('h3', [], $module->title) .
-                        node::create('a', ['href' => '/cms/edit/' . $class::$module_id . '?' . $this->module->primary_key . '=' . $this->current->get_primary_key()], 'Add new ' . $module->title) .
+                        node::create('a', ['href' => '/cms/edit/' . $class::get_module_id() . '?' . $this->module->primary_key . '=' . $this->current->get_primary_key()], 'Add new ' . $module->title) .
                         $this->get_list_inner($object_collection, $class)
                     );
                 }
@@ -284,7 +281,7 @@ abstract class controller extends module {
             $html->nest(node::create('li.right a', ['href' => '/cms/edit/' . $this->mid, 'title' => 'Add new ' . get::__class_name($this->current)], 'Add new ' . get::__class_name($this->current)));
         } else if ($this->view === 'module_list') {
             $html->nest(node::create('li.right a', ['href' => '/cms/new_module/', 'title' => 'Add new module'], 'Add new module'));
-            $html->nest(node::create('li.right a', ['href' => "/cms/edit/" . object\_cms_group::$module_id, 'title' => 'Add new module group'], 'Add new module group'));
+            $html->nest(node::create('li.right a', ['href' => "/cms/edit/" . object\_cms_group::get_module_id(), 'title' => 'Add new module group'], 'Add new module group'));
         }
         $html->nest(node::create('li.right a', ['href' => '/cms/module_list/', 'title' => 'View all modules'], 'All Modules'));
         return $html;

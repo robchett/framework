@@ -11,7 +11,7 @@ class field_image extends field_file {
 
     public function get_image_edit_link() {
         $count = db::count('image_size', 'isid')->filter_field('fid', $this->fid)->execute();
-        return node::create('a', array('href' => '/cms/module/' . image_size::$module_id . '/!/fid/' . $this->fid), (int) $count . ' image sizes');
+        return node::create('a', array('href' => '/cms/module/' . image_size::get_module_id() . '/!/fid/' . $this->fid), (int) $count . ' image sizes');
     }
 
     public function get_cms_list_wrapper($value, $object_class, $id) {

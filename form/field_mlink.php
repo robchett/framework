@@ -14,7 +14,7 @@ abstract class field_mlink extends _field_link {
 
         $source_module = new _cms_module(['table_name', 'primary_key'], $this->get_link_mid());
         $parent_class = get_class($this->parent_form);
-        $module = new _cms_module(['table_name', 'primary_key'], $parent_class::$module_id);
+        $module = new _cms_module(['table_name', 'primary_key'], $parent_class::get_module_id());
 
         $select_options = [
             'where' => 'link.' . $module->primary_key . ' IS NOT NULL',

@@ -32,12 +32,11 @@ abstract class table {
      * @var array
      */
     public static $define_table = [];
+    private static $cms_modules;
     public $live;
     public $deleted;
     public $ts;
     //public $table_key;
-    /** @var  int $module_id */
-    //public static $module_id = 0;
     /**
      * @var int
      */
@@ -68,7 +67,7 @@ abstract class table {
     }
 
     public function get_filters() {
-        $filters = filter::get_all(['title', 'link_mid AS link_mid', 'link_fid AS link_fid', 'order'], ['where_equals' => ['link_mid' => static::$module_id]]);
+        $filters = filter::get_all(['title', 'link_mid AS link_mid', 'link_fid AS link_fid', 'order'], ['where_equals' => ['link_mid' => static::get_module_id()]]);
         $filters->iterate(
             function (filter $filter) {
                 foreach ($this->get_fields() as $field) {
@@ -416,7 +415,7 @@ abstract class table {
                 if ($field->field_name != $this->table_key) {
                     if (isset($this->{$field->field_name}) && $field instanceof field_mlink) {
                         $source_module = new _cms_module(['table_name', 'primary_key'], $field->get_link_mid());
-                        $module = new _cms_module(['table_name', 'primary_key'], static::$module_id);
+                        $module = new _cms_module(['table_name', 'primary_key'], static::get_module_id());
                         db::query('DELETE FROM ' . $module->table_name . '_link_' . $source_module->table_name . ' WHERE ' . $module->primary_key . '=:key', ['key' => $this->{$this->table_key}]);
                         if ($this->{$field->field_name}) {
                             foreach ($this->{$field->field_name} as $value) {
@@ -565,17 +564,32 @@ abstract class table {
         return $list;
     }
 
+    public static function get_module_id() {
+        if(!isset(self::$cms_modules)) {
+            $modules = _cms_module::get_all([]);
+            $modules->iterate(function(_cms_module $module) {
+                self::$cms_modules[trim($module->get_class_name(), '\\')] = $module->mid;
+            });
+        }
+        $class = get_called_class();
+        if(isset(self::$cms_modules[$class])) {
+            return self::$cms_modules[$class];
+        } else {
+            trigger_error('Attempting to get a module ID for a table that doesn\'t exist - ' . $class);
+        }
+    }
+
     /**
      * @return array
      */
     public function get_cms_list() {
         $fields = $this->get_fields();
         return
-            node::create('td.edit a.edit', ['href' => '/cms/edit/' . static::$module_id . '/' . $this->get_primary_key()]) .
-            node::create('td.edit a.live' . ($this->live ? '' : 'not_live'), ['href' => '#', 'data-ajax-click' => get_class($this) . ':do_toggle_live', 'data-ajax-post' => '{"mid":' . $this::$module_id . ',"id":' . $this->get_primary_key() . '}'], ($this->live ? 'Live' : 'Not Live')) .
+            node::create('td.edit a.edit', ['href' => '/cms/edit/' . static::get_module_id() . '/' . $this->get_primary_key()]) .
+            node::create('td.edit a.live' . ($this->live ? '' : 'not_live'), ['href' => '#', 'data-ajax-click' => get_class($this) . ':do_toggle_live', 'data-ajax-post' => '{"mid":' . static::get_module_id() . ',"id":' . $this->get_primary_key() . '}'], ($this->live ? 'Live' : 'Not Live')) .
             node::create('td.position', [],
-                node::create('a.up.reorder', ['data-ajax-click' => get_class($this) . ':do_reorder', 'data-ajax-post' => '{"mid":' . $this::$module_id . ',"id":' . $this->get_primary_key() . ',"dir":"up"}'], 'Up') .
-                node::create('a.down.reorder', ['data-ajax-click' => get_class($this) . ':do_reorder', 'data-ajax-post' => '{"mid":' . $this::$module_id . ',"id":' . $this->get_primary_key() . ',"dir":"down"}'], 'Down')
+                node::create('a.up.reorder', ['data-ajax-click' => get_class($this) . ':do_reorder', 'data-ajax-post' => '{"mid":' . static::get_module_id() . ',"id":' . $this->get_primary_key() . ',"dir":"up"}'], 'Up') .
+                node::create('a.down.reorder', ['data-ajax-click' => get_class($this) . ':do_reorder', 'data-ajax-post' => '{"mid":' . static::get_module_id() . ',"id":' . $this->get_primary_key() . ',"dir":"down"}'], 'Down')
             ) .
             $fields->iterate_return(function ($field) {
                     if ($field->list) {
@@ -605,7 +619,7 @@ abstract class table {
      */
     public static function _set_fields() {
         $final_fields = static::$fields = new field_collection();
-        $fields = _cms_field::get_all([], ['where_equals' => ['mid' => static::$module_id], 'order' => '`position` ASC']);
+        $fields = _cms_field::get_all([], ['where_equals' => ['mid' => static::get_module_id()], 'order' => '`position` ASC']);
         $fields->iterate(function (_cms_field $row) use (&$final_fields) {
                 $class = 'form\field_' . $row->type;
                 /** @var field $field */
