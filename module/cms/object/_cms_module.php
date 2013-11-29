@@ -26,6 +26,10 @@ abstract class _cms_module extends table {
         }
     }
 
+    public function get_primary_key_name() {
+        return 'mid';
+    }
+
     /** @return table */
     public function get_class() {
         $class = $this->get_class_name();
