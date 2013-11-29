@@ -2,14 +2,14 @@
 
 namespace core\classes;
 
-use classes\collection;
+use classes\collection as _collection;
 use classes\db as _db;
 
 /**
  * Class table_array
  */
 abstract class
-table_array extends collection {
+table_array extends _collection {
 
     /**
      * @var bool
@@ -104,7 +104,7 @@ table_array extends collection {
                 $object->set_from_row($row, $links);
                 foreach ($mlinks as $module => $blah) {
                     $object->{$module . '_elements'} = new \classes\table_array();
-                    $object->$module = new collection();
+                    $object->$module = new _collection();
                 }
                 $this[] = $object;
             }

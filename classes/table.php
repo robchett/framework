@@ -3,6 +3,7 @@
 namespace core\classes;
 
 use classes\ajax as _ajax;
+use classes\collection as _collection;
 use classes\get as _get;
 use classes\image_resizer;
 use classes\table_array;
@@ -53,11 +54,6 @@ abstract class table {
     public function  __construct($fields = [], $id = 0) {
         if ($id) {
             $this->do_retrieve_from_id($fields, $id);
-        }
-        $class = get_class($this);
-        if (!isset($class::$fields)) {
-            /** @var table $class */
-            $class::_set_fields();
         }
     }
 
@@ -156,10 +152,9 @@ abstract class table {
      */
     public function set_from_row($row, $links) {
         foreach ($row as $key => $val) {
-            if (isset(static::$fields[$key])) {
-                $class = static::$fields[$key];
-                /** @var field $class */
-                $this->$key = $class::sanitise_from_db($val);
+            if ($field = $this->has_field($key)) {
+                /** @var field $field */
+                $this->$key = $field::sanitise_from_db($val);
             } else if (strstr($key, '@')) {
                 list($module, $field) = explode('@', $key);
                 if (!isset($this->$module)) {
@@ -201,7 +196,7 @@ abstract class table {
         $fields = $this->get_fields(false);
         foreach ($fields as $field) {
             if ($field->field_name == $name) {
-                return true;
+                return $field;
             }
         }
         return false;
@@ -361,6 +356,7 @@ abstract class table {
     public function set_from_request() {
         /** @var field $field */
         $this->get_fields()->iterate(function ($field) {
+                $field->parent_form = $this;
                 if ($this->raw) {
                     $field->raw = true;
                 }
@@ -565,9 +561,47 @@ abstract class table {
 
     private static function set_cms_modules() {
         if (!isset(self::$cms_modules)) {
-            $modules = _cms_module::get_all([]);
+            $object = new _cms_module();
+            $object->_cms_field_elements = new _collection();
+            self::$cms_modules = new _collection(['module\cms\object\_cms_module' => $object]);
+            $modules = _cms_module::get_all([
+                    'mid',
+                    'primary_key',
+                    'namespace',
+                    'table_name',
+                ]
+            );
             $modules->iterate(function (_cms_module $module) {
+                    $module->_cms_field_elements = new field_collection();
                     self::$cms_modules[trim($module->get_class_name(), '\\')] = $module;
+                }
+            );
+            $fields = _cms_field::get_all([
+                    'fid',
+                    'parent_fid',
+                    'field_name',
+                    'title',
+                    'type',
+                    'mid',
+                    'list',
+                    'filter',
+                    'required',
+                    'link_module',
+                    'link_field'
+                ]
+            );
+            $fields->iterate(function (_cms_field $row) {
+                    foreach(self::$cms_modules as &$module) {
+                        if($module->mid == $row->mid) {
+                            $class = 'form\field_' . $row->type;
+                            /** @var field $field */
+                            $field = new $class($row->field_name, []);
+                            $field->label = $row->title;
+                            $field->set_from_row($row);
+                            $module->_cms_field_elements[] = $field;
+                            break;
+                        }
+                    }
                 }
             );
         }
@@ -606,6 +640,7 @@ abstract class table {
                 node::create('a.down.reorder', ['data-ajax-click' => get_class($this) . ':do_reorder', 'data-ajax-post' => '{"mid":' . static::get_module_id() . ',"id":' . $this->get_primary_key() . ',"dir":"down"}'], 'Down')
             ) .
             $fields->iterate_return(function ($field) {
+                    $field->parent_form = $this;
                     if ($field->list) {
                         return node::create('td.' . get_class($field), [], $field->get_cms_list_wrapper(isset($this->{$field->field_name}) ? $this->{$field->field_name} : '', get_class($this), $this->get_primary_key()));
                     }
@@ -621,29 +656,11 @@ abstract class table {
      */
     public function get_fields($clone = false) {
         $fields = static::_get_fields($clone);
-        $fields->iterate(function ($field) {
+        /*$fields->iterate(function ($field) {
                 $field->parent_form = $this;
             }
-        );
+        );*/
         return $fields;
-    }
-
-    /**
-     *
-     */
-    public static function _set_fields() {
-        $final_fields = static::$fields = new field_collection();
-        $fields = _cms_field::get_all([], ['where_equals' => ['mid' => static::get_module_id()], 'order' => '`position` ASC']);
-        $fields->iterate(function (_cms_field $row) use (&$final_fields) {
-                $class = 'form\field_' . $row->type;
-                /** @var field $field */
-                $field = new $class($row->field_name, []);
-                $field->label = $row->title;
-                $field->set_from_row($row);
-                $final_fields[$row->field_name] = $field;
-            }
-        );
-        static::$fields = $final_fields;
     }
 
     /**
@@ -651,17 +668,22 @@ abstract class table {
      * @return field_collection
      */
     private static function _get_fields($clone) {
-        if (!isset(static::$fields)) {
-            static::_set_fields();
+        self::set_cms_modules();
+        $class = get_called_class();
+        if (isset(self::$cms_modules[$class])) {
+            $fields = self::$cms_modules[$class]->_cms_field_elements;
+        } else {
+            trigger_error('Attempting to get a fields for a table that doesn\'t exist - ' . $class);
+            $fields = new field_collection();
         }
         if ($clone) {
             $clone = new field_collection();
-            foreach (static::$fields as $key => $field) {
+            foreach ($fields as $key => $field) {
                 $clone[$key] = clone $field;
             }
             return $clone;
         } else {
-            return static::$fields;
+            return $fields;
         }
     }
 

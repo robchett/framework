@@ -40,7 +40,7 @@ class field_image extends field_file {
         $html = '';
         $parent = $this->parent_form;
         if ($parent instanceof table) {
-            $fields = $parent::$fields;
+            $fields = $parent->get_fields();
         } else {
             $fields = $parent->fields;
         }
