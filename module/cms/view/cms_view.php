@@ -6,6 +6,7 @@ use core\core;
 /**
  * Class cms_view
  * @package cms
+ * @property \module\cms\controller $module
  */
 abstract class cms_view extends \template\html {
 
@@ -18,6 +19,6 @@ abstract class cms_view extends \template\html {
     }
 
     public function get_title_tag() {
-        return parent::get_title_tag() . ' - CMS - ' . \classes\get::__class_name($this) ;
+        return parent::get_title_tag() . ' | CMS | ' . ucwords(str_replace('_', ' ', \classes\get::__class_name($this))) . ' | ' . $this->module->current->get_title();
     }
 }

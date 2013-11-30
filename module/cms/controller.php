@@ -54,29 +54,6 @@ abstract class controller extends module {
     public $where;
 
     /**
-     *
-     */
-    public static function do_clear_filter() {
-        unset($_SESSION['cms'][$_REQUEST['_class_name']]);
-        $cms_filter_form = new cms_filter_form();
-        $cms_filter_form->do_submit();
-        unset($_SESSION['cms'][$_REQUEST['_class_name']]);
-    }
-
-    public static function do_database_repair() {
-        $database_manager = new object\cms_builder();
-        $database_manager->manage();
-    }
-
-    public static function image_reprocess() {
-        if (isset($_REQUEST['fid'])) {
-            $image_size = new image_size([], $_REQUEST['fid']);
-            $image_size->reprocess();
-        }
-    }
-
-
-    /**
      * @param array $path
      */
     public function __controller(array $path) {
@@ -107,6 +84,28 @@ abstract class controller extends module {
             $this->current->do_retrieve_from_id([], $path[3]);
         }
         parent::__controller($path);
+    }
+
+    /**
+     *
+     */
+    public static function do_clear_filter() {
+        unset($_SESSION['cms'][$_REQUEST['_class_name']]);
+        $cms_filter_form = new cms_filter_form();
+        $cms_filter_form->do_submit();
+        unset($_SESSION['cms'][$_REQUEST['_class_name']]);
+    }
+
+    public static function do_database_repair() {
+        $database_manager = new object\cms_builder();
+        $database_manager->manage();
+    }
+
+    public static function image_reprocess() {
+        if (isset($_REQUEST['fid'])) {
+            $image_size = new image_size([], $_REQUEST['fid']);
+            $image_size->reprocess();
+        }
     }
 
     /**
