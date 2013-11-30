@@ -2,7 +2,7 @@
 
 namespace core\classes;
 
-use classes\push_state;
+use classes\push_state as _push_state;
 
 abstract class ajax {
 
@@ -97,7 +97,7 @@ abstract class ajax {
         self::$inject[] = $o;
     }
 
-    public static function push_state(push_state $push_state) {
+    public static function push_state(_push_state $push_state) {
         self::$push_state = $push_state;
     }
 
