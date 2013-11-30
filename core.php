@@ -4,6 +4,7 @@ namespace core;
 
 use classes\ajax;
 use classes\get;
+use classes\ini;
 use classes\page_config;
 use classes\push_state;
 use module\cms\object\_cms_field;
@@ -145,7 +146,7 @@ abstract class core {
         $uri_no_qs = parse_url($uri, PHP_URL_PATH);
         $this->path = explode('/', trim($uri_no_qs, '/'));
         if (!$this->path[0]) {
-            $this->path[0] = get::ini('default_module', 'site', 'pages');
+            $this->path[0] = ini::get('site', 'default_module', 'pages');
         }
         $this->pagination_page = $this->get_page_from_path();
         define('clean_uri', implode('/', $this->path));

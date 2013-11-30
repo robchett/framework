@@ -5,7 +5,7 @@ class ini {
 
     private static $settings;
 
-    public static function get($key, $block = 'site', $default = null) {
+    public static function get($block, $key,  $default = null) {
         if (!isset(self::$settings)) {
             self::load();
         }

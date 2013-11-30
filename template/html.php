@@ -2,6 +2,7 @@
 namespace core\template;
 
 use classes\get;
+use classes\ini;
 use classes\module;
 use core;
 use html\node;
@@ -34,7 +35,7 @@ abstract class html {
     }
 
     public function get_title_tag() {
-        return get::ini('title_tag', 'site', 'NO Title tag!!!');
+        return ini::get('site', 'title_tag', 'NO Title tag!!!');
     }
 
     public function get_body() {

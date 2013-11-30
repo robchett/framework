@@ -2,6 +2,7 @@
 namespace core\module\cms\form;
 
 use classes\ajax as _ajax;
+use classes\ini;
 use form\form;
 use module\cms\controller;
 
@@ -16,7 +17,7 @@ abstract class cms_login_form extends form {
             form::create('field_password', 'password')->set_attr('label', 'Password')
         ];
         parent::__construct($fields);
-        $this->h2 = 'Admin Login - ' . \classes\get::ini('title_tag', 'site', '');
+        $this->h2 = 'Admin Login - ' . ini::get('site', 'title_tag');
         $this->submit = 'Login';
     }
 

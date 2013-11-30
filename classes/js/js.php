@@ -18,12 +18,12 @@ class js extends asset {
             }
         }
         if ($this->cached_name) {
-            foreach(glob(root . '/.cache/' . $this->cached_name . '*.js') as $link) {
+            foreach (glob(root . '/.cache/' . $this->cached_name . '*.js') as $link) {
                 unlink($link);
             };
             $js = '';
             foreach ($this->files as $file) {
-                if(debug) {
+                if (debug) {
                     //$js .= '/* ' . $file . ' */';
                 }
                 $js .= file_get_contents($file);
@@ -60,7 +60,7 @@ class js extends asset {
 
         $output = new self;
         $output->cached_name = 'global';
-        foreach (get::ini('files', 'js',  []) as $file) {
+        foreach (ini::get('js', 'files', []) as $file) {
             $output->add_files(core_dir . '/js/' . $file . '.js');
         }
         $output->add_resource_root(root . '/js');

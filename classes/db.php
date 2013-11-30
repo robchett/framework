@@ -118,7 +118,7 @@ abstract class db implements interfaces\database_interface {
      *
      */
     public static function default_connection() {
-        _db::connect(_get::ini('server', 'mysql'), _get::ini('database', 'mysql'), _get::ini('username', 'mysql'), _get::ini('password', 'mysql'));
+        _db::connect(ini::get('mysql', 'server'), ini::get('mysql', 'database'), ini::get('mysql', 'username'), ini::get('mysql', 'password'));
     }
 
     /**
