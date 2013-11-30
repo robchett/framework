@@ -41,49 +41,27 @@ class ini {
         }
     }
 
-    public static function modify($key, $value, $block = 'site') {
-        $file = root . '/.conf/config.ini';
-        try {
-            self::get($block, $key);
-            $lines = file(file);
-            $string = '';
-            $matching_block = false;
-            $set = false;
-            foreach ($lines as $line) {
-                $line = trim($line);
-                if ($line == '[' . $block . ']') {
-                    $matching_block = true;
-                } else if ($line[0] == '[' && end(trim($line)) == ']') {
-                    $matching_block = false;
-                }
-                if (!$set && $matching_block && $key == $line) {
-                    $string .= $key . ' = ' . $value . "\n";
+    public static function save($file, $options) {
+        $string = '';
+        foreach($options as $block => $keys) {
+            $string .= '[' . $block . ']' . "\n";
+            foreach($keys as $key => $value) {
+                if(is_array($value)) {
+                    foreach($value as $sub_value) {
+                        $string .= $key . '[] = "' . $sub_value . '"' . "\n";
+                    }
                 } else {
-                    $string .= $line . "\n";
+                    $string .= $key . ' = "' . $value . '"' . "\n";
                 }
             }
-        } catch (\Exception $e) {
-            $string = '';
-            $lines = file($file);
-            $matching_block = false;
-            $set = false;
-            foreach ($lines as $line) {
-                $line = trim($line);
-                if ($line == '[' . $block . ']') {
-                    $matching_block = true;
-                } else if (isset($line[0]) && $line[0] == '[' && $line[strlen($line - 1)] == ']') {
-                    $matching_block = false;
-                }
-                if (!$set && $matching_block) {
-                    $string .= $line . "\n";
-                    $string .= $key . ' = ' . $value . "\n";
-                } else {
-                    $string .= $line . "\n";
-                }
-
-            }
+            $string .= "\n";
         }
         file_put_contents($file, $string);
+    }
+
+    public static function modify($key, $value, $block = 'site') {
+        self::$settings[$block][$value] = $key;
+        self::save(root . '/.conf/config.ini', self::$settings);
     }
 }
  
