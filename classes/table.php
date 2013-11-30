@@ -377,6 +377,7 @@ abstract class table {
         }
         /** @var field $field */
         $this->get_fields()->iterate(function ($field) use ($query) {
+                $field->parent_form = $this;
                 if ($field->field_name != $this->get_primary_key_name()) {
                     if (isset($this->{$field->field_name}) && !($field instanceof field_file)) {
                         if (!$this->{$field->field_name} && $field instanceof field_fn && isset($this->title)) {
