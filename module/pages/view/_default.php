@@ -4,7 +4,7 @@ namespace core\module\pages\view;
 
 use classes\view;
 
-abstract class _default extends view {
+abstract class _default extends \template\html {
 
     /** @var \module\cms\controller */
     public $module;

@@ -18,7 +18,7 @@ abstract class module {
     /** @var int $page Set by core. */
     public $page = 1;
     public $npp = 50;
-    /** @var  \classes\view */
+    /** @var  \template\html */
     public $view_object;
     /** @var  page */
     public $page_object;
@@ -66,8 +66,7 @@ abstract class module {
     public function set_view() {
         $class = _get::__namespace($this) . '\\view\\' . $this->view;
         if (class_exists($class)) {
-            $this->view_object = new $class;
-            $this->view_object->module = $this;
+            $this->view_object = new $class($this);
         } else {
             if (dev) {
                 throw new \Exception('View not found, ' . $class);
@@ -80,7 +79,7 @@ abstract class module {
     public function ajax_load() {
         $this->set_view();
         $this->set_page();
-        $this->view_object->get_view_ajax();
+        $this->view_object->get();
         $push_state = $this->get_push_state();
         _ajax::push_state($push_state);
     }

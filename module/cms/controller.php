@@ -81,7 +81,6 @@ abstract class controller extends module {
      */
     public function __controller(array $path) {
         error_reporting(-1);
-        \core::$page_config->title_tag = 'Admin Login - UKNXCL';
         \core::$css = ['/inc/module/cms/css/'];
         \core::$js = ['/.core/js/jquery.js', '/.core/js/_ajax.js', ' /.core/module/cms/js/cms.js', '/.core/js/colorbox.js', '/.core/plugins/ckeditor/ckeditor.js'];
         if (admin && !isset($path[1])) {

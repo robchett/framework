@@ -16,7 +16,7 @@ abstract class cms_login_form extends form {
             form::create('field_password', 'password')->set_attr('label', 'Password')
         ];
         parent::__construct($fields);
-        $this->h2 = 'Admin Login - UKNXCL';
+        $this->h2 = 'Admin Login - ' . \classes\get::ini('title_tag', 'site', '');
         $this->submit = 'Login';
     }
 

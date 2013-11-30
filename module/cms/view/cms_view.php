@@ -1,14 +1,13 @@
 <?php
 namespace core\module\cms\view;
 
-use core\classes\view;
 use core\core;
 
 /**
  * Class cms_view
  * @package cms
  */
-abstract class cms_view extends view {
+abstract class cms_view extends \template\html {
 
     /**
      * @return \html\node
@@ -18,4 +17,7 @@ abstract class cms_view extends view {
         return $this->get_view()->get();
     }
 
+    public function get_title_tag() {
+        return parent::get_title_tag() . ' - CMS - ' . \classes\get::__class_name($this) ;
+    }
 }

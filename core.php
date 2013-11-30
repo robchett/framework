@@ -49,8 +49,6 @@ abstract class core {
         if (isset($_REQUEST['module'])) {
             $this->do_ajax();
         }
-
-        self::$page_config->title_tag = get::ini('title_tag', 'site', 'NO Title tag!!!');
         $this->load_page();
     }
 
@@ -108,7 +106,6 @@ abstract class core {
             $this->module = new $class_name();
             $this->module->__controller($this->path);
             $this->module->page = $this->pagination_page;
-            $this->body = $this->module->view_object->get();
             $push_state = $this->module->get_push_state();
             if ($push_state) {
                 $push_state->data->actions = array_merge($push_state->data->actions, self::$push_state_ajax_calls);
@@ -120,8 +117,9 @@ abstract class core {
                 }
             }
             if (!ajax) {
-                $template = new html($this->module);
-                echo $template->get();
+                echo $this->module->view_object->get_page();
+            } else {
+                $this->module->view_object->get();
             }
         }
     }
