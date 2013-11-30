@@ -552,6 +552,7 @@ abstract class table {
                 node::create('th', [], '')
             ) .
             $this->get_fields()->iterate_return(function ($field) {
+                    $field->parent_form = $this;
                     return (node::create('tr', [], $field->get_cms_admin_edit()));
                 }
             )
