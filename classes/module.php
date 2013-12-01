@@ -35,10 +35,9 @@ abstract class module {
         $this->set_view();
 
         try {
-            _ini::get('database', 'mysql');
+            _ini::get('mysql', 'database');
             $this->set_page();
         } catch (\Exception $e) {
-
         }
         \core::$page_config->add_body_class('module_' . _get::__namespace($this, 0), $this->view);
     }
