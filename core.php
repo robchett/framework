@@ -172,22 +172,6 @@ abstract class core {
     }
 
     /**
-     * @param $mid
-     * @return string
-     */
-    public static function get_class_from_mid($mid) {
-        if (!isset(self::$cms_modules)) {
-            $cms_modules = _cms_module::get_all([]);
-            $cms_modules->iterate(function ($object) {
-                    self::$cms_modules[$object->mid] = $object;
-                }
-            );
-        }
-        $module = self::$cms_modules[$mid];
-        return $module->get_class_name();
-    }
-
-    /**
      * @param $fid
      * @return _cms_field
      */

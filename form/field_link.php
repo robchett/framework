@@ -2,7 +2,8 @@
 namespace core\form;
 
 use classes\collection;
-use core\classes\table;
+use classes\table;
+use module\cms\object\_cms_field;
 
 abstract class field_link extends field {
 
@@ -21,7 +22,7 @@ abstract class field_link extends field {
     }
 
     public function  get_cms_list_wrapper($value, $object_class, $id) {
-        $class = (is_numeric($this->link_module) ? \core::get_class_from_mid($this->link_module) : $this->link_module);
+        $class = (is_numeric($this->link_module) ? table::get_class_from_mid($this->link_module) : $this->link_module);
         $field_name = (is_numeric($this->link_field) ? \core::get_field_from_fid($this->link_field)->field_name : $this->link_field);
         $object = new $class();
         /** @var table $object */
@@ -55,12 +56,12 @@ abstract class field_link extends field {
 
     public function get_link_module() {
         if (is_numeric($this->link_module)) {
-            $this->link_module = \core::get_class_from_mid($this->link_module);
+            $this->link_module = table::get_class_from_mid($this->link_module);
         }
         return $this->link_module;
     }
 
-    /** @return \classes\table */
+    /** @return table */
     public function get_link_object() {
         $class = $this->get_link_module();
         return new $class;
@@ -76,7 +77,7 @@ abstract class field_link extends field {
 
     public function get_options() {
         $html = '';
-        /** @var $class \classes\table */
+        /** @var $class table */
         $class = $this->get_link_module();
         $fields = $this->get_link_fields();
 

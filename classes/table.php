@@ -560,6 +560,26 @@ abstract class table {
         return $list;
     }
 
+    /**
+     * @param $mid
+     * @return string
+     */
+    public static function get_class_from_mid($mid) {
+        self::set_cms_modules();
+        $module = false;
+        /** @var _cms_module $_module */
+        foreach (self::$cms_modules as $_module) {
+            if ($_module->mid == $mid) {
+                $module = $_module;
+            }
+        }
+        if ($module) {
+            return $module->get_class_name();
+        } else {
+            return '';
+        }
+    }
+
     private static function set_cms_modules() {
         if (!isset(self::$cms_modules)) {
             $object = new _cms_module();
