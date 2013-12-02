@@ -7,6 +7,7 @@ use classes\get as _get;
 use classes\ini as _ini;
 use classes\push_state;
 use html\node;
+use module\cms\form\cms_builder_form;
 use module\pages\object\page;
 
 abstract class module {
@@ -33,11 +34,8 @@ abstract class module {
             }
         }
         $this->set_view();
-
-        try {
-            _ini::get('mysql', 'database');
+        if (!_ini::get('building', 'site', true)) {
             $this->set_page();
-        } catch (\Exception $e) {
         }
         \core::$page_config->add_body_class('module_' . _get::__namespace($this, 0), $this->view);
     }
