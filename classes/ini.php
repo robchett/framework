@@ -20,7 +20,7 @@ class ini {
     }
 
     public static function reload() {
-        unset(self::$settings);
+        self::$settings = null;
     }
 
     public static function load() {
