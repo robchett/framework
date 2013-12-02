@@ -8,7 +8,7 @@ class image_crop extends table {
 
     use table_trait;
 
-
+    public $title;
 
 }
  
