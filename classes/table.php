@@ -30,9 +30,8 @@ use object\image_size;
 abstract class table {
 
     /**
-     * @var array
+     * @var collection
      */
-    public static $define_table = [];
     private static $cms_modules;
     public $live;
     public $deleted;
@@ -593,8 +592,8 @@ abstract class table {
                 ]
             );
             $fields->iterate(function (_cms_field $row) {
-                    foreach(self::$cms_modules as &$module) {
-                        if($module->mid == $row->mid) {
+                    foreach (self::$cms_modules as &$module) {
+                        if ($module->mid == $row->mid) {
                             $class = 'form\field_' . $row->type;
                             /** @var field $field */
                             $field = new $class($row->field_name, []);
@@ -633,7 +632,7 @@ abstract class table {
      * @return array
      */
     public function get_cms_list() {
-        $fields = $this->get_fields();
+        $fields = $this->get_fields(true);
         return
             node::create('td.edit a.edit', ['href' => '/cms/edit/' . static::get_module_id() . '/' . $this->get_primary_key()]) .
             node::create('td.edit a.live' . ($this->live ? '' : 'not_live'), ['href' => '#', 'data-ajax-click' => get_class($this) . ':do_toggle_live', 'data-ajax-post' => '{"mid":' . static::get_module_id() . ',"id":' . $this->get_primary_key() . '}'], ($this->live ? 'Live' : 'Not Live')) .
