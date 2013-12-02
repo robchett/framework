@@ -1,0 +1,51 @@
+{
+    "title": "CMS Setting",
+    "primary_key": "sid",
+    "namespace": "cms",
+    "tablename": "_cms_setting",
+    "group": "CMS Settings",
+    "fieldset": {
+        "sid": {
+            "type": "int",
+            "length": 6,
+            "autoincrement": true,
+            "primary": true,
+            "list": 0,
+            "filter": 0
+        },
+        "parent_sid": {
+            "type": "link",
+            "length": 6,
+            "default": 0,
+            "list": 0,
+            "filter": 0,
+            "module" : "_cms_setting",
+            "field": "title"
+        },
+        //@include 'default.json'
+        "title": {
+            "type": "string",
+            "length": 32
+        },
+        "type": {
+            "type": "string",
+            "length": 16
+        },
+        "key": {
+            "type": "string",
+            "length": 32
+        },
+        "value": {
+            "type": "textarea",
+            "filter": 0
+        }
+    },
+    "dependencies": [],
+    "settings": {},
+    "indexes": {
+        "primary": "sid",
+        "standard": [
+            //@include 'default_indexes.json'
+        ]
+    }
+}

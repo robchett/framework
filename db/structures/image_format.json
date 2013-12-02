@@ -1,0 +1,39 @@
+{
+    "title": "Image Format Type",
+    "primary_key": "ifid",
+    "namespace": "",
+    "group": "Image Settings",
+    "tablename": "image_format",
+    "fieldset": {
+        "ifid": {
+            "type": "int",
+            "length": 6,
+            "autoincrement": true,
+            "primary": true,
+            "list": 0,
+            "filter": 0
+        },
+        "parent_ifid": {
+            "type": "link",
+            "length": 6,
+            "default": 0,
+            "list": 0,
+            "filter": 0,
+            "module" : "image_format",
+            "field": "title"
+        },
+        //@include 'default.json'
+        "title": {
+            "type": "string",
+            "length": 32
+        }
+    },
+    "dependencies": [],
+    "settings": {},
+    "indexes": {
+        "primary": "ifid",
+        "standard": [
+            //@include 'default_indexes.json'
+        ]
+    }
+}

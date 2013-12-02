@@ -1,0 +1,39 @@
+{
+    "title": "CMS Groups",
+    "primary_key": "gid",
+    "namespace": "cms",
+    "tablename": "_cms_group",
+    "group": "CMS Settings",
+    "fieldset": {
+        "gid": {
+            "type": "int",
+            "length": 6,
+            "autoincrement": true,
+            "primary": true,
+            "list": 0,
+            "filter": 0
+        },
+        "parent_gid": {
+            "type": "link",
+            "length": 6,
+            "default": 0,
+            "list": 0,
+            "filter": 0,
+            "module" : "_cms_group",
+            "field": "title"
+        },
+        //@include 'default.json'
+        "title": {
+            "type": "string",
+            "length": 32
+        }
+    },
+    "dependencies": [],
+    "settings": {},
+    "indexes": {
+        "primary": "gid",
+        "standard": [
+            //@include 'default_indexes.json'
+        ]
+    }
+}

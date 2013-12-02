@@ -1,0 +1,75 @@
+{
+    "title": "CMS Fields",
+    "primary_key": "fid",
+    "namespace": "cms",
+    "tablename": "_cms_field",
+    "group": "CMS Settings",
+    "fieldset": {
+        "fid": {
+            "type": "int",
+            "length": 6,
+            "autoincrement": true,
+            "primary": true,
+            "list": 0,
+            "filter": 0
+        },
+        "parent_fid": {
+            "type": "link",
+            "length": 6,
+            "default": 0,
+            "list": 0,
+            "filter": 0,
+            "module" : "_cms_field",
+            "field": "title"
+        },
+        //@include 'default.json'
+        "field_name": {
+            "type": "string",
+            "length": 32
+        },
+        "title": {
+            "type": "string",
+            "length": 32
+        },
+        "type": {
+            "type": "string",
+            "length": 16
+        },
+        "mid": {
+            "type": "link",
+            "module": "_cms_module",
+            "field": "title"
+        },
+        "link_module": {
+            "type": "int",
+            "length": 6
+        },
+        "link_field": {
+            "type": "int",
+            "length": 6
+        },
+        "list": {
+            "type": "int",
+            "length": 1,
+            "default": 1
+        },
+        "filter": {
+            "type": "int",
+            "length": 1,
+            "default": 1
+        },
+        "required": {
+            "type": "int",
+            "length": 1,
+            "default": 0
+        }
+    },
+    "dependencies": ["_cms_module"],
+    "settings": {},
+    "indexes": {
+        "primary" : "fid",
+        "standard" : [
+            //@include 'default_indexes.json'
+        ]
+    }
+}

@@ -1,0 +1,77 @@
+{
+    "title": "Image Size",
+    "primary_key": "isid",
+    "namespace": "",
+    "group": "Image Settings",
+    "tablename": "image_size",
+    "fieldset": {
+        "isid": {
+            "type": "int",
+            "length": 6,
+            "autoincrement": true,
+            "primary": true,
+            "list": 0,
+            "filter": 0
+        },
+        "parent_isid": {
+            "type": "link",
+            "length": 6,
+            "default": 0,
+            "list": 0,
+            "filter": 0,
+            "module" : "image_size",
+            "field": "title"
+        },
+        //@include 'default.json'
+        "title": {
+            "type": "string",
+            "length": 32
+        },
+        "reference": {
+            "type": "string",
+            "length": 8
+        },
+        "min_width": {
+            "type": "int",
+            "length": 4
+        },
+        "min_height": {
+            "type": "int",
+            "length": 4
+        },
+        "max_width": {
+            "type": "int",
+            "length": 4
+        },
+        "max_height": {
+            "type": "int",
+            "length": 4
+        },
+        "icid": {
+            "type": "link",
+            "module": "image_crop",
+            "field": "title"
+        },
+        "ifid": {
+            "type": "link",
+            "module": "image_format",
+            "field": "title"
+        },
+        "fid": {
+            "type": "int",
+            "length": 4
+        },
+        "default": {
+            "type": "int",
+            "length": 1
+        }
+    },
+    "dependencies": ["image_crop", "image_format"],
+    "settings": {},
+    "indexes": {
+        "primary": "isid",
+        "standard": [
+            //@include 'default_indexes.json'
+        ]
+    }
+}

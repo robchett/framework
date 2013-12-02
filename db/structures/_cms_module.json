@@ -1,0 +1,56 @@
+{
+    "title": "CMS Module",
+    "primary_key": "mid",
+    "namespace": "cms",
+    "tablename": "_cms_module",
+    "group": "CMS Settings",
+    "fieldset": {
+        "mid": {
+            "type": "int",
+            "length": 6,
+            "autoincrement": true,
+            "primary": true,
+            "list": 0,
+            "filter": 0
+        },
+        "parent_mid": {
+            "type": "link",
+            "length": 6,
+            "default": 0,
+            "list": 0,
+            "filter": 0,
+            "module": "_cms_module",
+            "field": "title"
+        },
+        //@include 'default.json'
+        "gid": {
+            "type": "link",
+            "module": "_cms_group",
+            "field": "title"
+        },
+        "primary_key": {
+            "type": "string",
+            "length": 8
+        },
+        "title": {
+            "type": "string",
+            "length": 32
+        },
+        "table_name": {
+            "type": "string",
+            "length": 32
+        },
+        "namespace": {
+            "type": "string",
+            "length": 32
+        }
+    },
+    "dependencies": ["_cms_group"],
+    "settings": {},
+    "indexes": {
+        "primary": "mid",
+        "standard": [
+            //@include 'default_indexes.json'
+        ]
+    }
+}
