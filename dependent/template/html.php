@@ -1,7 +1,7 @@
 <?php
 namespace template;
 
-class html extends \core\template\html {
+abstract class html extends \core\template\html {
 
 }
  
