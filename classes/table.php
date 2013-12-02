@@ -628,6 +628,11 @@ abstract class table {
         }
     }
 
+    public static function reload_table_definitions() {
+        self::$cms_modules = null;
+        self::set_cms_modules();
+    }
+
     public function get_primary_key_name() {
         self::set_cms_modules();
         $class = get_called_class();
