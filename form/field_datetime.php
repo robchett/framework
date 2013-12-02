@@ -21,6 +21,6 @@ abstract class field_datetime extends field {
     }
 
     public function get_cms_list_wrapper($value, $class, $id) {
-        return $this->parent_form->{$this->field_name} = date('d/m/Y @h:i:s', strtotime($value));
+        return date('d/m/Y @h:i:s', strtotime($value));
     }
 }
