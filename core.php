@@ -172,21 +172,6 @@ abstract class core {
     }
 
     /**
-     * @param $fid
-     * @return _cms_field
-     */
-    public static function get_field_from_fid($fid) {
-        if (!isset(self::$cms_fields)) {
-            $cms_fields = _cms_field::get_all([]);
-            $cms_fields->iterate(function ($object) {
-                    self::$cms_fields[$object->fid] = $object;
-                }
-            );
-        }
-        return self::$cms_fields[$fid];
-    }
-
-    /**
      * @return string
      */
     public function get_js() {
