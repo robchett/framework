@@ -19,6 +19,6 @@ abstract class cms_view extends \template\html {
     }
 
     public function get_title_tag() {
-        return parent::get_title_tag() . ' | CMS | ' . ucwords(str_replace('_', ' ', \classes\get::__class_name($this))) . ' | ' . $this->module->current->get_title();
+        return parent::get_title_tag() . ' | CMS | ' . ucwords(str_replace('_', ' ', \classes\get::__class_name($this))) . (isset($this->module->current) ? ' | ' . $this->module->current->get_title() : '');
     }
 }
