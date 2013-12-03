@@ -10,8 +10,10 @@
             "length": 6,
             "autoincrement": true,
             "primary": true,
-            "list": 0,
-            "filter": 0
+            "list": false,
+            "filter": false,
+            "required": false,
+            "editable": false
         },
         "parent_pid": {
             "type": "link",
@@ -20,7 +22,8 @@
             "list": 0,
             "filter": 0,
             "module": "page",
-            "field": "title"
+            "field": "title",
+            "required": false
         },
         //@include 'default.json'
         "title": {
@@ -31,18 +34,21 @@
         "fn": {
             "type": "string",
             "length": 125,
-            "default": ""
+            "default": "",
+            "required": false
         },
         "body": {
             "type": "textarea",
             "default": "",
             "list": 0,
-            "filter": 0
+            "filter": 0,
+            "required": false
         },
         "direct_link": {
             "type": "string",
             "length": 125,
-            "default": ""
+            "default": "",
+            "required": false
         },
         "nav": {
             "type": "boolean",
@@ -54,7 +60,8 @@
             "length": 32,
             "default": "",
             "list": 1,
-            "filter": 0
+            "filter": 0,
+            "required": false
         }
     },
     "dependencies": ["_cms_module", "_cms_field"],

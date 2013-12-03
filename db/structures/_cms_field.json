@@ -10,8 +10,10 @@
             "length": 6,
             "autoincrement": true,
             "primary": true,
-            "list": 0,
-            "filter": 0
+            "list": false,
+            "filter": false,
+            "required": false,
+            "editable": false
         },
         "parent_fid": {
             "type": "link",
@@ -20,7 +22,8 @@
             "list": 0,
             "filter": 0,
             "module" : "_cms_field",
-            "field": "title"
+            "field": "title",
+            "required": false
         },
         //@include 'default.json'
         "field_name": {
@@ -42,26 +45,33 @@
         },
         "link_module": {
             "type": "int",
-            "length": 6
+            "length": 6,
+            "required": false
         },
         "link_field": {
             "type": "int",
-            "length": 6
+            "length": 6,
+            "required": false
         },
         "list": {
-            "type": "int",
+            "type": "boolean",
             "length": 1,
             "default": 1
         },
         "filter": {
-            "type": "int",
+            "type": "boolean",
             "length": 1,
             "default": 1
         },
         "required": {
-            "type": "int",
+            "type": "boolean",
             "length": 1,
-            "default": 0
+            "default": 1
+        },
+        "editable": {
+            "type": "boolean",
+            "length": 1,
+            "default": 1
         }
     },
     "dependencies": ["_cms_module"],

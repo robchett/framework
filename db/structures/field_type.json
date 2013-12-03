@@ -10,8 +10,10 @@
             "length": 6,
             "autoincrement": true,
             "primary": true,
-            "list": 0,
-            "filter": 0
+            "list": false,
+            "filter": false,
+            "required": false,
+            "editable": false
         },
         "parent_ftid": {
             "type": "link",
@@ -20,7 +22,8 @@
             "list": 0,
             "filter": 0,
             "module" : "field_type",
-            "field": "title"
+            "field": "title",
+            "required": false
         },
         //@include 'default.json'
         "title": {

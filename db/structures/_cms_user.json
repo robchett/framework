@@ -10,8 +10,10 @@
             "length": 6,
             "autoincrement": true,
             "primary": true,
-            "list": 0,
-            "filter": 0
+            "list": false,
+            "filter": false,
+            "required": false,
+            "editable": false
         },
         "parent_uid": {
             "type": "link",
@@ -20,7 +22,8 @@
             "list": 0,
             "filter": 0,
             "module": "_cms_user",
-            "field": "title"
+            "field": "title",
+            "required": false
         },
         //@include 'default.json'
         "title": {
@@ -31,19 +34,24 @@
         "password": {
             "type": "password",
             "length": 64,
-            "default": ""
+            "default": "",
+            "required": false
         },
         "last_login": {
             "type": "date",
             "list": 0,
-            "filter": 0
+            "filter": 0,
+            "editable": false,
+            "required": false
         },
         "last_login_ip": {
             "type": "string",
             "length": 32,
             "default": "",
             "list": 0,
-            "filter": 0
+            "filter": 0,
+            "editable": false,
+            "required": false
         },
         "_cms_user_level": {
             "type": "link",

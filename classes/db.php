@@ -5,6 +5,7 @@ namespace core\classes;
 use classes\ajax as _ajax;
 use classes\db as _db;
 use classes\get as _get;
+use core\module\cms\object\stub_field;
 use db\count as _count;
 use db\insert as _insert;
 use db\select as _select;
@@ -446,11 +447,7 @@ abstract class db implements interfaces\database_interface {
         _db::query($sql);
     }
 
-    public static function get_column_type_json($structure) {
-        if (!isset($structure->type)) $structure->type = 'text';
-        if (!isset($structure->lengrh)) $structure->length = false;
-        if (!isset($structure->autoincrement)) $structure->autoincrement = false;
-        if (!isset($structure->default)) $structure->default = false;
+    public static function get_column_type_json(stub_field $structure) {
         $string = '';
         $default = 0;
         switch ($structure->type) {

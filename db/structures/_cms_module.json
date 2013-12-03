@@ -10,8 +10,10 @@
             "length": 6,
             "autoincrement": true,
             "primary": true,
-            "list": 0,
-            "filter": 0
+            "list": false,
+            "filter": false,
+            "required": false,
+            "editable": false
         },
         "parent_mid": {
             "type": "link",
@@ -20,7 +22,8 @@
             "list": 0,
             "filter": 0,
             "module": "_cms_module",
-            "field": "title"
+            "field": "title",
+            "required": false
         },
         //@include 'default.json'
         "gid": {
@@ -42,7 +45,8 @@
         },
         "namespace": {
             "type": "string",
-            "length": 32
+            "length": 32,
+            "required": false
         }
     },
     "dependencies": ["_cms_group"],

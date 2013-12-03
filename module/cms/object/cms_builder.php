@@ -24,7 +24,18 @@ class cms_builder {
                     return file_get_contents($sub_file);
                 }, $file
             );
-            return json_decode($file);
+            $json = json_decode($file);
+            if (!isset($json->fieldset)) {
+                $json->fieldset = [];
+            }
+            foreach ($json->fieldset as &$field) {
+                $_field = new stub_field();
+                foreach ($field as $attribute => $value) {
+                    $_field->$attribute = $value;
+                }
+                $field = $_field;
+            }
+            return $json;
         } else {
             throw new \Exception('Could not find table stub: ' . $database);
         }
@@ -50,13 +61,17 @@ class cms_builder {
             ->execute();
     }
 
-    public function create_field_base($structure, $key, &$field, $cnt = 0) {
+    public function create_field_base($structure, $key, stub_field &$field, $cnt = 0) {
         $field->id = db::insert('_cms_field')
             ->add_value('field_name', $key)
-            ->add_value('title', isset($field->title) ? $field->title : ucwords(str_replace('_', ' ', $key)))
+            ->add_value('title', $field->title ? $field->title : ucwords(str_replace('_', ' ', $key)))
             ->add_value('type', $field->type)
             ->add_value('mid', $structure->mid)
             ->add_value('position', $cnt)
+            ->add_value('list', $field->list)
+            ->add_value('editable', $field->filter)
+            ->add_value('required', $field->required)
+            ->add_value('editable', $field->editable)
             ->execute();
     }
 
@@ -92,7 +107,7 @@ class cms_builder {
         foreach ($modules_json as &$structure) {
             $cnt = 0;
             foreach ($structure->fieldset as $key => &$field) {
-                if(!isset($field->is_deleted) || !$field->is_default) {
+                if (!$field->is_default) {
                     $this->create_field_base($structure, $key, $field, $cnt++);
                 }
             }
@@ -132,7 +147,7 @@ class cms_builder {
             $field_type->title = $field;
             $field_type->do_save();
         }
-
+        table::reload_table_definitions();
     }
 
     public function build_settings() {
@@ -168,12 +183,12 @@ class cms_builder {
         $module_id = _cms_module::create($json->title, $json->tablename, $json->primary_key, $_group_id, $json->namespace)->get_primary_key();
         $cnt = 0;
         foreach ($json->fieldset as $field => $structure) {
-            if (!isset($structure->is_default) || !$structure->is_default) {
+            if (!$structure->is_default) {
                 _cms_field::create($field, $structure, $module_id, $cnt++);
             }
         }
         foreach ($json->fieldset as $field => $structure) {
-            if (isset($structure->module) && isset($structure->field)) {
+            if ($structure->module && $structure->field) {
                 $cms_field = new _cms_field();
                 $cms_field->do_retrieve([], ['where' => '(mid = :mid OR mid = 0) AND field_name = :field_name', 'parameters' => ['mid' => $module_id, 'field_name' => $field]]);
 
@@ -227,7 +242,7 @@ class cms_builder {
                             db::move_column($module->table_name, $key, $format, $previous_key ? ' AFTER `' . $previous_key . '`' : ' FIRST');
                         }
                     }
-                    if (!isset($row->is_default) || !$row->is_default) {
+                    if (!$row->is_default) {
                         $_field = db::select('_cms_field')->retrieve(['fid'])->filter(['mid=:mid', 'field_name=:key'], ['mid' => $module->mid, 'key' => $key])->execute();
                         if (!$_field->rowCount()) {
                             $this->create_field_base($module, $key, $row);
@@ -292,7 +307,7 @@ class cms_builder {
             self::create_from_structure('_cms_user');
             table::reload_table_definitions();
 
-            $user_level= new _cms_user_level();
+            $user_level = new _cms_user_level();
             $user_level->title = 'Admin';
             $user_level->do_save();
 
@@ -318,4 +333,20 @@ class cms_builder {
         db::update('_cms_setting')->add_value('value', $patch)->filter(['`key`="cms_version"'])->execute();
     }
 }
- 
+
+
+class stub_field {
+
+    public $type = 'text';
+    public $title;
+    public $length = false;
+    public $default = false;
+    public $module = 0;
+    public $field = 0;
+    public $is_default = false;
+    public $list = true;
+    public $filter = true;
+    public $required = true;
+    public $editable = true;
+    public $autoincrement = false;
+}

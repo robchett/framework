@@ -1,5 +1,5 @@
 "live": {
-"type": "int",
+"type": "boolean",
 "length": 1,
 "default" : 1,
 "list": 0,
@@ -7,7 +7,7 @@
 "is_default": 1
 },
 "deleted": {
-"type": "int",
+"type": "boolean",
 "length": 1,
 "default" : 0,
 "list": 0,
