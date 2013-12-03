@@ -34,7 +34,7 @@ abstract class module {
             }
         }
         $this->set_view();
-        if (!_ini::get('building', 'site', true)) {
+        if (ini::get('mysql', 'database', false)) {
             $this->set_page();
         }
         \core::$page_config->add_body_class('module_' . _get::__namespace($this, 0), $this->view);
