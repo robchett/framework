@@ -8,6 +8,7 @@ use module\cms\object\_cms_field;
 use module\cms\object\_cms_group;
 use module\cms\object\_cms_module;
 use module\cms\object\_cms_user;
+use module\cms\object\_cms_user_level;
 use module\cms\object\field_type;
 
 class cms_builder {
@@ -288,11 +289,24 @@ class cms_builder {
         if (!db::table_exists('_cms_user')) {
             self::create_from_structure('_cms_user');
             table::reload_table_definitions();
+
+            $user_level= new _cms_user_level();
+            $user_level->title = 'Admin';
+            $user_level->do_save();
+
+            $user_level->ulid = 0;
+            $user_level->title = 'Webmaster';
+            $user_level->do_save();
+
+            $user_level->ulid = 0;
+            $user_level->title = 'User';
+            $user_level->do_save();
+
             $cms_user = new _cms_user();
             $cms_user->title = ***REMOVED***;
             $cms_user->password = '***REMOVED***';
+            $cms_user->ulid = 1;
             $cms_user->do_save();
-
         }
     }
 

@@ -11,6 +11,8 @@ class _cms_user extends table {
     public $last_login;
     public $last_login_ip;
     public $title;
+    public $password;
+    public $ulid;
 
 }
  
