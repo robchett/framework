@@ -50,13 +50,13 @@ class cms_builder {
             ->execute();
     }
 
-    public function create_field_base($structure, $key, &$field) {
+    public function create_field_base($structure, $key, &$field, $cnt = 0) {
         $field->id = db::insert('_cms_field')
             ->add_value('field_name', $key)
             ->add_value('title', isset($field->title) ? $field->title : ucwords(str_replace('_', ' ', $key)))
             ->add_value('type', $field->type)
             ->add_value('mid', $structure->mid)
-            ->add_value('position', 1)
+            ->add_value('position', $cnt)
             ->execute();
     }
 
@@ -90,9 +90,10 @@ class cms_builder {
         }
         // Create basic fields
         foreach ($modules_json as &$structure) {
+            $cnt = 0;
             foreach ($structure->fieldset as $key => &$field) {
                 if(!isset($field->is_deleted) || !$field->is_default) {
-                    $this->create_field_base($structure, $key, $field);
+                    $this->create_field_base($structure, $key, $field, $cnt++);
                 }
             }
         }
@@ -165,9 +166,10 @@ class cms_builder {
         db::create_table_json($json);
         $_group_id = _cms_group::create($json->group)->get_primary_key();
         $module_id = _cms_module::create($json->title, $json->tablename, $json->primary_key, $_group_id, $json->namespace)->get_primary_key();
+        $cnt = 0;
         foreach ($json->fieldset as $field => $structure) {
             if (!isset($structure->is_default) || !$structure->is_default) {
-                _cms_field::create($field, $structure, $module_id);
+                _cms_field::create($field, $structure, $module_id, $cnt++);
             }
         }
         foreach ($json->fieldset as $field => $structure) {
