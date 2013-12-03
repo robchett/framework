@@ -1,0 +1,68 @@
+{
+    "title": "Pages",
+    "tablename": "page",
+    "primary_key": "pid",
+    "group": "Page Management",
+    "namespace": "pages",
+    "fieldset": {
+        "pid": {
+            "type": "int",
+            "length": 6,
+            "autoincrement": true,
+            "primary": true,
+            "list": 0,
+            "filter": 0
+        },
+        "parent_pid": {
+            "type": "link",
+            "length": 6,
+            "default": 0,
+            "list": 0,
+            "filter": 0,
+            "module": "page",
+            "field": "title"
+        },
+        //@include 'default.json'
+        "title": {
+            "type": "string",
+            "length": 125,
+            "default": ""
+        },
+        "fn": {
+            "type": "string",
+            "length": 125,
+            "default": ""
+        },
+        "body": {
+            "type": "textarea",
+            "default": "",
+            "list": 0,
+            "filter": 0
+        },
+        "direct_link": {
+            "type": "string",
+            "length": 125,
+            "default": ""
+        },
+        "nav": {
+            "type": "boolean",
+            "length": 1,
+            "default": 0
+        },
+        "module_name": {
+            "type": "string",
+            "length": 32,
+            "default": "",
+            "list": 1,
+            "filter": 0
+        }
+    },
+    "dependencies": ["_cms_module", "_cms_field"],
+    "settings": {},
+    "indexes": {
+        "primary": "pid",
+        "standard": [
+            //@include 'default_indexes.json'
+        ]
+    }
+}

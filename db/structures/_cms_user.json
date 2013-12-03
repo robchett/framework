@@ -1,0 +1,75 @@
+{
+    "title": "CMS User",
+    "tablename": "_cms_user",
+    "primary_key": "uid",
+    "group": "CMS Settings",
+    "namespace": "cms",
+    "fieldset": {
+        "uid": {
+            "type": "int",
+            "length": 6,
+            "autoincrement": true,
+            "primary": true,
+            "list": 0,
+            "filter": 0
+        },
+        "parent_uid": {
+            "type": "link",
+            "length": 6,
+            "default": 0,
+            "list": 0,
+            "filter": 0,
+            "module": "_cms_user",
+            "field": "title"
+        },
+        //@include 'default.json'
+        "title": {
+            "type": "string",
+            "length": 64,
+            "default": ""
+        },
+        "password": {
+            "type": "password",
+            "length": 64,
+            "default": ""
+        },
+        "last_login": {
+            "type": "date",
+            "list": 0,
+            "filter": 0
+        },
+        "last_login_ip": {
+            "type": "string",
+            "length": 32,
+            "default": "",
+            "list": 0,
+            "filter": 0
+        },
+        "_cms_user_level": {
+            "type": "link",
+            "length": 6,
+            "default": 0,
+            "list": 0,
+            "filter": 0,
+            "module": "_cms_user_level",
+            "field": "title"
+        },
+        "privileges": {
+            "type": "mlink",
+            "length": 6,
+            "default": 0,
+            "list": 0,
+            "filter": 0,
+            "module": "_cms_module",
+            "field": "title"
+        }
+    },
+    "dependencies": ["_cms_user_level", "_cms_module"],
+    "settings": {},
+    "indexes": {
+        "primary": "uid",
+        "standard": [
+            //@include 'default_indexes.json'
+        ]
+    }
+}
