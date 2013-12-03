@@ -90,7 +90,9 @@ class cms_builder {
         // Create basic fields
         foreach ($modules_json as &$structure) {
             foreach ($structure->fieldset as $key => &$field) {
-                $this->create_field_base($structure, $key, $field);
+                if(!isset($field->is_deleted) || !$field->is_default) {
+                    $this->create_field_base($structure, $key, $field);
+                }
             }
         }
         // Reset pointers
