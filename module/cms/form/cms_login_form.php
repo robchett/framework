@@ -5,6 +5,7 @@ use classes\ajax as _ajax;
 use classes\ini;
 use form\form;
 use module\cms\controller;
+use module\cms\object\_cms_user;
 
 abstract class cms_login_form extends form {
 
@@ -23,17 +24,22 @@ abstract class cms_login_form extends form {
 
     public function do_validate() {
         parent::do_validate();
-        if (!($this->username == ***REMOVED*** && $this->password == '***REMOVED***')) {
+        $user = new _cms_user();
+        $user->do_retrieve([], ['where_equals' => ['title' => $this->username, 'password' => md5($this->password)]]);
+        if ($user->get_primary_key()) {
+            $user->last_login = time();
+            $user->last_login_ip = ip;
+        } else {
             $this->validation_errors['username'] = 'Username and password combination does not match.';
         }
 
     }
 
     public function do_submit() {
+        controller::do_database_repair();
         if (parent::do_submit()) {
             $_SESSION['admin'] = true;
             _ajax::$redirect = '/cms/dashboard';
-            controller::do_database_repair();
         }
     }
 

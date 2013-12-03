@@ -18,6 +18,36 @@ abstract class _cms_field extends table {
     public $link_field;
     public $link_module;
 
+    public static function create($field_name, $structure, $module) {
+        $field = new __cms_field();
+        $field->do_retrieve([], ['where_equals' => ['mid' => $module, 'field_name' => $field_name]]);
+        if (!$field->get_primary_key()) {
+            $field->field_name = $field_name;
+            $field->mid = $module;
+            $field->type = $structure->type;
+            $field->title = isset($structure->title) ? $structure->title : ucwords(str_replace('_,', ' ', $field_name));
+            if (isset($structure->module) && $structure->module) {
+                $_module = new __cms_module();
+                $_module->do_retrieve(['mid'], ['where_equals' => ['table_name' => $structure->module]]);
+                $field->link_module = $_module->mid;
+                if (isset($structure->field) && $structure->field) {
+                    $_field = new __cms_field();
+                    $_field->do_retrieve(['fid'], ['where_equals' => ['field_name' => $structure->field, 'mid' => $_module->mid]]);
+                    if ($_field->get_primary_key()) {
+                        $field->link_field = $_field->fid;
+                    }
+                }
+            }
+            $field->list = (isset($structure->list) ? $structure->list : true);
+            $field->filter = (isset($structure->filter) ? $structure->filter : true);
+            $field->required = (isset($structure->required) ? $structure->required : true);
+            $field->do_save();
+        } else {
+            throw new \Exception('Field ' . $field_name . ' already exists in module ' . $module);
+        }
+        return $field;
+    }
+
     /**
      * @param $fid
      * @return __cms_field
@@ -30,6 +60,6 @@ abstract class _cms_field extends table {
                 }
             );
         }
-        return self::$cms_fields[$fid];
+        return isset(self::$cms_fields[$fid]) ? self::$cms_fields[$fid] : false;
     }
 }

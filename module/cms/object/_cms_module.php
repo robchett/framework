@@ -45,4 +45,20 @@ abstract class _cms_module extends table {
 
         jquery::colorbox(['html' => $form->get_html()->get()]);
     }
+
+    public static function create($title, $table_name, $primary_key, $group, $namespace = '') {
+        $module = new \module\cms\object\_cms_module();
+        $module->do_retrieve(['title'], ['where_equals'=>['table_name' => $table_name]]);
+        if (!$module->get_primary_key()) {
+            $module->title = $title;
+            $module->table_name = $table_name;
+            $module->primary_key = $primary_key;
+            $module->gid = $group;
+            $module->namespace = $namespace;
+            $module->do_save();
+        } else {
+            throw new \Exception('Module ' . $title . ' already exists.');
+        }
+        return $module;
+    }
 }

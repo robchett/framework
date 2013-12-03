@@ -23,7 +23,7 @@ abstract class field_link extends field {
 
     public function  get_cms_list_wrapper($value, $object_class, $id) {
         $class = (is_numeric($this->link_module) ? table::get_class_from_mid($this->link_module) : $this->link_module);
-        $field_name = (is_numeric($this->link_field) ? _cms_field::get_field_from_fid($this->link_field)->field_name : $this->link_field);
+        $field_name = (is_numeric($this->link_field && $this->link_field) ? _cms_field::get_field_from_fid($this->link_field)->field_name : ($this->link_field ?: 'title'));
         $object = new $class();
         /** @var table $object */
         $object->do_retrieve_from_id([$field_name, $object->get_primary_key_name()], $value);
@@ -44,7 +44,11 @@ abstract class field_link extends field {
 
     public function get_link_fields() {
         if (is_numeric($this->link_field)) {
-            $this->link_field = _cms_field::get_field_from_fid($this->link_field)->field_name;
+            if($this->link_field) {
+                $this->link_field = _cms_field::get_field_from_fid($this->link_field)->field_name;
+            } else {
+                $this->link_field = 'title';
+            }
         }
         if (is_array($this->link_field)) {
             $fields = $this->link_field;
@@ -94,7 +98,8 @@ abstract class field_link extends field {
 
         $parents = new collection();
         $options->iterate(
-            function (table $object) use (&$parents) {
+            /* @var \classes\table $object */
+            function ($object) use (&$parents) {
                 if (!$object->get_parent_primary_key()) {
                     $object->_children = new collection();
                     $parents[$object->get_primary_key()] = $object;
@@ -103,11 +108,13 @@ abstract class field_link extends field {
                 }
             }
         );
-        $parents->iterate(function (table $object) use (&$html, $fields) {
+        /* @var \classes\table $object */
+        $parents->iterate(function ($object) use (&$html, $fields) {
                 $html .= '<option value="' . $object->{$object->get_primary_key_name()} . '" ' . ($this->is_selected($object->{$object->get_primary_key_name()}) ? 'selected="selected"' : '') . '>' . $this->get_object_title($object, $fields) . '</option>';
                 if ($object->_children->count()) {
                     $object->_children->iterate(
-                        function (table $sub_object) use (&$html, $fields) {
+                    /* @var \classes\table $sub_object */
+                        function ($sub_object) use (&$html, $fields) {
                             $html .= '<option value="' . $sub_object->{$sub_object->get_primary_key_name()} . '" ' . ($this->is_selected($sub_object->{$sub_object->get_primary_key_name()}) ? 'selected="selected"' : '') . '>' . $this->get_object_title($sub_object, $fields, 1) . '</option>';
                         }
                     );
@@ -117,7 +124,7 @@ abstract class field_link extends field {
         return $html;
     }
 
-    protected function get_object_title(table $object, $fields, $depth = 0) {
+    protected function get_object_title($object, $fields, $depth = 0) {
         if (is_array($fields)) {
             $parts = [];
             foreach ($fields as $part) {

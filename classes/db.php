@@ -375,4 +375,85 @@ abstract class db implements interfaces\database_interface {
         $sql .= implode(',', $setting_strings);
         _db::query($sql);
     }
+
+    public static function create_table_json($json) {
+        $sql = 'CREATE TABLE IF NOT EXISTS ' . $json->tablename;
+        $column_strings = [];
+        foreach ($json->fieldset as $field => $structure) {
+            $string = '`' . $field . '` ' . static::get_column_type_json($structure);
+            $column_strings[] = $string;
+        }
+        foreach ($json->indexes as $type => $indexes) {
+            switch ($type) {
+                case 'primary' :
+                    $column_strings[] = 'PRIMARY KEY (`' . $indexes . '`)';
+                    break;
+                case 'standard':
+                    foreach ($indexes as $index) {
+                        $column_strings[] = 'INDEX (`' . implode('`,`', $index) . '`)';
+                    }
+                    break;
+            }
+        }
+        $sql .= ' (' . implode(',', $column_strings) . ') ';
+
+        $setting_strings = [];
+        foreach (_db::$default_table_settings as $setting => $value) {
+            if (is_numeric($setting)) {
+                $setting_strings[] = $value;
+            } else {
+                $setting_strings[] = $setting . ' = ' . $value;
+            }
+        }
+        foreach ($json->settings as $setting => $value) {
+            if (is_numeric($setting)) {
+                $setting_strings[] = $value;
+            } else {
+                $setting_strings[] = $setting . ' = ' . $value;
+            }
+        }
+        $sql .= implode(',', $setting_strings);
+        _db::query($sql);
+    }
+
+    public static function get_column_type_json($structure) {
+        if (!isset($structure->type)) $structure->type = 'text';
+        if (!isset($structure->lengrh)) $structure->length = false;
+        if (!isset($structure->autoincrement)) $structure->autoincrement = false;
+        if (!isset($structure->default)) $structure->default = false;
+        $string = '';
+        $default = 0;
+        switch ($structure->type) {
+            case 'int':
+                $string .= 'INT(' . ($structure->length ? : 6) . ')';
+                $default = 0;
+                break;
+            case 'boolean':
+                $default = 0;
+                $string .= 'INT(1)';
+                break;
+            case 'string':
+                $default = '';
+                $string .= 'VARCHAR(' . ($structure->length ? : 64) . ')';
+                break;
+            case 'password':
+                $default = '';
+                $string .= 'VARCHAR(' . ($structure->length ? : 64) . ')';
+                break;
+            case 'textarea':
+                $default = '';
+                $string .= 'TEXT';
+                break;
+            case 'date':
+                $default = '0000-00-00';
+                $string .= 'TIMESTAMP';
+                break;
+            case 'link':
+                $default = 0;
+                $string .= 'INT(' . ($structure->length ? : 6) . ')';
+                break;
+        }
+        $string .= ' NOT NULL ' . ($structure->autoincrement ? 'AUTO_INCREMENT' : 'DEFAULT "' . ($structure->default ? : $default) . '"');
+        return $string;
+    }
 }
