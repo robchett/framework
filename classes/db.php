@@ -10,6 +10,7 @@ use db\insert as _insert;
 use db\select as _select;
 use db\update as _update;
 use html\node;
+use module\cms\object\_cms_module;
 
 abstract class db implements interfaces\database_interface {
 
@@ -376,12 +377,41 @@ abstract class db implements interfaces\database_interface {
         _db::query($sql);
     }
 
+    public static function create_table_join($source, $destination) {
+        $source_module = new _cms_module();
+        $source_module->do_retrieve(['primary_key'], ['where_equals' => ['table_name' => $source]]);
+        $destination_module = new _cms_module();
+        $destination_module->do_retrieve(['primary_key'], ['where_equals' => ['table_name' => $destination]]);
+
+        $sql = 'CREATE TABLE IF NOT EXISTS ' . $source . '_link_' . $destination . '
+            (
+                `' . $source_module->primary_key . '` INT(6) NOT NULL DEFAULT 0,
+                `' . $destination_module->primary_key . '` INT(6) NOT NULL DEFAULT 0,
+                `fid` INT(6) NOT NULL DEFAULT 0,
+                INDEX(`' . $source_module->primary_key . '`,`' . $destination_module->primary_key . '`,`fid`),
+                INDEX(`' . $destination_module->primary_key . '`)
+            )
+        ';
+        $setting_strings = [];
+        foreach (_db::$default_table_settings as $setting => $value) {
+            if (is_numeric($setting)) {
+                $setting_strings[] = $value;
+            } else {
+                $setting_strings[] = $setting . ' = ' . $value;
+            }
+        }
+        $sql .= implode(',', $setting_strings);
+        _db::query($sql);
+    }
+
     public static function create_table_json($json) {
         $sql = 'CREATE TABLE IF NOT EXISTS ' . $json->tablename;
         $column_strings = [];
         foreach ($json->fieldset as $field => $structure) {
-            $string = '`' . $field . '` ' . static::get_column_type_json($structure);
-            $column_strings[] = $string;
+            $string = static::get_column_type_json($structure);
+            if ($string) {
+                $column_strings[] = '`' . $field . '` ' . $string;
+            }
         }
         foreach ($json->indexes as $type => $indexes) {
             switch ($type) {
@@ -452,6 +482,8 @@ abstract class db implements interfaces\database_interface {
                 $default = 0;
                 $string .= 'INT(' . ($structure->length ? : 6) . ')';
                 break;
+            default :
+                return false;
         }
         $string .= ' NOT NULL ' . ($structure->autoincrement ? 'AUTO_INCREMENT' : 'DEFAULT "' . ($structure->default ? : $default) . '"');
         return $string;

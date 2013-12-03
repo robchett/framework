@@ -65,13 +65,7 @@ abstract class add_field_form extends form {
 
             if ($field->title == 'mlink') {
                 $source_module = new _cms_module(['table_name', 'primary_key'], $this->link_module);
-                db::create_table($module->table_name . '_link_' . $source_module->table_name, [
-                        '_link_id' => 'SMALLINT NOT NULL AUTO_INCREMENT',
-                        $module->primary_key => 'SMALLINT NOT NULL',
-                        'link_' . $source_module->primary_key => 'SMALLINT NOT NULL',
-                        'fid' => 'SMALLINT NOT NULL',
-                    ], ['PRIMARY KEY (`_link_id`)']
-                );
+                db::create_table_join(get::__class_name($this), $source_module->table_name);
             }
 
             $res = db::select('_cms_field')->retrieve('MAX(position) AS pos')->filter_field('mid', $this->mid)->execute()->fetchObject();

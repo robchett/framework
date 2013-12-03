@@ -15,13 +15,18 @@ class cms_builder {
     public static $current_version = 4;
 
     protected static function get_structure($database) {
-        $file = file_get_contents(core_dir . '/db/structures/' . $database . '.json');
-        $file = preg_replace_callback('#//@include \'(.*?)\'#', function ($matches) {
-                $sub_file = core_dir . '/db/structures/' . $matches[1];
-                return file_get_contents($sub_file);
-            }, $file
-        );
-        return json_decode($file);
+        $file = core_dir . '/db/structures/' . $database . '.json';
+        if (file_exists($file)) {
+            $file = file_get_contents($file);
+            $file = preg_replace_callback('#//@include \'(.*?)\'#', function ($matches) {
+                    $sub_file = core_dir . '/db/structures/' . $matches[1];
+                    return file_get_contents($sub_file);
+                }, $file
+            );
+            return json_decode($file);
+        } else {
+            throw new \Exception('Could not find table stub: ' . $database);
+        }
     }
 
     public function create_module_base(&$structure) {
@@ -55,12 +60,15 @@ class cms_builder {
     }
 
     public function create_field_base_link($structure, $key, $field) {
+        $_module = db::select('_cms_module')->retrieve(['mid'])->filter_field('table_name', $structure->tablename)->execute()->fetchObject();
+        $_field = db::select('_cms_field')->retrieve(['fid'])->filter(['`mid`=:mid', '`field_name`=:field_name'], ['mid' => $_module->mid, 'field_name' => $key])->execute()->fetchObject();
+
         $link_module = db::select('_cms_module')->retrieve(['mid'])->filter_field('table_name', $field->module)->execute()->fetchObject();
-        $link_field = db::select('_cms_field')->retrieve(['fid'])->filter(['mid=:mid', 'field_name=:field_name'],['mid'=>$link_module->mid, 'field_name' => $key])->execute()->fetchObject();
+        $link_field = db::select('_cms_field')->retrieve(['fid'])->filter(['`mid`=:mid', '`field_name`=:field_name'], ['mid' => $link_module->mid, 'field_name' => $field->field])->execute()->fetchObject();
         $field->id = db::update('_cms_field')
             ->add_value('link_module', $link_module->mid)
             ->add_value('link_field', $link_field->fid)
-            ->filter_field('fid', $field->fid)
+            ->filter_field('fid', $_field->fid)
             ->execute();
     }
 
@@ -134,6 +142,7 @@ class cms_builder {
     }
 
     public function manage() {
+        set_time_limit(0);
         if (!db::table_exists('_cms_module')) {
             $this->build();
         }
@@ -159,9 +168,29 @@ class cms_builder {
             }
         }
         foreach ($json->fieldset as $field => $structure) {
-            if (isset($structure->module) && isset($structure->field) && $structure->module == $json->tablename) {
+            if (isset($structure->module) && isset($structure->field)) {
                 $cms_field = new _cms_field();
-                $cms_field->do_retrieve([], ['where_equals' => ['mid' => $module_id, 'field_name' => $field]]);
+                $cms_field->do_retrieve([], ['where' => '(mid = :mid OR mid = 0) AND field_name = :field_name', 'parameters' => ['mid' => $module_id, 'field_name' => $field]]);
+
+                if ($structure->type == 'mlink') {
+                    if (!db::table_exists($database . '_link_' . $structure->module)) {
+                        db::create_table_join($database, $structure->module);
+                    }
+                }
+
+                if (!$cms_field->link_module) {
+                    $link_cms_module = new _cms_module();
+                    $link_cms_module->do_retrieve([], ['where_equals' => ['table_name' => $structure->module]]);
+                    if ($link_cms_module->get_primary_key()) {
+                        $cms_field->link_module = $link_cms_module->get_primary_key();
+                    } else {
+                        try {
+                            self::create_from_structure($structure->module);
+                        } catch (\Exception $e) {
+                            die('Missing dependency: ' . $structure->module);
+                        }
+                    }
+                }
                 if (!$cms_field->link_field) {
                     $link_cms_field = new _cms_field();
                     $link_cms_field->do_retrieve([], ['where_equals' => ['mid' => $module_id, 'field_name' => $structure->field]]);
@@ -169,6 +198,7 @@ class cms_builder {
                         $cms_field->link_field = $link_cms_field->get_primary_key();
                     }
                 }
+                $cms_field->do_save();
             }
         }
     }
@@ -184,10 +214,13 @@ class cms_builder {
                 $fields = self::get_structure($module->table_name)->fieldset;
                 $previous_key = false;
                 foreach ($fields as $key => $row) {
-                    if (!db::column_exists($module->table_name, $key)) {
-                        db::add_column($module->table_name, $key, db::get_column_type_json($row), $previous_key ? ' AFTER `' . $previous_key . '`' : ' FIRST');
-                    } else {
-                        db::move_column($module->table_name, $key, db::get_column_type_json($row), $previous_key ? ' AFTER `' . $previous_key . '`' : ' FIRST');
+                    $format = db::get_column_type_json($row);
+                    if ($format) {
+                        if (!db::column_exists($module->table_name, $key)) {
+                            db::add_column($module->table_name, $key, $format, $previous_key ? ' AFTER `' . $previous_key . '`' : ' FIRST');
+                        } else {
+                            db::move_column($module->table_name, $key, $format, $previous_key ? ' AFTER `' . $previous_key . '`' : ' FIRST');
+                        }
                     }
                     if (!isset($row->is_default) || !$row->is_default) {
                         $_field = db::select('_cms_field')->retrieve(['fid'])->filter(['mid=:mid', 'field_name=:key'], ['mid' => $module->mid, 'key' => $key])->execute();
@@ -257,6 +290,7 @@ class cms_builder {
             $cms_user->title = ***REMOVED***;
             $cms_user->password = '***REMOVED***';
             $cms_user->do_save();
+
         }
     }
 
