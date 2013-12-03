@@ -25,7 +25,7 @@ abstract class _cms_field extends table {
             $field->field_name = $field_name;
             $field->mid = $module;
             $field->type = $structure->type;
-            $field->title = isset($structure->title) ? $structure->title : ucwords(str_replace('_,', ' ', $field_name));
+            $field->title = isset($structure->title) ? $structure->title : ucwords(str_replace('_', ' ', $field_name));
             if (isset($structure->module) && $structure->module) {
                 $_module = new __cms_module();
                 $_module->do_retrieve(['mid'], ['where_equals' => ['table_name' => $structure->module]]);
