@@ -42,7 +42,7 @@ abstract class field_mlink extends _field_link {
     }
 
     public function set_from_request() {
-        $this->parent_form->{$this->field_name} = (isset($_REQUEST[$this->field_name]) ? $_REQUEST[$this->field_name] : []);
+        $this->parent_form->{$this->field_name} = ((isset($_REQUEST[$this->field_name]) && $_REQUEST[$this->field_name]) ? $_REQUEST[$this->field_name] : []);
     }
 
     protected function is_selected($id) {
