@@ -47,6 +47,30 @@
             "type": "string",
             "length": 32,
             "required": false
+        },
+        "user_level_view": {
+            "type": "link",
+            "length": 6,
+            "default": 1,
+            "list": 0,
+            "filter": 0,
+            "required": false
+        },
+        "user_level_add": {
+            "type": "link",
+            "length": 6,
+            "default": 1,
+            "list": 0,
+            "filter": 0,
+            "required": false
+        },
+        "user_level_delete": {
+            "type": "link",
+            "length": 6,
+            "default": 1,
+            "list": 0,
+            "filter": 0,
+            "required": false
         }
     },
     "dependencies": ["_cms_group"],
