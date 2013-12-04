@@ -389,8 +389,8 @@ abstract class db implements interfaces\database_interface {
                 `' . $source_module->primary_key . '` INT(6) NOT NULL DEFAULT 0,
                 `link_' . $destination_module->primary_key . '` INT(6) NOT NULL DEFAULT 0,
                 `fid` INT(6) NOT NULL DEFAULT 0,
-                INDEX(`' . $source_module->primary_key . '`,`' . $destination_module->primary_key . '`,`fid`),
-                INDEX(`' . $destination_module->primary_key . '`)
+                INDEX(`' . $source_module->primary_key . '`,`link_' . $destination_module->primary_key . '`,`fid`),
+                INDEX(`link_' . $destination_module->primary_key . '`)
             )
         ';
         $setting_strings = [];
