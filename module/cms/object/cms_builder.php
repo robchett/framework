@@ -4,6 +4,8 @@ namespace core\module\cms\object;
 use classes\db;
 use classes\get;
 use classes\table;
+use core\db\stub\field;
+use core\db\stub\module;
 use module\cms\object\_cms_field;
 use module\cms\object\_cms_group;
 use module\cms\object\_cms_module;
@@ -15,33 +17,7 @@ class cms_builder {
 
     public static $current_version = 4;
 
-    protected static function get_structure($database) {
-        $file = core_dir . '/db/structures/' . $database . '.json';
-        if (file_exists($file)) {
-            $file = file_get_contents($file);
-            $file = preg_replace_callback('#//@include \'(.*?)\'#', function ($matches) {
-                    $sub_file = core_dir . '/db/structures/' . $matches[1];
-                    return file_get_contents($sub_file);
-                }, $file
-            );
-            $json = json_decode($file);
-            if (!isset($json->fieldset)) {
-                $json->fieldset = [];
-            }
-            foreach ($json->fieldset as &$field) {
-                $_field = new stub_field();
-                foreach ($field as $attribute => $value) {
-                    $_field->$attribute = $value;
-                }
-                $field = $_field;
-            }
-            return $json;
-        } else {
-            throw new \Exception('Could not find table stub: ' . $database);
-        }
-    }
-
-    public function create_module_base(&$structure) {
+    public function create_module_base(module &$structure) {
         $gid = db::select('_cms_group')
             ->retrieve(['gid'])->filter(['title=:title'], ['title' => $structure->group])
             ->execute();
@@ -61,7 +37,7 @@ class cms_builder {
             ->execute();
     }
 
-    public function create_field_base($structure, $key, stub_field &$field, $cnt = 0) {
+    public function create_field_base($structure, $key, field &$field, $cnt = 0) {
         $field->id = db::insert('_cms_field')
             ->add_value('field_name', $key)
             ->add_value('title', $field->title ? $field->title : ucwords(str_replace('_', ' ', $key)))
@@ -75,7 +51,7 @@ class cms_builder {
             ->execute();
     }
 
-    public function create_field_base_link($structure, $key, $field) {
+    public function create_field_base_link(module $structure, $key, $field) {
         $_module = db::select('_cms_module')->retrieve(['mid'])->filter_field('table_name', $structure->tablename)->execute()->fetchObject();
         $_field = db::select('_cms_field')->retrieve(['fid'])->filter(['`mid`=:mid', '`field_name`=:field_name'], ['mid' => $_module->mid, 'field_name' => $key])->execute()->fetchObject();
 
@@ -89,15 +65,16 @@ class cms_builder {
     }
 
     public function build() {
-        db::create_table_json($this->get_structure('_cms_group'));
-        db::create_table_json($this->get_structure('_cms_module'));
-        db::create_table_json($this->get_structure('_cms_field'));
-        db::create_table_json($this->get_structure('field_type'));
+        db::create_table_json(module::create('_cms_group'));
+        db::create_table_json(module::create('_cms_module'));
+        db::create_table_json(module::create('_cms_field'));
+        db::create_table_json(module::create('field_type'));
 
-        $modules_json[] = $this->get_structure('_cms_field');
-        $modules_json[] = $this->get_structure('_cms_module');
-        $modules_json[] = $this->get_structure('_cms_group');
-        $modules_json[] = $this->get_structure('field_type');
+        /** @var module[] $modules_json */
+        $modules_json[] = module::create('_cms_field');
+        $modules_json[] = module::create('_cms_module');
+        $modules_json[] = module::create('_cms_group');
+        $modules_json[] = module::create('field_type');
 
         // Create base _cms_modules
         foreach ($modules_json as $structure) {
@@ -176,9 +153,38 @@ class cms_builder {
         }
     }
 
+    public static function modify_link_field($source_field, $destination_module, $destination_field) {
+        if (!$source_field->link_module) {
+            $link_cms_module = new _cms_module();
+            $link_cms_module->do_retrieve([], ['where_equals' => ['table_name' => $destination_module]]);
+            if ($link_cms_module->get_primary_key()) {
+                $source_field->link_module = $link_cms_module->get_primary_key();
+            } else {
+                try {
+                    self::create_from_structure($destination_module);
+                } catch (\Exception $e) {
+                    die('Missing dependency: ' . $destination_module);
+                }
+            }
+        }
+        if (!$source_field->link_field) {
+            $link_cms_field = new _cms_field();
+            $link_cms_field->do_retrieve([], ['where_equals' => ['mid' => $source_field->link_module, 'field_name' => $destination_field]]);
+            if ($link_cms_field->get_primary_key()) {
+                $source_field->link_field = $link_cms_field->get_primary_key();
+            }
+        }
+        $source_field->do_save();
+    }
+
     public static function create_from_structure($database) {
-        $json = self::get_structure($database);
+        $json = module::create($database);
         db::create_table_json($json);
+        foreach ($json->dependencies as $dependant) {
+            if (!db::table_exists($dependant)) {
+                static::create_from_structure($dependant);
+            }
+        }
         $_group_id = _cms_group::create($json->group)->get_primary_key();
         $module_id = _cms_module::create($json->title, $json->tablename, $json->primary_key, $_group_id, $json->namespace)->get_primary_key();
         $cnt = 0;
@@ -197,28 +203,7 @@ class cms_builder {
                         db::create_table_join($database, $structure->module);
                     }
                 }
-
-                if (!$cms_field->link_module) {
-                    $link_cms_module = new _cms_module();
-                    $link_cms_module->do_retrieve([], ['where_equals' => ['table_name' => $structure->module]]);
-                    if ($link_cms_module->get_primary_key()) {
-                        $cms_field->link_module = $link_cms_module->get_primary_key();
-                    } else {
-                        try {
-                            self::create_from_structure($structure->module);
-                        } catch (\Exception $e) {
-                            die('Missing dependency: ' . $structure->module);
-                        }
-                    }
-                }
-                if (!$cms_field->link_field) {
-                    $link_cms_field = new _cms_field();
-                    $link_cms_field->do_retrieve([], ['where_equals' => ['mid' => $module_id, 'field_name' => $structure->field]]);
-                    if ($link_cms_field->get_primary_key()) {
-                        $cms_field->link_field = $link_cms_field->get_primary_key();
-                    }
-                }
-                $cms_field->do_save();
+                static::modify_link_field($cms_field, $structure->module, $structure->field);
             }
         }
     }
@@ -229,9 +214,9 @@ class cms_builder {
     public function patch_v1() {
         $modules = db::select('_cms_module')->retrieve(['table_name', 'mid'])->execute();
         while ($module = db::fetch($modules)) {
-            $json = self::get_structure($module->table_name);
+            $json = module::create($module->table_name);
             if ($json) {
-                $fields = self::get_structure($module->table_name)->fieldset;
+                $fields = $json->fieldset;
                 $previous_key = false;
                 foreach ($fields as $key => $row) {
                     $format = db::get_column_type_json($row);
@@ -299,8 +284,10 @@ class cms_builder {
         }
     }
 
-    /** Add
+    /** Add user level management
      * ---CMS User
+     * ---CMS User level
+     * ---CMS User --> CMS Module
      * */
     public function patch_v4() {
         if (!db::table_exists('_cms_user')) {
@@ -308,7 +295,7 @@ class cms_builder {
             table::reload_table_definitions();
 
             $user_level = new _cms_user_level();
-            $user_level->title = 'Admin';
+            $user_level->title = 'User';
             $user_level->do_save();
 
             $user_level->ulid = 0;
@@ -316,14 +303,29 @@ class cms_builder {
             $user_level->do_save();
 
             $user_level->ulid = 0;
-            $user_level->title = 'User';
+            $user_level->title = 'Admin';
             $user_level->do_save();
 
             $cms_user = new _cms_user();
             $cms_user->title = ***REMOVED***;
             $cms_user->password = '***REMOVED***';
-            $cms_user->ulid = 1;
+            $cms_user->ulid = 3;
             $cms_user->do_save();
+
+            $_module = new _cms_module();
+            $_module->do_retrieve([], ['where_equals' => ['table_name' => '_cms_module']]);
+
+            $_field = new _cms_field();
+            $_field->do_retrieve([], ['where_equals' => ['mid' => $_module->get_primary_key(), 'field_name' => 'user_level_view']]);
+            static::modify_link_field($_field, '_cms_user_level', 'title');
+
+            $_field = new _cms_field();
+            $_field->do_retrieve([], ['where_equals' => ['mid' => $_module->get_primary_key(), 'field_name' => 'user_level_add']]);
+            static::modify_link_field($_field, '_cms_user_level', 'title');
+
+            $_field = new _cms_field();
+            $_field->do_retrieve([], ['where_equals' => ['mid' => $_module->get_primary_key(), 'field_name' => 'user_level_delete']]);
+            static::modify_link_field($_field, '_cms_user_level', 'title');
         }
     }
 
@@ -332,21 +334,4 @@ class cms_builder {
         $this->$function();
         db::update('_cms_setting')->add_value('value', $patch)->filter(['`key`="cms_version"'])->execute();
     }
-}
-
-
-class stub_field {
-
-    public $type = 'text';
-    public $title;
-    public $length = false;
-    public $default = false;
-    public $module = 0;
-    public $field = 0;
-    public $is_default = false;
-    public $list = true;
-    public $filter = true;
-    public $required = true;
-    public $editable = true;
-    public $autoincrement = false;
 }
