@@ -17,6 +17,7 @@ class module {
     public $primary_key;
     public $tablename;
     public $title;
+    public $required = true;
 
 
     /**
@@ -45,7 +46,7 @@ class module {
                 foreach ($json as $key => $value) {
                     $module->$key = $value;
                 }
-                return $json;
+                return $module;
             } else {
                 throw new \Exception('Stub is not valid JSON: ' . $database);
             }
