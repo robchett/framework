@@ -35,7 +35,9 @@
             "type": "password",
             "length": 64,
             "default": "",
-            "required": false
+            "required": false,
+            "list": false,
+            "filter": false
         },
         "last_login": {
             "type": "date",
