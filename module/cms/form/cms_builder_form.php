@@ -5,7 +5,6 @@ use classes\ajax;
 use classes\db;
 use classes\get;
 use classes\ini;
-use core\module\cms\object\cms_builder;
 use form\form;
 
 abstract class cms_builder_form extends form {
@@ -18,11 +17,51 @@ abstract class cms_builder_form extends form {
         $fields = [
             form::create('field_string', 'site_name')->set_attr('label', 'Site Name'),
             form::create('field_string', 'username')->set_attr('label', 'Username'),
-            form::create('field_password', 'password')->set_attr('label', 'Password')
+            form::create('field_password', 'password')->set_attr('label', 'Password'),
+            form::create('field_checkboxes', 'modules', $this->get_modules())->set_attr('label', 'Modules')->set_attr('required', false),
         ];
         parent::__construct($fields);
+        $this->set_required_modules();
         $this->h2 = 'Site Creation';
         $this->submit = 'Create';
+    }
+
+
+    private function get_modules() {
+        $options = [];
+        $stubs = glob(core_dir . '/db/structures/*.json');
+        foreach ($stubs as $stub) {
+            $base = pathinfo($stub, PATHINFO_FILENAME);
+            try {
+                $json = \core\db\stub\module::create($base);
+                $options[$json->group][$base] = $json->title . ($json->required ? '(*)' : '');
+            } catch (\Exception $e) {
+            }
+        }
+        return $options;
+    }
+
+    private function set_required_modules() {
+        $options = [];
+        $stubs = glob(core_dir . '/db/structures/*.json');
+        foreach ($stubs as $stub) {
+            $base = pathinfo($stub, PATHINFO_FILENAME);
+            try {
+                $json = \core\db\stub\module::create($base);
+                if ($json->required) {
+                    $options[] = $base;
+                }
+            } catch (\Exception $e) {
+            }
+        }
+        \core::$inline_script[] = '
+        var required = ' . json_encode($options) . ';
+        $("#form_field_modules input").each(function(cnt, input) {
+            if($.inArray($(input).val(), required) != -1) {
+                $(input).addClass("readonly");
+                $(input).prop("checked", true);
+            }
+        });';
     }
 
     public function do_submit() {
@@ -30,10 +69,10 @@ abstract class cms_builder_form extends form {
             db::connect_root();
             db::query('CREATE DATABASE IF NOT EXISTS `' . get::fn($this->username) . '`');
             db::query('USE mysql');
-            if(db::select('user')->retrieve(['user'])->filter(['`user`=:user AND `host`=:host'], ['user'=>$this->username, 'host'=>'127.0.0.1'])->execute()->rowCount()) {
+            if (db::select('user')->retrieve(['user'])->filter(['`user`=:user AND `host`=:host'], ['user' => $this->username, 'host' => '127.0.0.1'])->execute()->rowCount()) {
                 db::query('CREATE USER \'' . get::fn($this->username) . '\'@\'127.0.0.1\' IDENTIFIED BY \'' . $this->password . '\'', [], true);
             }
-            if(db::select('user')->retrieve(['user'])->filter(['`user`=:user AND `host`=:host'], ['user'=>$this->username, 'host'=>'localhost'])->execute()->rowCount()) {
+            if (db::select('user')->retrieve(['user'])->filter(['`user`=:user AND `host`=:host'], ['user' => $this->username, 'host' => 'localhost'])->execute()->rowCount()) {
                 db::query('CREATE USER \'' . get::fn($this->username) . '\'@\'localhost\' IDENTIFIED BY \'' . $this->password . '\'', [], true);
             }
             db::query('GRANT ALL PRIVILEGES ON `' . get::fn($this->username) . '`.* TO \'' . get::fn($this->username) . '\'@\'127.0.0.1\'', [], true);
