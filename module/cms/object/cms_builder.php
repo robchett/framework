@@ -3,6 +3,7 @@ namespace core\module\cms\object;
 
 use classes\db;
 use classes\get;
+use classes\glob;
 use classes\table;
 use core\db\stub\field;
 use core\db\stub\module;
@@ -212,32 +213,41 @@ class cms_builder {
      * Adds always there fields and reorders them and set the correct types
      * */
     public function patch_v1() {
-        $modules = db::select('_cms_module')->retrieve(['table_name', 'mid'])->execute();
-        while ($module = db::fetch($modules)) {
-            $json = module::create($module->table_name);
-            if ($json) {
+        $glob = new glob(core_dir . '/db/structures/*.json');
+        $glob->iterate(function ($file) {
+                $module = pathinfo($file, PATHINFO_FILENAME);
+                $this->set_default_fields($module);
+            }
+        );
+        table::reload_table_definitions();
+    }
+
+    protected function set_default_fields($module) {
+        try {
+            $json = module::create($module);
+            $_module = $_field = db::select('_cms_module')->retrieve(['mid'])->filter(['table_name=:table_name'], ['table_name' => $json->tablename])->execute()->fetchObject();
+            if ($json && $_module) {
                 $fields = $json->fieldset;
                 $previous_key = false;
                 foreach ($fields as $key => $row) {
                     $format = db::get_column_type_json($row);
                     if ($format) {
-                        if (!db::column_exists($module->table_name, $key)) {
-                            db::add_column($module->table_name, $key, $format, $previous_key ? ' AFTER `' . $previous_key . '`' : ' FIRST');
+                        if (!db::column_exists($json->tablename, $key)) {
+                            db::add_column($json->tablename, $key, $format, $previous_key ? ' AFTER `' . $previous_key . '`' : ' FIRST');
                         } else {
-                            db::move_column($module->table_name, $key, $format, $previous_key ? ' AFTER `' . $previous_key . '`' : ' FIRST');
+                            db::move_column($json->tablename, $key, $format, $previous_key ? ' AFTER `' . $previous_key . '`' : ' FIRST');
                         }
                     }
                     if (!$row->is_default) {
-                        $_field = db::select('_cms_field')->retrieve(['fid'])->filter(['mid=:mid', 'field_name=:key'], ['mid' => $module->mid, 'key' => $key])->execute();
+                        $_field = db::select('_cms_field')->retrieve(['fid'])->filter(['mid=:mid', 'field_name=:key'], ['mid' => $_module->mid, 'key' => $key])->execute();
                         if (!$_field->rowCount()) {
-                            $this->create_field_base($module, $key, $row);
+                            $this->create_field_base($_module, $key, $row);
                         }
                     }
                     $previous_key = $key;
                 }
             }
-        }
-        table::reload_table_definitions();
+        } catch (\Exception $e) {}
     }
 
     /** Add
