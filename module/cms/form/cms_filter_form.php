@@ -45,13 +45,11 @@ abstract class cms_filter_form extends form {
     }
 
     public function do_submit() {
-        if (parent::do_submit()) {
-            foreach ($this->fields as $field) {
-                if ($field instanceof field_boolean && !$this->{$field->field_name}) {
-                    unset($_SESSION['cms'][$this->_class_name][$field->field_name]);
-                } else {
-                    $_SESSION['cms'][$this->_class_name][$field->field_name] = $this->{$field->field_name};
-                }
+        foreach ($this->fields as $field) {
+            if ($field instanceof field_boolean && !$this->{$field->field_name}) {
+                unset($_SESSION['cms'][$this->_class_name][$field->field_name]);
+            } else {
+                $_SESSION['cms'][$this->_class_name][$field->field_name] = $this->{$field->field_name};
             }
         }
         ajax::add_script('window.location = window.location');

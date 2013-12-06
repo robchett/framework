@@ -1,6 +1,6 @@
 <?php
 namespace form;
 
-class form extends \core\form\form {
+abstract class form extends \core\form\form {
 
 }

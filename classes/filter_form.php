@@ -27,7 +27,6 @@ class filter_form extends form {
     }
 
     public function do_submit() {
-        $this->set_from_request();
     }
 
     public function set_from_request() {

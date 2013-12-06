@@ -32,15 +32,15 @@ abstract class cms_login_form extends form {
         } else {
             $this->validation_errors['username'] = 'Username and password combination does not match.';
         }
+    }
 
+    public function do_form_submit() {
+        controller::do_database_repair();
+        parent::do_form_submit();
     }
 
     public function do_submit() {
-        controller::do_database_repair();
-        if (parent::do_submit()) {
-            $_SESSION['admin'] = true;
-            _ajax::$redirect = '/cms/dashboard';
-        }
+        $_SESSION['admin'] = true;
+        _ajax::$redirect = '/cms/dashboard';
     }
-
 }

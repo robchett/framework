@@ -7,6 +7,7 @@ use classes\collection as _collection;
 use classes\get as _get;
 use classes\image_resizer;
 use classes\table_array;
+use classes\table_form;
 use db\insert;
 use db\update;
 use form\field;
@@ -337,7 +338,7 @@ abstract class table {
         foreach ($form->fields as $field) {
             $field->raw = true;
         }
-        $form->action = get_class($this) . ':do_submit';
+        $form->action = get_class($this) . ':do_form_submit';
         $ok = $form->do_submit();
         if ($ok) {
             $type = (!isset($this->{$this->get_primary_key_name()}) || !$this->{$this->get_primary_key_name()} ? 'Added' : 'Updated');
@@ -496,7 +497,7 @@ abstract class table {
         $form->set_from_object($this);
         foreach ($form->fields as $field) {
             if ($field instanceof field_file) {
-                $form->action = '/index.php?module=' . get_class($this) . '&act=do_submit&no_ajax=on&ajax_origin=' . $form->id;
+                $form->action = '/index.php?module=' . get_class($this) . '&act=do_form_submit&no_ajax=on&ajax_origin=' . $form->id;
             } else if ($field instanceof field_textarea) {
                 \core::$inline_script[] = 'CKEDITOR.replace("' . $field->field_name . '");';
             } else if ($field instanceof field_mlink) {
@@ -520,7 +521,7 @@ abstract class table {
      * @return form
      */
     public function get_form() {
-        $form = new form($this->get_fields()->getArrayCopy());
+        $form = new table_form($this->get_fields()->getArrayCopy());
         $form->id = str_replace('\\', '_', get_class($this) . '_form');
         if (isset($form->attributes['target'])) {
             $form->attributes['target'] = 'form_target_' . $form->id;

@@ -48,43 +48,45 @@ abstract class add_field_form extends form {
         return parent::get_html();
     }
 
-    public function do_submit() {
+    public function do_form_submit() {
         if ($_REQUEST['type'] == 3) {
             $this->get_field_from_name('link_field')->required = true;
             $this->get_field_from_name('link_module')->required = true;
         }
-        if (parent::do_submit()) {
-            $module = new _cms_module([], $this->mid);
-            $field = new field_type([], $this->type);
-            $type = '\form\field_' . $field->title;
-            /** @var \form\field $field_type */
-            $field_type = new $type('');
-            if ($inner = $field_type->get_database_create_query()) {
-                db::query('ALTER TABLE ' . $module->table_name . ' ADD `' . $this->field_name . '` ' . $field_type->get_database_create_query(), [], 1);
-            }
+        parent::do_form_submit();
+    }
 
-            if ($field->title == 'mlink') {
-                $source_module = new _cms_module(['table_name', 'primary_key'], $this->link_module);
-                db::create_table_join(get::__class_name($this), $source_module->table_name);
-            }
-
-            $res = db::select('_cms_field')->retrieve('MAX(position) AS pos')->filter_field('mid', $this->mid)->execute()->fetchObject();
-            $insert = db::insert('_cms_field')
-                ->add_value('title', $this->title)
-                ->add_value('type', $field->title)
-                ->add_value('field_name', $this->field_name)
-                ->add_value('mid', $this->mid)
-                ->add_value('position', $res->pos + 1);
-            if ($field->title == 'link' || $field->title == 'mlink') {
-                $insert->add_value('link_module', $this->link_module)
-                    ->add_value('link_field', $this->link_field);
-            }
-            $insert->execute();
-
-            $obj = $module->get_class();
-            $obj->mid = $this->mid;
-            ajax::update($obj->get_cms_edit_module()->get());
+    public function do_submit() {
+        $module = new _cms_module([], $this->mid);
+        $field = new field_type([], $this->type);
+        $type = '\form\field_' . $field->title;
+        /** @var \form\field $field_type */
+        $field_type = new $type('');
+        if ($inner = $field_type->get_database_create_query()) {
+            db::query('ALTER TABLE ' . $module->table_name . ' ADD `' . $this->field_name . '` ' . $field_type->get_database_create_query(), [], 1);
         }
+
+        if ($field->title == 'mlink') {
+            $source_module = new _cms_module(['table_name', 'primary_key'], $this->link_module);
+            db::create_table_join(get::__class_name($this), $source_module->table_name);
+        }
+
+        $res = db::select('_cms_field')->retrieve('MAX(position) AS pos')->filter_field('mid', $this->mid)->execute()->fetchObject();
+        $insert = db::insert('_cms_field')
+            ->add_value('title', $this->title)
+            ->add_value('type', $field->title)
+            ->add_value('field_name', $this->field_name)
+            ->add_value('mid', $this->mid)
+            ->add_value('position', $res->pos + 1);
+        if ($field->title == 'link' || $field->title == 'mlink') {
+            $insert->add_value('link_module', $this->link_module)
+                ->add_value('link_field', $this->link_field);
+        }
+        $insert->execute();
+
+        $obj = $module->get_class();
+        $obj->mid = $this->mid;
+        ajax::update($obj->get_cms_edit_module()->get());
         ajax::update($this->get_html()->get());
     }
 }

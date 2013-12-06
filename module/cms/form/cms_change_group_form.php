@@ -23,13 +23,11 @@ abstract class cms_change_group_form extends form {
     }
 
     public function do_submit() {
-        if (parent::do_submit()) {
-            $module = new _cms_module();
-            $module->do_retrieve_from_id(['mid', 'title'], $this->mid);
-            $module->gid = $this->gid;
-            $module->do_save();
-            ajax::add_script('$.fn.colorbox.close()');
-        }
+        $module = new _cms_module();
+        $module->do_retrieve_from_id(['mid', 'title'], $this->mid);
+        $module->gid = $this->gid;
+        $module->do_save();
+        ajax::add_script('$.fn.colorbox.close()');
     }
 
 }

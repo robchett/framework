@@ -124,7 +124,7 @@ abstract class form {
                 $this->{$field->field_name} = $object->{$field->field_name};
             }
         }
-        $this->action = get_class($object) . ':do_submit';
+        $this->action = get_class($object) . ':do_form_submit';
     }
 
     public function get_table_object() {
@@ -154,18 +154,20 @@ abstract class form {
         return false;
     }
 
+    public function do_form_submit() {
+        $this->set_from_request();
+        $ok = $this->do_validate();
+        if ($ok) {
+            $this->do_submit();
+        } else {
+            $this->do_invalidate_form();
+        }
+    }
+
     /**
      * @return bool
      */
-    public function do_submit() {
-        $this->set_from_request();
-        $this->do_validate();
-        if (!empty($this->validation_errors)) {
-            $this->do_invalidate_form();
-            return false;
-        }
-        return true;
-    }
+    abstract public function do_submit();
 
     /**
      *
@@ -225,7 +227,7 @@ abstract class form {
     public function get_html() {
         if (!$this->use_ajax) {
             if (!$this->action) {
-                $this->action = '/index.php?module=' . get_class($this) . '&act=do_submit&no_ajax=on&ajax_origin=' . $this->id;
+                $this->action = '/index.php?module=' . get_class($this) . '&act=do_form_submit&no_ajax=on&ajax_origin=' . $this->id;
             }
             $this->attributes['target'] = 'form_target_' . $this->id;
             $this->attributes['enctype'] = 'multipart/form-data';
@@ -234,7 +236,7 @@ abstract class form {
         $this->attributes = array_merge([
                 'name' => $this->id,
                 'method' => $this->method,
-                'action' => !empty($this->action) ? $this->action : get_class($this) . ':' . 'do_submit',
+                'action' => !empty($this->action) ? $this->action : get_class($this) . ':' . 'do_form_submit',
                 'data-ajax-shroud' => '#' . $this->id,
             ], $this->attributes
         );
@@ -279,18 +281,28 @@ abstract class form {
     public function get_fields_html() {
         $fieldsets = [];
         $fields = [];
+        $fieldset_title = '';
         foreach ($this->fields as $field) {
             if (!$field->hidden) {
-                if (isset($field->fieldset)) {
-                    $fieldsets[] = node::create('fieldset.fieldset_' . count($fieldsets) . ' ul')->nest($fields);
-                    $fields = [];
+                if (isset($field->fieldset) && $fieldset_title != $field->fieldset) {
+                    if ($fields) {
+                        $fieldsets[] = node::create('fieldset.fieldset_' . count($fieldsets), [],
+                            ($fieldset_title ? node::create('legend', [], $fieldset_title) : '') .
+                            node::create('ul')->nest($fields)
+                        );
+                        $fields = [];
+                    }
+                    $fieldset_title = $field->fieldset;
                 }
                 if ($inner = $field->get_html_wrapper()) {
                     $fields[] = node::create('li#' . $this->id . '_field_' . $field->field_name . '.' . $field->get_wrapper_class(), ['data-for' => $this->id], $inner);
                 }
             }
         }
-        $fieldsets[] = node::create('fieldset.fieldset_' . count($fieldsets) . ' ul')->nest($fields);
+        $fieldsets[] = node::create('fieldset.fieldset_' . count($fieldsets), [],
+            ($fieldset_title ? node::create('legend', [], $fieldset_title) : '') .
+            node::create('ul')->nest($fields)
+        );
         return $fieldsets;
     }
 
