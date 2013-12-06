@@ -159,8 +159,10 @@ abstract class form {
         $ok = $this->do_validate();
         if ($ok) {
             $this->do_submit();
+            return true;
         } else {
             $this->do_invalidate_form();
+            return false;
         }
     }
 
