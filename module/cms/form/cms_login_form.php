@@ -32,6 +32,7 @@ abstract class cms_login_form extends form {
         } else {
             $this->validation_errors['username'] = 'Username and password combination does not match.';
         }
+        return !count($this->validation_errors);
     }
 
     public function do_form_submit() {
