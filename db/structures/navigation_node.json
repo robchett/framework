@@ -1,11 +1,11 @@
 {
-    "title": "Pages",
-    "tablename": "page",
-    "primary_key": "pid",
+    "title": "Navigation Node",
+    "tablename": "navigation_node",
+    "primary_key": "nnid",
     "group": "Page Management",
-    "namespace": "pages",
+    "namespace": "",
     "fieldset": {
-        "pid": {
+        "nnid": {
             "type": "int",
             "length": 6,
             "autoincrement": true,
@@ -15,48 +15,32 @@
             "required": false,
             "editable": false
         },
-        "parent_pid": {
+        "parent_nnid": {
             "type": "link",
             "length": 6,
             "default": 0,
             "list": 0,
             "filter": 0,
-            "module": "page",
+            "module": "navigation_node",
             "field": "title",
             "required": false
         },
         //@include 'default.json'
         "title": {
             "type": "string",
-            "length": 125,
+            "length": 64,
             "default": ""
         },
-        "fn": {
+        "link": {
             "type": "string",
-            "length": 125,
-            "default": "",
-            "required": false
-        },
-        "body": {
-            "type": "textarea",
-            "default": "",
-            "list": 0,
-            "filter": 0,
-            "required": false
-        },
-        "module_name": {
-            "type": "string",
-            "length": 32,
-            "default": "",
-            "list": 1,
-            "filter": 0,
-            "required": false
+            "length": 128,
+            "default": ""
         }
     },
-    "dependencies": ["_cms_module", "_cms_field"],
+    "dependencies": [],
     "settings": {},
     "indexes": {
-        "primary": "pid",
+        "primary": "nnid",
         "standard": [
             //@include 'default_indexes.json'
         ]
