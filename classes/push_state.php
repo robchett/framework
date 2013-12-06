@@ -22,10 +22,10 @@ abstract class push_state {
         if (!ie) {
             if ($this->type == self::PUSH) {
                 \core::$inline_script[] = 'window.history.pushState(' . json_encode($this->data) . ', "",
-            "' . $this->url . '")';
+            "' . $this->url . '");';
             } else {
                 \core::$inline_script[] = 'window.history.replaceState(' . json_encode($this->data) . ', "",
-            "' . $this->url . '")';
+            "' . $this->url . '");';
             }
         }
     }
