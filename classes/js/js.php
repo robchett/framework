@@ -2,12 +2,13 @@
 namespace core\classes\js;
 
 use classes\get;
+use classes\ini;
 use classes\interfaces\asset;
 
 class js extends asset {
 
     public $cached_name;
-    protected $files;
+    protected $files = [];
     public $last_modified;
 
     public function compile() {
