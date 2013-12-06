@@ -331,7 +331,7 @@ abstract class table {
     /**
      * @return bool
      */
-    public function do_submit() {
+    public function do_form_submit() {
         $this->raw = true;
         $this->set_from_request();
         $form = $this->get_form();
@@ -339,7 +339,7 @@ abstract class table {
             $field->raw = true;
         }
         $form->action = get_class($this) . ':do_form_submit';
-        $ok = $form->do_submit();
+        $ok = $form->do_form_submit();
         if ($ok) {
             $type = (!isset($this->{$this->get_primary_key_name()}) || !$this->{$this->get_primary_key_name()} ? 'Added' : 'Updated');
             $this->do_save();

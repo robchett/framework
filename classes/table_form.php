@@ -1,9 +1,16 @@
 <?php
 namespace core\classes;
 
-use forM\form;
+use form\form;
 
-abstract class table_form extends form {
+class table_form extends form {
 
+
+    /**
+     * @return bool
+     */
+    public function do_submit() {
+        return true;
+    }
 }
  
