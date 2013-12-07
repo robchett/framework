@@ -12,6 +12,10 @@ abstract class field_datetime extends field {
         $this->parent_form->{$this->field_name} = date('d/m/Y h:i:s', strtotime($val));
     }
 
+    public static function sanitise_from_db($value) {
+        return strtotime($value);
+    }
+
     public function get_html() {
         return '<input ' . $this->get_attributes() . ' value="' . date('d/m/Y h:i:s', strtotime($this->parent_form->{$this->field_name})) . '"/>' . "\n";
     }
