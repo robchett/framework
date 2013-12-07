@@ -16,15 +16,13 @@ trait filterable {
 
     abstract public function get_filterable_fields();
 
-    abstract public function get_all($class, array $fields_to_retrieve, $options = []);
-
-    abstract public function get_filterable_list();
+    abstract public function get_list();
 
     abstract public function getArrayCopy();
 
     abstract public function exchangeArray($array);
 
-    abstract public function filterable_get_all();
+    abstract public function set_list();
 
     abstract function getIterator();
 
@@ -33,7 +31,9 @@ trait filterable {
     public function set_filters() {
         if (!isset($this->filters)) {
             $this->filters = new filter_form($this->get_filterable_fields(), $this);
-            $this->filters->set_from_request();
+            if (ajax && $_REQUEST['act'] == 'do_filter_submit') {
+                $this->filters->set_from_request();
+            }
             $this->filters->attributes['data-ajax-change'] = get_class($this) . ':do_filter_submit';
             if (!$this->filters->identifier) {
                 $this->filters->identifier = clean_uri;
@@ -47,10 +47,8 @@ trait filterable {
     }
 
     public function do_filter_submit() {
-        $this->filterable_get_all();
-        $this->set_filters();
-        $this->filter();
-        ajax::update($this->get_filterable_list());
+        $this->set_list();
+        ajax::update($this->get_list());
     }
 
     public function get_filters() {
@@ -63,7 +61,7 @@ trait filterable {
     }
 
     public function get_filters_ajax() {
-        $this->filterable_get_all();
+        $this->set_list();
         $this->get_filters();
     }
 
