@@ -8,7 +8,7 @@ use core\core;
  * @package cms
  * @property \module\cms\controller $module
  */
-abstract class cms_view extends \template\html {
+abstract class cms_view extends \template\cms\html {
 
     /**
      * @return \html\node
