@@ -11,6 +11,16 @@ trait paginatable {
     public $paginate_act;
     public $paginate_page;
 
+    public abstract function count();
+
+    public abstract function do_paginate();
+
+    public abstract function get_id();
+
+    public abstract function setIterator(\Iterator $iterator);
+
+    public abstract function subset($start = 0, $end = null);
+
     /**
      * @param string $id_suffix
      * @return \core\classes\paginate
@@ -22,11 +32,21 @@ trait paginatable {
         $paginate->total = $this->get_paginate_total();
         $paginate->page = $this->get_paginate_page();;
         $paginate->act = $this->get_paginate_act();
-        return node::create('div#' . $this->get_id() . '_paginate' . $id_suffix . '.paginate', [], $paginate);
+        $paginate->title = $this->get_paginate_title();
+        $paginate->post_title = $this->get_paginate_post_title();
+        return node::create('div#' . $this->get_id() . '_paginate_' . $id_suffix . '.paginate', [], $paginate);
     }
 
     public function get_paginate_total() {
         return $this->count();
+    }
+
+    public function get_paginate_title() {
+        return '';
+    }
+
+    public function get_paginate_post_title() {
+        return '';
     }
 
     public function get_paginate_total_pages() {
@@ -45,11 +65,9 @@ trait paginatable {
         return ($this->get_paginate_page() - 1) * $this->paginate_npp;
     }
 
-    public abstract function count();
-
-    public abstract function do_paginate();
-
-    public abstract function get_id();
+    public function paginate() {
+        $this->setIterator($this->subset($this->get_paginate_offset(), $this->paginate_npp + $this->get_paginate_offset()));
+    }
 
     public function get_paginate_page() {
         if (!isset($this->paginate_page)) {

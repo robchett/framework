@@ -11,11 +11,16 @@ class paginate {
     public $npp;
     public $page;
     public $act;
+    public $title;
+    public $post_title;
 
     public function get() {
         $node = node::create('div');
         if ($this->npp && $this->total > $this->npp) {
             $pages = ceil($this->total / $this->npp);
+            if ($this->title) {
+                $node->nest(node::create('span.title', [], $this->do_replace($this->title)));
+            }
             if ($pages > 40) {
                 $node = node::create('select#pagi.cf', ['data-ajax-change' => $this->act]);
                 for ($i = 1; $i <= $pages; $i++) {
@@ -31,12 +36,22 @@ class paginate {
                     $node->add_child(node::create('li' . ($this->page == $i ? '.sel' : '') . ' a', ['href' => '/' . trim($this->base_url, '/') . '/page/' . $i], $i));
                 }
             }
+            if ($this->post_title) {
+                $node->nest(node::create('span.title', [], $this->do_replace($this->post_title)));
+            }
         }
         return $node;
     }
 
     public function __toString() {
         return $this->get()->get();
+    }
+
+    public function do_replace($source) {
+        foreach ($this as $key => $value) {
+            $source = str_replace('{' . $key . '}', $value, $source);
+        }
+        return $source;
     }
 
 }
