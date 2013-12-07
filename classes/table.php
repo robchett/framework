@@ -6,7 +6,7 @@ use classes\ajax as _ajax;
 use classes\collection as _collection;
 use classes\get as _get;
 use classes\image_resizer;
-use classes\table_array;
+use classes\table_array as _table_array;
 use classes\table_form;
 use db\insert;
 use db\update;
@@ -78,7 +78,7 @@ abstract class table {
     }
 
     public static function get_all(array $fields, array $options = []) {
-        $array = new table_array();
+        $array = new _table_array();
         $array->get_all(get_called_class(), $fields, $options);
         return $array;
     }
