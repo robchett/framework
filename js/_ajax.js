@@ -140,7 +140,7 @@ $(document).ready(function () {
         $.extend(post, ({'module': module, 'act': act}));
         $(".error_message").remove();
         $.ajax({
-            url: options.call_as_uri || '/',
+            url: options.call_as_uri || window.location.href,
             global: false,
             async: true,
             type: 'POST',
