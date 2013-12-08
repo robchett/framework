@@ -40,14 +40,15 @@ $(document).ready(function () {
                 var rel = $target.attr('rel');
                 if (typeof href != "undefined" && href != '#' && (typeof rel == 'undefined' || rel != 'external')) {
                     if (!href.match('http')) {
-                        var post = {module: 'core', act: 'load_page'};
-                        var options = {call_as_uri: href, loading_target: '#main' };
                         event.preventDefault();
                         var $page = $("div[data-url='" + href + "']");
                         if ($page.length) {
-                            window.history.pushState(post, '', href);
+                            window.history.pushState($.fn.ajax_factory.get_state(href), '', href);
                             toggle_page($page);
+                            perform_page_actions($.fn.ajax_factory.get_state(href), href);
                         } else {
+                            var post = {module: 'core', act: 'load_page'};
+                            var options = {call_as_uri: href, loading_target: '#main' };
                             $.fn.ajax_factory('core', 'load_page', post, options);
                         }
                     }
@@ -140,7 +141,7 @@ $(document).ready(function () {
         $.extend(post, ({'module': module, 'act': act}));
         $(".error_message").remove();
         $.ajax({
-            url: options.call_as_uri || window.location.href,
+            url: options.call_as_uri || window.location,
             global: false,
             async: true,
             type: 'POST',
@@ -153,6 +154,12 @@ $(document).ready(function () {
     $.fn.ajax_factory.defaults = {
         complete: [],
         load_pages_ajax: false
+    };
+
+    $.fn.ajax_factory.states = [];
+
+    $.fn.ajax_factory.get_state = function(state){
+        return this.states[state];
     };
 
     $('select[multiple=multiple]').each(function () {
@@ -239,6 +246,7 @@ function handle_json_response(json) {
         }
     });
     if (typeof json.push_state != "undefined") {
+        $.fn.ajax_factory.states[json.push_state.url] = json.push_state.data;
         if (json.push_state.push) {
             window.history.pushState(json.push_state.data, json.push_state.title, json.push_state.url);
         } else if (json.push_state.replace) {

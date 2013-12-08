@@ -78,18 +78,22 @@ function page(url, post, is_popped) {
             window.history.pushState(post, '', url);
         }
         toggle_page($page);
-        if (typeof post.actions != 'undefined') {
-            post.actions.each(function (element) {
-                var options = element[3] || {};
-                options.post_as_url = url;
-                $.fn.ajax_factory(element[0], element[1], element[2] || {}, options);
-            });
-        }
+        perform_page_actions(post, url);
     } else {
         delete post.module;
         delete post.act;
         post.url = url;
         $.fn.ajax_factory(module, act, post);
+    }
+}
+
+function perform_page_actions(post, url) {
+    if (typeof post.actions != 'undefined') {
+        post.actions.each(function (element) {
+            var options = element[3] || {};
+            options.post_as_url = url;
+            $.fn.ajax_factory(element[0], element[1], element[2] || {}, options);
+        });
     }
 }
 
