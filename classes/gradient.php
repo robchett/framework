@@ -2,11 +2,11 @@
 
 namespace core\classes;
 
-use classes\table_array;
+use classes\table_array as _table_array;
 
 class gradient {
 
-    /** @var table_array */
+    /** @var _table_array */
     public $color;
 
     public function __construct() {
@@ -14,7 +14,7 @@ class gradient {
     }
 
     public function create_default_heat_map_gradient() {
-        $this->color = new table_array();
+        $this->color = new _table_array();
         $this->color[] = new ColorPoint(1, 0, 0, 0.0); // blue
         $this->color[] = new ColorPoint(1, 1, 0, 0.25); // cyan
         $this->color[] = new ColorPoint(0, 1, 0, 0.5); // green
