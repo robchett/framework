@@ -2,8 +2,7 @@
 
 namespace core\classes;
 
-use classes\get;
-use classes\ini;
+use classes\ini as _ini;
 
 abstract class cache implements interfaces\cache_interface {
 
@@ -75,7 +74,7 @@ abstract class cache implements interfaces\cache_interface {
      */
     public static function get($key, array $dependencies = ['global']) {
         if (self::$current == null) {
-            self::connect(ini::get('memcached', 'instance'), ini::get('memcached', 'server'), ini::get('memcached', 'port'));
+            self::connect(_ini::get('memcached', 'instance'), _ini::get('memcached', 'server'), _ini::get('memcached', 'port'));
         }
         $key = self::get_key($key, $dependencies);
         if (!($res = self::$current->get($key))) {
@@ -95,9 +94,10 @@ abstract class cache implements interfaces\cache_interface {
     public static function set(array $data, array $dependencies = ['global'], $cache_time = null) {
         if (self::$current == null) {
             try {
-                self::connect(ini::get('memcached', 'instance'), ini::get('memcached', 'server'), ini::get('memcached', 'port'));
+                self::connect(_ini::get('memcached', 'instance'), _ini::get('memcached', 'server'), _ini::get('memcached', 'port'));
             } catch (\Exception $e) {
-                trigger_error('Could not connect to memcached instance;');
+                return;
+                //trigger_error('Could not connect to memcached instance;' . $e->getMessage());
             }
         }
         if (is_null($cache_time)) {
