@@ -22,11 +22,13 @@ class sort_form extends form {
 
     public function set_from_request() {
         parent::set_from_request();
-        if (ajax) {
+        if (!$this->identifier) {
+            $this->identifier = clean_uri;
+        }
+        if (ajax && $_REQUEST['act'] == 'do_sort_submit') {
             if (isset($this->identifier)) {
                 $_SESSION[$this->calling_class][$this->identifier]['sort'] = $this->sort;
             }
         }
     }
 }
- 

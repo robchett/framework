@@ -25,11 +25,7 @@ trait searchable {
     public function set_search() {
         if (!isset($this->sort_method)) {
             $this->search_form = new search_form(get_class($this));
-            if (!$this->search_form->identifier) {
-                $this->search_form->identifier = clean_uri;
-            }
-            if (ajax && $_REQUEST['act'] == 'do_search_submit')
-                $this->search_form->set_from_request();
+            $this->search_form->set_from_request();
             $this->search_form->attributes['data-ajax-change'] = get_class($this) . ':do_search_submit';
             if (isset($_SESSION[get_class($this)][$this->search_form->identifier]['search'])) {
                 $this->search_form->keywords = $_SESSION[get_class($this)][$this->search_form->identifier]['search'];

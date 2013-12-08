@@ -31,7 +31,10 @@ class filter_form extends form {
 
     public function set_from_request() {
         parent::set_from_request();
-        if (ajax) {
+        if (!$this->identifier) {
+            $this->identifier = clean_uri;
+        }
+        if (ajax && $_REQUEST['act'] == 'do_filter_submit') {
             if (isset($this->identifier)) {
                 $_SESSION[get_class($this->source_data)][$this->identifier]['filter'] = [];
                 foreach ($this->fields as $field) {

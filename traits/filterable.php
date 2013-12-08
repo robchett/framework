@@ -31,13 +31,8 @@ trait filterable {
     public function set_filters() {
         if (!isset($this->filters)) {
             $this->filters = new filter_form($this->get_filterable_fields(), $this);
-            if (ajax && $_REQUEST['act'] == 'do_filter_submit') {
-                $this->filters->set_from_request();
-            }
+            $this->filters->set_from_request();
             $this->filters->attributes['data-ajax-change'] = get_class($this) . ':do_filter_submit';
-            if (!$this->filters->identifier) {
-                $this->filters->identifier = clean_uri;
-            }
             if (isset($_SESSION[get_class($this)][$this->filters->identifier]['filter'])) {
                 foreach ($_SESSION[get_class($this)][$this->filters->identifier]['filter'] as $filter => $value) {
                     $this->filters->$filter = $value;
