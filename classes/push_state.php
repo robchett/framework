@@ -20,13 +20,14 @@ abstract class push_state {
 
     public function get() {
         if (!ie) {
+            $data = json_encode($this->data);
+            $script = '$.fn.ajax_factory.states["' . $this->url . '"] = ' . $data . ';';
             if ($this->type == self::PUSH) {
-                \core::$inline_script[] = 'window.history.pushState(' . json_encode($this->data) . ', "",
-            "' . $this->url . '");';
+                $script .= 'window.history.pushState(' . $data . ', "","' . $this->url . '");';
             } else {
-                \core::$inline_script[] = 'window.history.replaceState(' . json_encode($this->data) . ', "",
-            "' . $this->url . '");';
+                $script .= 'window.history.replaceState(' . $data . ', "","' . $this->url . '");';
             }
+            \core::$inline_script[] = $script;
         }
     }
 
