@@ -12,6 +12,7 @@ class js extends asset {
     public $last_modified;
 
     public function compile() {
+        $js = '';
         if ($this->cached_name) {
             $file_name = root . '/.cache/' . $this->cached_name . $this->last_modified . '.js';
             if (file_exists($file_name)) {
@@ -53,20 +54,21 @@ class js extends asset {
 
 
     public static function get_js() {
-        $expires = 60 * 60 * 24;
-        header('Content-type: text/javascript');
-        header('Content-Length: ' . ob_get_length());
-        header('Cache-Control: max-age=' . $expires . ', must-revalidate');
-        header('Pragma: public');
-
         $output = new self;
         $output->cached_name = 'global';
         foreach (ini::get('js', 'files', []) as $file) {
             $output->add_files(core_dir . '/js/' . $file . '.js');
         }
         $output->add_resource_root(root . '/js');
-        echo $output->compile();
-        die();
+        $js = $output->compile();
+
+        $expires = 60 * 60 * 24;
+        header('Content-type: text/javascript');
+        //header('Content-Length: ' . strlen($js));
+        header('Cache-Control: max-age=' . $expires . ', must-revalidate');
+        header('Pragma: public');
+
+        die($js);
     }
 
     public function add_resource_root($root) {
