@@ -6,7 +6,7 @@ use classes\view;
 
 abstract class _default extends \template\html {
 
-    /** @var \module\cms\controller */
+    /** @var \module\pages\controller */
     public $module;
 
     public function get_view() {
