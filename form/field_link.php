@@ -23,7 +23,7 @@ abstract class field_link extends field {
 
     public function  get_cms_list_wrapper($value, $object_class, $id) {
         $class = (is_numeric($this->link_module) ? table::get_class_from_mid($this->link_module) : $this->link_module);
-        $field_name = (((int)$this->link_field == $this->link_field && $this->link_field) ? _cms_field::get_field_from_fid($this->link_field)->field_name : ($this->link_field ?: 'title'));
+        $field_name = (is_numeric($this->link_field) && $this->link_field) ? _cms_field::get_field_from_fid($this->link_field)->field_name : ($this->link_field ?: 'title');
         $object = new $class();
         /** @var table $object */
         $object->do_retrieve_from_id([$field_name, $object->get_primary_key_name()], $value);
