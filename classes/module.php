@@ -50,7 +50,7 @@ abstract class module {
     }
 
     function get_main_nav() {
-        $pages = page::get_all([], ['where' => 'nav=1']);
+        $pages = page::get_all([], ['where' => 'nav=1', 'order'=>'position']);
         return $pages->iterate_return(
             function (page $page) {
                 return node::create('li' . ($page->pid == \core::$singleton->pid ? '.sel' : ''), [],
