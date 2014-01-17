@@ -15,12 +15,15 @@ abstract class auto_loader {
         $local_path = root . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . $class . '.php';
         $dependent_path = root . DIRECTORY_SEPARATOR . '.core' . DIRECTORY_SEPARATOR . 'dependent' . DIRECTORY_SEPARATOR . $class . '.php';
         $core_path = root . DIRECTORY_SEPARATOR . str_replace('core', '.core', $class) . '.php';
+        $library_path = root . DIRECTORY_SEPARATOR . 'library' . DIRECTORY_SEPARATOR . $class . '.php';
         if (is_readable($local_path)) {
             $path = $local_path;
         } else if (is_readable($dependent_path)) {
             $path = $dependent_path;
         } else if (is_readable($core_path)) {
             $path = $core_path;
+        } else if (is_readable($library_path)) {
+            $path = $library_path;
         }
 
         if ($path) {
