@@ -10,6 +10,7 @@ abstract class controller extends module {
 
     /** @var page */
     public $current;
+    public static $homepage_id = 1;
 
 
     public function __controller(array $path) {
@@ -21,7 +22,7 @@ abstract class controller extends module {
         } else if (uri != $this->current->get_url()) {
             get::header_redirect($this->current->get_url());
         }
-        if ($this->current->pid == 1) {
+        if ($this->current->pid == static::$homepage_id) {
             $this->view = 'home';
         }
         parent::__controller($path);
