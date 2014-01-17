@@ -105,8 +105,7 @@ abstract class new_module_form extends form {
         }
         if ($file) {
             $class_name = ($this->namespace ? 'module\\' . $this->namespace . '\\' : '') . 'object\\' . $this->table_name;
-            file_put_contents($file . '.php', '
-<?php
+            file_put_contents($file . '.php', '<?php
 namespace ' . ($this->namespace ? 'module\\' . $this->namespace . '\\' : '') . 'object;
 
 use classes\table;
@@ -115,7 +114,11 @@ use traits\table_trait;
 class ' . $this->table_name . ' extends ' . (class_exists('\\core\\' . $class_name) ? '\\core\\' . $class_name : 'table') . ' {
 
     use table_trait;
-    public $' . $this->title_label . ';
+
+    /** @var string */
+    public $' . get::fn($this->title_label) . ';
+    /** @var int */
+    public $' . get::fn($this->primary_key) . ';
 
 }'
             );
