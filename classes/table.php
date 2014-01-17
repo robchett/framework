@@ -228,7 +228,6 @@ abstract class table {
                     if ($field[0] != $object->class_name()) {
                         foreach ($object->get_fields(false) as $object_field) {
                             if ($object_field instanceof field_link && get::__class_name($object_field->get_link_module()) == $field[0]) {
-
                                 if ($object_field instanceof field_mlink) {
                                     if (isset($mlinks[$field[0]])) {
                                         $mlinks[$field[0]]['retrieve'][] = $field[1];
@@ -374,6 +373,8 @@ abstract class table {
             $query = new update($class);
         } else {
             $query = new insert($class);
+            $top_pos = db::select($class)->add_field_to_retrieve('max(position) as pos')->execute()->fetchObject()->pos;
+            $query->add_value('position', $top_pos ?: 1);
         }
         /** @var field $field */
         $this->get_fields()->iterate(function ($field) use ($query) {
@@ -636,7 +637,7 @@ abstract class table {
 
     public function get_primary_key_name() {
         self::set_cms_modules();
-        $class = get_called_class();
+        $class = isset(static::$table_name) ? static::$table_name : get_called_class();
         if (isset(self::$cms_modules[$class])) {
             return self::$cms_modules[$class]->primary_key;
         } else {
