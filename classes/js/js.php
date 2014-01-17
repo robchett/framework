@@ -72,7 +72,7 @@ class js extends asset {
     }
 
     public function add_resource_root($root) {
-        $files = glob(trim($root, '/') . '/*.js', GLOB_MARK);
+        $files = glob(rtrim($root, '/') . '/*.js', GLOB_MARK);
         foreach ($files as $file) {
             $this->add_files($file);
         }
