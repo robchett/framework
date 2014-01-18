@@ -44,8 +44,10 @@ $(document).ready(function () {
                         var $page = $("div[data-url='" + href + "']");
                         if ($page.length) {
                             window.history.pushState($.fn.ajax_factory.get_state(href), '', href);
-                            toggle_page($page);
-                            perform_page_actions($.fn.ajax_factory.get_state(href), href);
+                            if (typeof page_handeler != 'undefined') {
+                                page_handeler.toggle_page($page);
+                                page_handeler.perform_page_actions($.fn.ajax_factory.get_state(href).actions, href);
+                            }
                         } else {
                             var post = {module: 'core', act: 'load_page'};
                             var options = {call_as_uri: href, loading_target: '#main' };
@@ -158,7 +160,7 @@ $(document).ready(function () {
 
     $.fn.ajax_factory.states = [];
 
-    $.fn.ajax_factory.get_state = function(state){
+    $.fn.ajax_factory.get_state = function (state) {
         return this.states[state];
     };
 
@@ -255,7 +257,11 @@ function handle_json_response(json) {
     }
     if ($.fn.ajax_factory.defaults.complete) {
         $.fn.ajax_factory.defaults.complete.each(function (method, i, json) {
-            window[method](json);
+            if (typeof method == 'function') {
+                method(json);
+            } else {
+                window[method](json);
+            }
         }, json);
     }
 }
