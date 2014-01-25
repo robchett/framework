@@ -329,7 +329,7 @@ abstract class form {
      */
     public function get_submit() {
         if ($this->has_submit) {
-            $field = node::create('input.submit', ['type' => 'submit', 'data-for' => $this->id, 'name' => $this->submit]);
+            $field = node::create('div.form_submit', [], node::create('a.submit', [], $this->submit) . node::create('input.submit', ['type' => 'submit', 'data-for' => $this->id, 'name' => $this->submit]));
             if (!$this->submittable) {
                 $field->add_attribute('disabled', 'disabled');
             }
