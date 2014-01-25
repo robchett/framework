@@ -95,6 +95,10 @@ $(document).ready(function () {
         }
     });
 
+    $body.on('click', 'form .submit', function(e) {
+        $(this).parents('form').eq(0).submit();
+    });
+
     $body.on('submit', 'form.ajax', function (e) {
         e.preventDefault();
         var arr = $(this).attr('action').split(':');
@@ -137,8 +141,6 @@ $(document).ready(function () {
                 $(options.loading_target).css({'position': 'relative'});
             }
             $(options.loading_target).prepend(div);
-            $.fn.colorbox.resize();
-            colorbox_recenter();
         }
         $.extend(post, ({'module': module, 'act': act}));
         $(".error_message").remove();
@@ -197,11 +199,6 @@ function removeMlink(id, value) {
         $('#' + id + '_selected [data-value=' + value + ']').remove();
 
     }
-}
-
-function colorbox_recenter() {
-    var $cb = $('#colorbox');
-    $cb.stop().animate({left: (725 - $cb.width()) / 2});
 }
 
 function handle_json_response(json) {
