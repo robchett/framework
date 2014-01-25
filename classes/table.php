@@ -340,13 +340,17 @@ abstract class table {
         $form->action = get_class($this) . ':do_form_submit';
         $ok = $form->do_form_submit();
         if ($ok) {
-            $type = (!isset($this->{$this->get_primary_key_name()}) || !$this->{$this->get_primary_key_name()} ? 'Added' : 'Updated');
             $this->do_save();
-            _ajax::inject('#' . $_REQUEST['ajax_origin'], 'before', node::create('p.success.boxed.' . strtolower($type), [], $type . ' successfully'));
+            $this->do_submit();
         } else {
             _ajax::update($form->get_html()->get());
         }
         return $ok;
+    }
+
+    public function do_submit() {
+        $type = (!isset($this->{$this->get_primary_key_name()}) || !$this->{$this->get_primary_key_name()} ? 'Added' : 'Updated');
+        _ajax::inject('#' . $_REQUEST['ajax_origin'], 'before', node::create('p.success.boxed.' . strtolower($type), [], $type . ' successfully'));
     }
 
     /**
