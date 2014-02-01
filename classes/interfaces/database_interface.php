@@ -33,10 +33,9 @@ interface database_interface {
      * @param $object
      * @param array $fields_to_retrieve
      * @param $options
-     * @param array $parameters
      * @return mixed
      */
-    public static function get_query($object, array $fields_to_retrieve, $options, &$parameters = []);
+    public static function get_query($object, array $fields_to_retrieve, $options);
 
     /**
      * @return mixed

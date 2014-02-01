@@ -1,7 +1,7 @@
 <?php
 namespace core\module\cms\object;
 
-use core\classes\table;
+use classes\table;
 use traits\table_trait;
 
 abstract class field_type extends table {

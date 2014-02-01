@@ -97,6 +97,8 @@ $(document).ready(function () {
 
     $body.on('click', 'form .submit', function(e) {
         $(this).parents('form').eq(0).submit();
+        e.preventDefault();
+        return false;
     });
 
     $body.on('submit', 'form.ajax', function (e) {

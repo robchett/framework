@@ -4,7 +4,7 @@
  */
 namespace core\module\cms\object;
 
-use core\classes\table;
+use classes\table;
 use module\cms\object\_cms_group as __cms_group;
 use traits\table_trait;
 

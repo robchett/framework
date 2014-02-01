@@ -1,24 +1,32 @@
 <?php
 namespace core\form;
 
+use classes\collection;
 use classes\db;
 use classes\table;
+use classes\table_array;
 use form\field_file;
 use html\node;
 use object\image_size;
 
-class field_image extends field_file {
+class field_image extends field_file
+{
 
-    public function get_image_edit_link() {
+    protected static $image_sizes;
+
+    public function get_image_edit_link()
+    {
         $count = db::count('image_size', 'isid')->filter_field('fid', $this->fid)->execute();
-        return node::create('a', array('href' => '/cms/module/' . image_size::get_module_id() . '/!/fid/' . $this->fid), (int) $count . ' image sizes');
+        return node::create('a', array('href' => '/cms/module/' . image_size::get_module_id() . '/!/fid/' . $this->fid), (int)$count . ' image sizes');
     }
 
-    public function get_cms_list_wrapper($value, $object_class, $id) {
+    public function get_cms_list_wrapper($value, $object_class, $id)
+    {
         return $this->get_default_image($id);
     }
 
-    public function get_default_image($id, $options = []) {
+    public function get_default_image($id, $options = [])
+    {
         /** @var image_size $image_size */
         $image_size = $this->get_image_sizes($options);
         if ($image_size->count()) {
@@ -31,12 +39,36 @@ class field_image extends field_file {
         return node::create('span', [], 'No Image');
     }
 
-    public function get_image_sizes($options = []) {
-        $options['where_equals']['fid'] = $this->fid;
-        return image_size::get_all([], $options);
+    public function get_image_sizes()
+    {
+        if (!isset(self::$image_sizes)) {
+            self::$image_sizes = image_size::get_all([]);
+        }
+        $image_sizes = new table_array();
+        foreach (self::$image_sizes as $image_size) {
+            if ($image_size->fid == $this->fid) {
+                $image_sizes[] = $image_size;
+            }
+        }
+        return $image_sizes;
     }
 
-    public function get_html() {
+    /**
+     * @param string $size
+     * @return image_size|bool
+     */
+    public function get_image_size($size)
+    {
+        foreach ($this->get_image_sizes() as $image_size) {
+            if ($image_size->size == $size) {
+                return $image_size;
+            }
+        }
+        return false;;
+    }
+
+    public function get_html()
+    {
         $html = '';
         $parent = $this->parent_form;
         if ($parent instanceof table) {

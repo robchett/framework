@@ -3,7 +3,7 @@ namespace core\form;
 
 use classes\get;
 use classes\table;
-use core\classes\db;
+use classes\db;
 use form\field_image;
 use html\node;
 

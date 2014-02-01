@@ -7,25 +7,29 @@ class image_resizer {
     private $image;
     private $width;
     private $height;
+    private $type;
     private $imageResized;
 
     function __construct($fileName) {
-        $this->image = $this->openImage($fileName);
+        $this->image = $this->open_image($fileName);
         $this->width = imagesx($this->image);
         $this->height = imagesy($this->image);
     }
 
-    private function openImage($file) {
+    private function open_image($file) {
         $extension = strtolower(strrchr($file, '.'));
         switch ($extension) {
             case '.jpg':
             case '.jpeg':
-                $img = @imagecreatefromjpeg($file);
-                break;
+                $this->type = 'jpg';
+            $img = @imagecreatefromjpeg($file);
+            break;
             case '.gif':
+                $this->type = 'gif';
                 $img = @imagecreatefromgif($file);
                 break;
             case '.png':
+                $this->type = 'png';
                 $img = @imagecreatefrompng($file);
                 break;
             default:
@@ -35,108 +39,44 @@ class image_resizer {
         return $img;
     }
 
-    public function resizeImage($newWidth, $newHeight, $option = "auto") {
-        $optionArray = $this->getDimensions($newWidth, $newHeight, $option);
-
-        $optimalWidth = $optionArray['optimalWidth'];
-        $optimalHeight = $optionArray['optimalHeight'];
-
-        $this->imageResized = imagecreatetruecolor($optimalWidth, $optimalHeight);
-        imagecopyresampled($this->imageResized, $this->image, 0, 0, 0, 0, $optimalWidth, $optimalHeight, $this->width, $this->height);
-
-        if ($option == 'crop') {
-            $this->crop($optimalWidth, $optimalHeight, $newWidth, $newHeight);
-        }
-    }
-
-    private function getDimensions($newWidth, $newHeight, $option) {
-
-        switch ($option) {
-            case 'exact':
-                $optimalWidth = $newWidth;
-                $optimalHeight = $newHeight;
-                break;
-            case 'portrait':
-                $optimalWidth = $this->getSizeByFixedHeight($newHeight);
-                $optimalHeight = $newHeight;
-                break;
-            case 'landscape':
-                $optimalWidth = $newWidth;
-                $optimalHeight = $this->getSizeByFixedWidth($newWidth);
-                break;
-            case 'auto':
-                $optionArray = $this->getSizeByAuto($newWidth, $newHeight);
-                $optimalWidth = $optionArray['optimalWidth'];
-                $optimalHeight = $optionArray['optimalHeight'];
-                break;
-            case 'crop':
-                $optionArray = $this->getOptimalCrop($newWidth, $newHeight);
-                $optimalWidth = $optionArray['optimalWidth'];
-                $optimalHeight = $optionArray['optimalHeight'];
-                break;
-        }
-        return ['optimalWidth' => $optimalWidth, 'optimalHeight' => $optimalHeight];
-    }
-
-    private function getSizeByFixedHeight($newHeight) {
-        $ratio = $this->width / $this->height;
-        $newWidth = $newHeight * $ratio;
-        return $newWidth;
-    }
-
-    private function getSizeByFixedWidth($newWidth) {
-        $ratio = $this->height / $this->width;
-        $newHeight = $newWidth * $ratio;
-        return $newHeight;
-    }
-
-    private function getSizeByAuto($newWidth, $newHeight) {
-        if ($this->height < $this->width) {
-            $optimalWidth = $newWidth;
-            $optimalHeight = $this->getSizeByFixedWidth($newWidth);
-        } else if ($this->height > $this->width) {
-            $optimalWidth = $this->getSizeByFixedHeight($newHeight);
-            $optimalHeight = $newHeight;
-        } else {
-            if ($newHeight < $newWidth) {
-                $optimalWidth = $newWidth;
-                $optimalHeight = $this->getSizeByFixedWidth($newWidth);
-            } else if ($newHeight > $newWidth) {
-                $optimalWidth = $this->getSizeByFixedHeight($newHeight);
-                $optimalHeight = $newHeight;
+    public function resizeImage($width, $height, $crop = false) {
+        // resize
+        if ($crop) {
+            if ($this->width < $width or $this->height < $height) return "Picture is too small!";
+            $ratio = max($width / $this->width, $height / $this->height);
+            if($width / $this->width < $height / $this->height) {
+                $x = ($this->width - $width / $ratio) / 2;
+                $y = 0;
             } else {
-                $optimalWidth = $newWidth;
-                $optimalHeight = $newHeight;
+                $x = 0;
+                $y = ($this->height - $height / $ratio) / 2;
             }
-        }
-        return ['optimalWidth' => $optimalWidth, 'optimalHeight' => $optimalHeight];
-    }
-
-
-    private function getOptimalCrop($newWidth, $newHeight) {
-
-        $heightRatio = $this->height / $newHeight;
-        $widthRatio = $this->width / $newWidth;
-
-        if ($heightRatio < $widthRatio) {
-            $optimalRatio = $heightRatio;
+            $this->height = $height / $ratio;
+            $this->width = $width / $ratio;
         } else {
-            $optimalRatio = $widthRatio;
+            if ($this->width < $width and $this->height < $height) return "Picture is too small!";
+            $ratio = min($width / $this->width, $height / $this->height);
+            $width = $this->width * $ratio;
+            $height = $this->height * $ratio;
+            $x = 0;
+            $y = 0;
         }
 
-        $optimalHeight = $this->height / $optimalRatio;
-        $optimalWidth = $this->width / $optimalRatio;
+        $new = imagecreatetruecolor($width, $height);
 
-        return ['optimalWidth' => $optimalWidth, 'optimalHeight' => $optimalHeight];
-    }
+        // preserve transparency
+        if ($this->type == "gif" or $this->type == "png") {
+            imagecolortransparent($new, imagecolorallocatealpha($new, 0, 0, 0, 127));
+            imagealphablending($new, false);
+            imagesavealpha($new, true);
+        }
 
-    private function crop($optimalWidth, $optimalHeight, $newWidth, $newHeight) {
-        $cropStartX = ($optimalWidth / 2) - ($newWidth / 2);
-        $cropStartY = ($optimalHeight / 2) - ($newHeight / 2);
+        echo 'Width:' . $width . ' Height:' . $height;
+        echo 'Width:' . $this->width . ' Height:' . $this->height;
+        echo 'X:' .$x . ' Y:' . $y;
 
-        $crop = $this->imageResized;
-        $this->imageResized = imagecreatetruecolor($newWidth, $newHeight);
-        imagecopyresampled($this->imageResized, $crop, 0, 0, $cropStartX, $cropStartY, $newWidth, $newHeight, $newWidth, $newHeight);
+        $this->imageResized = imagecreatetruecolor($width, $height);
+        imagecopyresampled($this->imageResized, $this->image, 0, 0, $x, $y, $width, $height, $this->width, $this->height);
     }
 
     public function saveImage($savePath, $imageQuality = "100") {

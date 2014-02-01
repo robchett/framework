@@ -24,7 +24,6 @@ abstract class node {
         return $this->get();
     }
 
-
     /**
      *
      */

@@ -13,6 +13,7 @@ abstract class query {
     protected $limit;
 
     public function __construct($table) {
+        \classes\compiler::$dependants[] = $table;
         $this->table = $table;
     }
 
@@ -37,12 +38,16 @@ abstract class query {
         return $this;
     }
 
-    public function add_join($table, array $where, $parameters = [], $type = 'LEFT') {
+    public function add_join($table, $where, $parameters = [], $type = 'LEFT') {
         if (!isset($this->joins[$table]['where'])) {
             $this->joins[$table]['where'] = [];
         }
-        foreach ($where as $where_clause) {
-            $this->joins[$table]['where'][] = $where_clause;
+        if (is_array($where)) {
+            foreach ($where as $where_clause) {
+                $this->joins[$table]['where'][] = $where_clause;
+            }
+        } else {
+            $this->joins[$table]['where'][] = $where;
         }
         $this->joins[$table]['type'] = $type;
         $this->parameters = array_merge($this->parameters, $parameters);
@@ -50,8 +55,12 @@ abstract class query {
     }
 
     public function filter_field($field, $value, $operator = '=') {
-        $this->filter('`' . $field . '`' . $operator . ':' . $field);
-        $this->parameters[$field] = $value;
+        $field_name = 'filter_' . (count($this->parameters) + 1);
+        if (strstr($field, '.') === false && strstr($field, ' AS ') === false) {
+            $field = '`' . $field . '`';
+        }
+        $this->filter($field . $operator . ':' . $field_name);
+        $this->parameters[$field_name] = $value;
         return $this;
     }
 
@@ -119,6 +128,13 @@ abstract class query {
     protected function get_limit() {
         if ($this->limit) {
             return ' LIMIT ' . $this->limit;
+        }
+        return '';
+    }
+
+    protected function get_order() {
+        if ($this->order) {
+            return ' ORDER BY ' . implode(',', $this->order);
         }
         return '';
     }

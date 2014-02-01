@@ -18,7 +18,7 @@ class error_handler {
                 xdebug_break();
             }
             require_once(root . '/.core/core.php');
-            $error = '<div class="error_message mysql"><p>Error #' . $errno . ' "' . $errstr . '" in ' . $errfile . ' on line ' . $errline . '</p>' . \core::get_backtrace() . '</div>';
+            $error = '<div class="error_message mysql"><p>Error #' . $errno . ' "' . $errstr . '" in ' . $errfile . ' on line ' . $errline . '</p>' . \core::get_backtrace(1) . '</div>';
             fwrite(self::$file_handler, $error . "\n\n\n---------------\n\n\n");
             if (dev || debug) {
                 if (ajax) {
@@ -29,6 +29,7 @@ class error_handler {
                 }
             }
         }
+        return true;
     }
 
     public static function shutdown() {
@@ -36,7 +37,7 @@ class error_handler {
             if (!(dev || debug)) {
                 mail('robchett@gmail.com', 'Error on site ' . $_SERVER['HTTP_HOST'], file_get_contents(self::$file_name));
             }
-            unlink(self::$file_name);
+            //unlink(self::$file_name);
         }
     }
 }

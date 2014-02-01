@@ -57,6 +57,21 @@ abstract class table {
         }
     }
 
+    /**
+     * @param int $id
+     * @param string $size
+     * @param int $width
+     * @param int $height
+     *@return node
+     * */
+    public function get_padded_image($id, $size, $width, $height) {
+        $url = $this->get_file($id, $size);
+        $actual_size = getimagesize(root . $url);
+        $vertical = ($height - $actual_size[1]) / 2;
+        $horizontal = ($width - $actual_size[0]) / 2;
+        return node::create('span.padded_image', ['style' => 'padding:' . $vertical . 'px ' . $horizontal . 'px'], node::create('img', ['src' => $url]));
+    }
+
     public function get_table_class() {
         return get::__class_name($this);
     }
@@ -270,7 +285,6 @@ abstract class table {
      */
     public function do_retrieve(array $fields, array $options) {
         $options['limit'] = 1;
-        $parameters = (isset($options['parameters']) ? $options['parameters'] : []);
         $this->set_default_retrieve($fields, $options);
         $links = $mlinks = [];
         table::organise_links($this, $fields, $links, $mlinks);
@@ -282,8 +296,8 @@ abstract class table {
                 $fields[] = $module . '.' . $retrieve;
             }
         }
-        $sql = db::get_query(get_class($this), $fields, $options, $parameters);
-        $res = db::query($sql, $parameters);
+        $query = db::get_query(get_class($this), $fields, $options);
+        $res = $query->execute();
         //$before = memory_get_usage();
         if (db::num($res)) {
             $this->set_from_row(db::fetch($res), $links);
@@ -349,7 +363,9 @@ abstract class table {
     }
 
     public function do_submit() {
-        $type = (!isset($this->{$this->get_primary_key_name()}) || !$this->{$this->get_primary_key_name()} ? 'Added' : 'Updated');
+        $type = (!$this->get_primary_key() ? 'Added' : 'Updated');
+
+        _ajax::add_script('$(".success").remove()', true);
         _ajax::inject('#' . $_REQUEST['ajax_origin'], 'before', node::create('p.success.boxed.' . strtolower($type), [], $type . ' successfully'));
     }
 
@@ -368,12 +384,16 @@ abstract class table {
         );
     }
 
+    protected function set_primary_key(int $i) {
+        $this->{$this->get_primary_key_name()} = $i;
+    }
+
     /**
      * @return string
      */
     public function do_save() {
         $class = _get::__class_name($this);
-        if (isset($this->{$this->get_primary_key_name()}) && $this->{$this->get_primary_key_name()}) {
+        if ($this->get_primary_key()) {
             $query = new update($class);
         } else {
             $query = new insert($class);
@@ -403,13 +423,13 @@ abstract class table {
         $query->add_value('live', isset($this->live) ? $this->live : true);
         $query->add_value('deleted', isset($this->live) ? $this->deleted : false);
         $query->add_value('ts', date('Y-m-d H:i:s'));
-        if (isset($this->{$this->get_primary_key_name()}) && $this->{$this->get_primary_key_name()}) {
-            $query->filter_field($this->get_primary_key_name(), $this->{$this->get_primary_key_name()});
+        if ($this->get_primary_key()) {
+            $query->filter_field($this->get_primary_key_name(), $this->get_primary_key());
         }
-        $res = $query->execute();
 
-        if (!$this->get_primary_key()) {
-            $this->{$this->get_primary_key_name()} = $res;
+        $key = $query->execute();
+        if(!$this->get_primary_key()) {
+            $this->set_primary_key($key);
         }
 
         $this->get_fields()->iterate(function ($field) {
@@ -417,11 +437,11 @@ abstract class table {
                     if (isset($this->{$field->field_name}) && $field instanceof field_mlink) {
                         $source_module = new _cms_module(['table_name', 'primary_key'], $field->get_link_mid());
                         $module = new _cms_module(['table_name', 'primary_key'], static::get_module_id());
-                        db::query('DELETE FROM ' . $module->table_name . '_link_' . $source_module->table_name . ' WHERE ' . $module->primary_key . '=:key', ['key' => $this->{$this->get_primary_key_name()}]);
+                        db::delete($module->table_name . '_link_' . $source_module->table_name)->filter_field($module->primary_key, $this->get_primary_key())->execute();
                         if ($this->{$field->field_name}) {
                             foreach ($this->{$field->field_name} as $value) {
                                 db::insert($module->table_name . '_link_' . $source_module->table_name)
-                                    ->add_value($module->primary_key, $this->{$this->get_primary_key_name()})
+                                    ->add_value($module->primary_key, $this->get_primary_key())
                                     ->add_value('link_' . $source_module->primary_key, $value)
                                     ->add_value('fid', $field->fid)
                                     ->execute();
@@ -431,10 +451,7 @@ abstract class table {
                 }
             }
         );
-        if (!(isset($this->{$this->get_primary_key_name()}) && $this->{$this->get_primary_key_name()})) {
-            $this->{$this->get_primary_key_name()} = db::insert_id();
-        }
-        if ($this->{$this->get_primary_key_name()}) {
+        if ($this->get_primary_key()) {
             $this->get_fields()->iterate(function ($field) {
                     if ($field instanceof field_file) {
                         $this->do_upload_file($field);
@@ -442,7 +459,7 @@ abstract class table {
                 }
             );
         }
-        return $this->{$this->get_primary_key_name()};
+        return $this->get_primary_key();
     }
 
     public function get_file($fid, $size = '', $extensions = ['png', 'gif', 'jpg', 'jpeg'], $fallback = '/.core/images/no_image.png') {
@@ -458,7 +475,7 @@ abstract class table {
     protected function do_process_image($source, image_size $size) {
         $ext = pathinfo($source, PATHINFO_EXTENSION);
         $resize = new image_resizer($source);
-        $resize->resizeImage($size->max_width, $size->max_height, 'crop');
+        $resize->resizeImage($size->max_width, $size->max_height, $size->icid == 1 ? true : false);
         $resize->saveImage(str_replace('.' . $ext, '', $source) . '_' . $size->reference . '.' . $size->get_format());
     }
 
@@ -515,7 +532,7 @@ abstract class table {
             $field->label .= '<span class="field_name">' . $field->field_name . '</span>';
             $field->raw = true;
         }
-        if (!isset($this->{$this->get_primary_key_name()}) || !$this->{$this->get_primary_key_name()}) {
+        if (!$this->get_primary_key()) {
             $form->get_field_from_name($this->get_primary_key_name())->set_attr('hidden', true);
             $form->{'parent_' . $this->get_primary_key_name()} = 0;
         }
@@ -539,7 +556,7 @@ abstract class table {
      * @param $fields
      */
     public function lazy_load($fields) {
-        $this->do_retrieve_from_id($fields, $this->{$this->get_primary_key_name()});
+        $this->do_retrieve_from_id($fields, $this->get_primary_key());
     }
 
     /** @return \html\node */

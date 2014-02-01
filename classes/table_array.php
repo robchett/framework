@@ -86,7 +86,6 @@ table_array extends _collection {
         $mlinks = [];
         $obj->set_default_retrieve($fields_to_retrieve, $options);
         table::organise_links($obj, $fields_to_retrieve, $links, $mlinks);
-        $parameters = (isset($options['parameters']) ? $options['parameters'] : []);
         foreach ($links as $module => $link_info) {
             $field = $link_info['field'];
             $retrieves = $link_info['retrieve'];
@@ -95,8 +94,8 @@ table_array extends _collection {
                 $fields_to_retrieve[] = $module . '.' . $retrieve;
             }
         }
-        $sql = _db::get_query($class, $fields_to_retrieve, $options, $parameters);
-        $res = db::query($sql, $parameters);
+        $select = _db::get_query($class, $fields_to_retrieve, $options);
+        $res = $select->execute();
         if (_db::num($res)) {
             while ($row = _db::fetch($res, null)) {
                 /** @var table $class */

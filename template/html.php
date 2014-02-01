@@ -64,7 +64,7 @@ abstract class html {
             \core::$inline_script[] = 'loaded_modules = {"' . uri . '":true};';
             return node::create('div#main div#' . $this->get_page_selector(), ['data-url' => isset($_POST['url']) ? $_POST['url'] : uri], $this->get_view());
         } else {
-            \classes\ajax::inject('#main', 'append', '<div id="' . $this->get_page_selector() . '" data-url="' . (isset($_POST['url']) ? $_POST['url'] : uri) . '">' . $this->get_view() . '</div>', '#' . $this->get_page_selector());
+            return['#main', 'append', '<div id="' . $this->get_page_selector() . '" data-url="' . (isset($_POST['url']) ? $_POST['url'] : uri) . '">' . $this->get_view() . '</div>', '#' . $this->get_page_selector()];
         }
     }
 }

@@ -2,7 +2,7 @@
 namespace core\module\cms\object;
 
 use classes\jquery;
-use core\classes\table;
+use classes\table;
 use module\cms\form\cms_change_group_form;
 use traits\table_trait;
 

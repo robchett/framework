@@ -2,7 +2,7 @@
 namespace core\module\cms\form;
 
 use classes\ajax;
-use core\classes\db;
+use classes\db;
 use form\form;
 use module\cms\object\_cms_module;
 use module\cms\object\field_type;

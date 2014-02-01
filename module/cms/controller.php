@@ -8,7 +8,7 @@ use classes\get;
 use classes\module;
 use classes\paginate;
 use classes\table_array;
-use core\module\cms\object\_cms_module;
+use module\cms\object\_cms_module;
 use html\node;
 use module\cms\form\add_field_form;
 use module\cms\form\cms_filter_form;
@@ -77,7 +77,8 @@ abstract class controller extends module {
                         $this->where[$field->field_name] = $_SESSION['cms'][$this->module->get_class_name()][$field->field_name];
                     }
                 }
-                $this->tot = db::result(db::get_query($this->module->table_name, ['count(*) AS count'], ['where_equals' => $this->where], $parameters), $parameters)->count;
+                $query = db::get_query($this->module->table_name, ['count(*) AS count'], ['where_equals' => $this->where]);
+                $this->tot = $query->execute()->rowCount();
             }
         }
         if (isset($path[3]) && !empty($path[3]) && admin) {

@@ -2,7 +2,11 @@
 
 namespace core\classes;
 
+use classes\push_state_data as _data;
+use traits\var_dump_import;
+
 abstract class push_state {
+    use var_dump_import;
 
     const REPLACE = 1;
     const PUSH = 2;
@@ -13,7 +17,7 @@ abstract class push_state {
 
 
     public function __construct() {
-        $this->data = new \stdClass();
+        $this->data = new _data();
         $this->data->actions = [];
         $this->type = self::PUSH;
     }
@@ -30,5 +34,4 @@ abstract class push_state {
             \core::$inline_script[] = $script;
         }
     }
-
 }

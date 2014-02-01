@@ -3,7 +3,7 @@ namespace core\module\cms\form;
 
 use classes\ajax;
 use classes\get;
-use core\classes\db;
+use classes\db;
 use form\form;
 
 abstract class new_module_form extends form {

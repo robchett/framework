@@ -3,12 +3,12 @@
 namespace core;
 
 use classes\ajax;
+use classes\compiler;
+use classes\compiler_page;
 use classes\get;
 use classes\ini;
 use classes\page_config;
 use classes\push_state;
-use module\cms\object\_cms_field;
-use module\cms\object\_cms_module;
 use module\pages\object\page;
 use template\html;
 
@@ -46,7 +46,7 @@ abstract class core {
         self::$page_config = new page_config();
         self::$singleton = $this;
         $this->set_path(isset($_REQUEST['url']) ? : uri);
-        define('cms', $this->path[0] == 'cms');
+        define('cms', $this->path && $this->path[0] == 'cms');
         if (isset($_REQUEST['module'])) {
             $this->do_ajax();
         }
@@ -96,33 +96,59 @@ abstract class core {
      *
      */
     public function load_page() {
-        if (!is_numeric($this->path[0])) {
-            $this->module_name = $this->path[0];
-        } else {
-            $this->module_name = 'pages';
-        }
+        $compiler = new compiler();
+        $options = ['ajax' => ajax];
+        try {
+            $compiler_page = $compiler->load(uri, $options);
+        } catch (\Exception $e) {
 
-        if (class_exists('module\\' . $this->module_name . '\controller')) {
-            $class_name = 'module\\' . $this->module_name . '\controller';
-            $this->module = new $class_name();
-            $this->module->__controller($this->path);
-            $this->module->page = $this->pagination_page;
-            $push_state = $this->module->get_push_state();
-            if ($push_state) {
-                $push_state->data->actions = array_merge($push_state->data->actions, self::$push_state_ajax_calls);
-                if (!ajax) {
-                    $push_state->type = push_state::REPLACE;
-                    $push_state->get();
+            if ($this->path) {
+                if (!is_numeric($this->path[0])) {
+                    $this->module_name = $this->path[0];
                 } else {
-                    ajax::push_state($push_state);
+                    $this->module_name = 'pages';
+                }
+            } else {
+                $this->module_name = ini::get('site', 'default_module', 'pages');
+            }
+
+            $compiler_page = new compiler_page();
+
+
+            if (class_exists('module\\' . $this->module_name . '\controller')) {
+                $class_name = 'module\\' . $this->module_name . '\controller';
+                $this->module = new $class_name();
+                $this->module->__controller($this->path);
+                $this->module->page = $this->pagination_page;
+                $push_state = $this->module->get_push_state();
+                if ($push_state) {
+                    $push_state->data->actions = array_merge($push_state->data->actions, self::$push_state_ajax_calls);
+                }
+                $compiler_page->push_state = $push_state;
+                if (!ajax) {
+                    $compiler_page->content = $this->module->view_object->get_page();
+                } else {
+                    $compiler_page->content = $this->module->view_object->get();
                 }
             }
-            if (!ajax) {
-                echo $this->module->view_object->get_page();
-            } else {
-                $this->module->view_object->get();
-            }
+            $compiler->save(uri, $compiler_page, $options);
         }
+
+        if (!ajax) {
+            if ($compiler_page->push_state) {
+                $compiler_page->push_state->type = push_state::REPLACE;
+                $compiler_page->push_state->get();
+            }
+            echo $compiler_page->content;
+        } else {
+            if ($compiler_page->push_state) {
+                ajax::push_state($compiler_page->push_state);
+            }
+            $class = new \ReflectionClass('\classes\ajax');
+            $function = $class->getMethod('inject');
+            $function->invokeArgs(null, $compiler_page->content);
+        }
+
     }
 
     /**
@@ -143,22 +169,26 @@ abstract class core {
      * @param $uri
      */
     public function set_path($uri) {
-        $uri_no_qs = parse_url($uri, PHP_URL_PATH);
-        $this->path = explode('/', trim($uri_no_qs, '/'));
-        if (!$this->path[0]) {
-            $this->path[0] = ini::get('site', 'default_module', 'pages');
+        $uri_no_qs = trim(parse_url($uri, PHP_URL_PATH), '/');
+        if ($uri_no_qs) {
+            $this->path = explode('/', $uri_no_qs);
         }
         $this->pagination_page = $this->get_page_from_path();
         define('clean_uri', implode('/', $this->path));
     }
 
     /**
+     * @param int $ignore_count The number of steps to ignore
      * @return string
      */
-    public static function get_backtrace() {
+    public static function get_backtrace($ignore_count = 0) {
         $trace = debug_backtrace();
         array_reverse($trace);
-        unset($trace[count($trace) - 1]);
+        // Remove the get_backtrace entry
+        array_shift($trace);
+        for ($i = 0; $i < $ignore_count; $i++) {
+            array_shift($trace);
+        }
         $html = '<table><thead><th>File</th><th>Line</th><th>Function</th></thead>';
         foreach ($trace as $step) {
             $html .= '<tr>

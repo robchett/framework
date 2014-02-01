@@ -6,6 +6,7 @@ use classes\ajax as _ajax;
 use classes\db as _db;
 use classes\get as _get;
 use db\count as _count;
+use db\delete as _delete;
 use db\insert as _insert;
 use db\select as _select;
 use db\update as _update;
@@ -44,6 +45,10 @@ abstract class db implements interfaces\database_interface {
 
     public static function update($table_name) {
         return new _update($table_name);
+    }
+
+    public static function delete($table_name) {
+        return new _delete($table_name);
     }
 
     public static function count($table_name, $primary_key = '*') {
@@ -150,66 +155,54 @@ abstract class db implements interfaces\database_interface {
      * @param $object
      * @param array $fields_to_retrieve
      * @param $options
-     * @param array $parameters
-     * @return string
+     * @return \db\select
      */
-    public static function get_query($object, array $fields_to_retrieve, $options, &$parameters = []) {
-        $fields = [];
-        $where = 'WHERE 1 ';
-        $order = '';
-        $limit = '';
-        $join = '';
-        $group = '';
+    public static function get_query($object, array $fields_to_retrieve, $options) {
+        $query = db::select(_get::__class_name($object));
         $base_object = _get::__class_name($object);
         if (!empty($fields_to_retrieve)) {
             foreach ($fields_to_retrieve as $field) {
                 if (strstr($field, '.') && !strstr($field, '.*') && !strstr($field, ' AS ')) {
-                    $fields[] = $field . ' AS `' . str_replace('.', '@', $field) . '`';
+                    $query->add_field_to_retrieve($field . ' AS `' . str_replace('.', '@', $field) . '`');
                 } else if (strstr($field, '(') === false && strstr($field, '.*') === false && strstr($field, '.') === false) {
-                    $fields[] = $base_object . '.' . $field;
+                    $query->add_field_to_retrieve($base_object . '.' . $field);
                 } else {
-                    $fields[] = $field;
+                    $query->add_field_to_retrieve($field);
                 }
             }
         } else {
-            $fields[] = $base_object . '.*';
+            $query->add_field_to_retrieve($base_object . '.*');
+        }
+        if (isset($options['parameters'])) {
+            $query->filter('1', $options['parameters']);
         }
         if (isset($options['join'])) {
             foreach ($options['join'] as $key => $val) {
-                $join .= ' LEFT JOIN ' . $key . ' ON ' . $val;
+                $query->add_join($key, $val);
             }
         }
         if (isset($options['where'])) {
-            $where .= 'AND ' . $options['where'];
+            $query->filter($options['where']);
         }
-
-        if (isset($options['where_equals']) && !empty($options['where_equals'])) {
-            $where_cnt = 0;
+        if (isset($options['where_equals']) && $options['where_equals']) {
             foreach ($options['where_equals'] as $key => $val) {
-                $where_cnt++;
-                if (strpos($key, '.') !== false) {
-                    $where .= ' AND `' . str_replace('.', '`.', $key) . '=:where_' . $where_cnt;
-                } else {
-                    $where .= ' AND `' . $key . '`=:where_' . $where_cnt;
-                }
-                $parameters['where_' . $where_cnt] = $val;
+                $query->filter_field($key, $val);
             }
         }
         if (isset($options['order'])) {
-            $order .= 'ORDER BY ' . $options['order'];
+            $query->set_order($options['order']);
         }
         if (isset($options['limit'])) {
-            $limit .= 'LIMIT ' . $options['limit'];
+            $query->set_limit($options['limit']);
         }
         if (isset($options['group'])) {
-            $group .= 'GROUP BY ' . $options['group'];
+            $query->add_grouping($options['group']);
         }
-        return $sql = 'SELECT ' . implode(', ', $fields) . ' FROM ' . $base_object . ' ' . $join . ' ' . $where . ' ' . $group . ' ' . $order . ' ' . $limit . ' ';
-
+        return $query;
     }
 
     /**
-     * @return string
+     * @return int
      */
     public static function insert_id() {
         return _db::$con->lastInsertId();
@@ -448,7 +441,6 @@ abstract class db implements interfaces\database_interface {
 
     public static function get_column_type_json(\core\db\stub\field $structure) {
         $string = '';
-        $default = 0;
         switch ($structure->type) {
             case 'int':
                 $string .= 'INT(' . ($structure->length ? : 6) . ')';

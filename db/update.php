@@ -1,7 +1,8 @@
 <?php
 namespace core\db;
 
-use core\classes\db;
+use classes\compiler;
+use classes\db as _db;
 use db\query as _query;
 
 abstract class update extends _query {
@@ -13,7 +14,8 @@ abstract class update extends _query {
 
     public function execute() {
         $query = 'UPDATE ' . $this->table . ' SET ' . $this->get_values() . $this->get_filters();
-        return db::query($query, $this->parameters);
+        compiler::break_cache($this->table);
+        return _db::query($query, $this->parameters);
     }
 
     protected function get_values() {
@@ -30,4 +32,3 @@ abstract class update extends _query {
         return $this;
     }
 }
- 

@@ -1,7 +1,8 @@
 <?php
 namespace core\db;
 
-use core\classes\db;
+use classes\compiler;
+use classes\db as _db;
 use db\query as _query;
 
 abstract class insert extends _query {
@@ -10,8 +11,9 @@ abstract class insert extends _query {
 
     public function execute() {
         $query = 'INSERT INTO ' . $this->table . ' SET ' . $this->get_values();
-        db::query($query, $this->parameters);
-        return db::insert_id();
+        _db::query($query, $this->parameters);
+        compiler::break_cache($this->table);
+        return _db::insert_id();
     }
 
     protected function get_values() {

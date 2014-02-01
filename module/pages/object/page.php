@@ -24,6 +24,9 @@ abstract class page extends table {
      * @return string
      */
     public function get_url() {
+        if($this->pid == \module\pages\controller::$homepage_id) {
+            return '/';
+        }
         if (isset($this->direct_link) && $this->direct_link) {
             return $this->direct_link;
         } else if (!empty($this->module_name)) {
