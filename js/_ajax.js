@@ -23,7 +23,10 @@ $(document).ready(function () {
     $body.on('click', null, function (event) {
         var $target = $(event.target);
         if (!$target.attr('disabled') && !$target.hasClass('disabled')) {
-            if ($target.attr('data-ajax-click')) {
+            if ($target.attr('data-ajax-click') || $target.parent('a').attr('data-ajax-click')) {
+                if(!$target.attr('data-ajax-click') ){
+                    $target = $target.parent('a');
+                }
                 event.preventDefault();
                 var arr = $target.data('ajax-click').split(':');
                 var module = arr[0];
