@@ -49,10 +49,6 @@ abstract class form {
     /**
      * @var string
      */
-    public $post_submit_text = '';
-    /**
-     * @var string
-     */
     public $post_fields_text = '';
     /**
      * @var string
@@ -117,14 +113,16 @@ abstract class form {
     /**
      * @param $object
      */
-    public function set_from_object($object) {
+    public function set_from_object($object, $change_target = true) {
         $this->table_object = $object;
         foreach ($this->fields as $field) {
             if (isset($object->{$field->field_name})) {
                 $this->{$field->field_name} = $object->{$field->field_name};
             }
         }
-        $this->action = get_class($object) . ':do_form_submit';
+        if ($change_target) {
+            $this->action = get_class($object) . ':do_form_submit';
+        }
     }
 
     public function get_table_object() {
@@ -265,12 +263,6 @@ abstract class form {
             $form->nest(node::create('div.post_fields_text', [], $this->post_fields_text));
         }
         $form->nest($this->get_hidden_fields());
-        if ($this->has_submit) {
-            $form->nest($this->get_submit());
-        }
-        if (!empty($this->post_submit_text)) {
-            $form->nest(node::create('div.post_submit_text', [], $this->post_submit_text));
-        }
         if (!empty($this->post_text)) {
             $form->nest(node::create('div.post_text', [], $this->post_text));
         }
@@ -301,10 +293,10 @@ abstract class form {
                 }
             }
         }
-        $fieldsets[] = node::create('fieldset.fieldset_' . count($fieldsets), [],
-            ($fieldset_title ? node::create('legend', [], $fieldset_title) : '') .
-            node::create('ul')->nest($fields)
-        );
+        if ($this->has_submit) {
+            $fields[] = $this->get_submit();
+        }
+        $fieldsets[] = node::create('fieldset.fieldset_' . count($fieldsets), [], ($fieldset_title ? node::create('legend', [], $fieldset_title) : '') . node::create('ul')->nest($fields));
         return $fieldsets;
     }
 
@@ -329,7 +321,7 @@ abstract class form {
      */
     public function get_submit() {
         if ($this->has_submit) {
-            $field = node::create('div.form_submit', [], node::create('a.submit', [], $this->submit) . node::create('input.submit', ['type' => 'submit', 'data-for' => $this->id, 'name' => $this->submit]));
+            $field = node::create('li.form_submit', [], node::create('a.submit', [], $this->submit) . node::create('input.submit', ['type' => 'submit', 'data-for' => $this->id, 'name' => $this->submit]));
             if (!$this->submittable) {
                 $field->add_attribute('disabled', 'disabled');
             }
