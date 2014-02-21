@@ -14,7 +14,7 @@ abstract class field_select extends field {
     public function get_html() {
         $html = '';
         $html .= '<select ' . $this->get_attributes() . '>' . "\n";
-        if (!empty($this->default)) $html .= '<option value="default">' . $this->default . '</option>' . "\n";
+        if (!empty($this->default) && !$this->required) $html .= '<option value="default">' . $this->default . '</option>' . "\n";
         foreach ($this->options as $k => $v) {
             $html .= '<option value="' . $k . '" ' . ($this->parent_form->{$this->field_name} == $k ? 'selected="selected"' : '') . '>' . $v . '</option>' . "\n";
 
