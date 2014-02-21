@@ -15,13 +15,6 @@ class request {
 
     public function set_default() {
         $this->options[CURLOPT_RETURNTRANSFER] = true;
-        $this->options[CURLOPT_FOLLOWLOCATION] = true;
-        $this->options[CURLOPT_HEADER] = false;
-        $this->options[CURLOPT_USERAGENT] = 'Mozilla/5.0 (Windows; U; Windows NT 5.2; en-US; rv:1.9.1.7) Gecko/20091221 Firefox/3.5.7';
-        $this->options[CURLOPT_CONNECTTIMEOUT] = 15;
-        $this->options[CURLOPT_TIMEOUT] = 15;
-        $this->options[CURLOPT_CUSTOMREQUEST] = 'GET';
-        $this->options[CURLOPT_MAXREDIRS] = 4;
     }
 
     public function set_timeout($timeout) {
@@ -66,7 +59,6 @@ class request {
 
     public function set_authentication($username, $password) {
         $this->options[CURLOPT_USERPWD] = $username . ':' . $password;
-        $this->options[CURLOPT_HTTPAUTH] = CURLAUTH_ANY;
     }
 
     public function set_cookies($file_path) {
@@ -75,6 +67,10 @@ class request {
 
         $this->options[CURLOPT_COOKIEJAR] = $file_path;
         $this->options[CURLOPT_COOKIEFILE] = $file_path;
+    }
+
+    public function set_cookie_data($data) {
+        $this->options[CURLOPT_COOKIE] = $data;
     }
 
     public function set_proxy($type, $host, $port, $username = NULL, $password = NULL) {

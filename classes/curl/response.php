@@ -10,10 +10,6 @@ class response {
     public $header_list;
 
     public function __construct() {
-        $this->data = '';
-        $this->info = array();
         $this->status_code = 0;
-        $this->request = null;
-        $this->header_list = array();
     }
 }
