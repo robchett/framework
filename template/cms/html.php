@@ -7,6 +7,9 @@ use classes\module;
 use core;
 use html\node;
 
+/**
+ * @property \module\cms\controller $module
+ */
 abstract class html {
 
     protected $module;
@@ -40,10 +43,23 @@ abstract class html {
 
     public function get_body() {
         return node::create('body.' . core::$page_config->get_body_class(), [],
-            core::$page_config->pre_content .
+            $this->get_nav() .
+            $this->get_pre_content() .
             node::create('div#content', [], $this->inner_html) .
-            core::$page_config->post_content
+            $this->get_post_content()
         );
+    }
+
+    protected function get_nav() {
+        return $this->module->get_main_nav();
+    }
+
+    protected function get_pre_content() {
+        return core::$page_config->pre_content;
+    }
+
+    protected function get_post_content() {
+        return core::$page_config->post_content;
     }
 
     public function get_footer() {
