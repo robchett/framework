@@ -99,6 +99,7 @@ abstract class query {
 
     public function set_limit($limit) {
         $this->limit = $limit;
+        return $this;
     }
 
     abstract public function execute();
