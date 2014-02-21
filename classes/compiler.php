@@ -5,12 +5,14 @@ use classes\compiler_page;
 
 class compiler {
 
+    protected static $disabled = false;
+
     public static $dependants = [];
 
     protected static $ignore_tables = ['_compiler_keys'];
 
     public static function break_cache($table) {
-        if(in_array($table, static::$ignore_tables)) {
+        if (in_array($table, static::$ignore_tables)) {
             return;
         }
         $res = db::select('_compiler_keys')->add_field_to_retrieve('file')->filter('`dependants` LIKE "%' . $table . '%"')->execute();
@@ -37,11 +39,16 @@ class compiler {
     }
 
     public function save($url, compiler_page $content, $parameters = []) {
-        $file = md5($url . serialize($parameters));
-        $dependents = implode(',', array_unique(self::$dependants));
-        db::insert('_compiler_keys')->add_value('file', $file)->add_value('dependants', $dependents)->execute();
-        file_put_contents(root . '/.cache/compile/' . $file, $content->serialize());
+        if (!static::$disabled) {
+            $file = md5($url . serialize($parameters));
+            $dependents = implode(',', array_unique(self::$dependants));
+            db::insert('_compiler_keys')->add_value('file', $file)->add_value('dependants', $dependents)->execute();
+            file_put_contents(root . '/.cache/compile/' . $file, $content->serialize());
+        }
     }
 
+    public static function disable() {
+        static::$disabled = true;
+    }
 }
 
