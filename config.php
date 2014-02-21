@@ -36,3 +36,11 @@ if (!defined('load_core') || load_core) {
     include(core_dir . '/core.php');
     $core = new core();
 }
+
+function pretty_print($var, $return = false) {
+    if ($return) {
+        return '<pre>' . print_r($var, true) . '</pre>';
+    } else {
+        echo '<pre>' . print_r($var, true) . '</pre>';
+    }
+}
