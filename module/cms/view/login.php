@@ -21,4 +21,6 @@ abstract class login extends cms_view {
     public function get() {
         return $this->get_view()->get();
     }
+
+    protected function get_nav() {}
 }

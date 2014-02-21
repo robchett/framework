@@ -8,11 +8,11 @@ use classes\get;
 use classes\module;
 use classes\paginate;
 use classes\table_array;
-use module\cms\object\_cms_module;
 use html\node;
 use module\cms\form\add_field_form;
 use module\cms\form\cms_filter_form;
 use module\cms\form\new_module_form;
+use module\cms\object\_cms_module;
 use module\cms\object;
 use object\image_size;
 
@@ -30,33 +30,19 @@ abstract class controller extends module {
     public $current;
     /** @var \classes\table */
     public $current_class;
-    /**
-     * @var
-     */
     public $mid;
-    /**
-     * @var object\_cms_module
-     */
+    /** @var object\_cms_module */
     public $module;
-
-    /**
-     * @var
-     */
     public $object = false;
     public $order;
-    /**
-     * @var
-     */
     public $tot;
-    /**
-     * @var
-     */
     public $where;
 
     /**
      * @param array $path
      */
     public function __controller(array $path) {
+        \classes\compiler::disable();
         error_reporting(-1);
         \core::$css = ['/inc/module/cms/css/'];
         \core::$js = ['/.core/js/jquery.js', '/.core/js/_ajax.js', ' /.core/module/cms/js/cms.js', '/.core/js/colorbox.js', '/.core/plugins/ckeditor/ckeditor.js'];
@@ -167,7 +153,7 @@ abstract class controller extends module {
                     db::update('_cms_field')->add_value('position', $field->position)->filter_field('fid', $field->fid)->execute();
                 }
             );
-            ajax::update($this->current->get_cms_edit_module()->get());
+            ajax::update($this->module->get_fields_list()->get());
         }
     }
 
@@ -220,7 +206,7 @@ abstract class controller extends module {
                     $object_collection = $class::get_all([], ['where_equals' => [$this->module->primary_key => $this->current->get_primary_key()]]);
                     return node::create('div.sub_module', [],
                         node::create('h3', [], $module->title) .
-                        node::create('a', ['href' => '/cms/edit/' . $class::get_module_id() . '?' . $this->module->primary_key . '=' . $this->current->get_primary_key()], 'Add new ' . $module->title) .
+                        node::create('a.button', ['href' => '/cms/edit/' . $class::get_module_id() . '?' . $this->module->primary_key . '=' . $this->current->get_primary_key()], 'Add new ' . $module->title) .
                         $this->get_list_inner($object_collection, $class)
                     );
                 }
@@ -277,22 +263,13 @@ abstract class controller extends module {
         );
         if (isset($this->mid)) {
             $html->nest(node::create('li.right a', ['href' => '/cms/admin_edit/' . $this->mid, 'title' => 'Edit ' . get_class($this->current)], 'Edit Module'));
-            $html->nest(node::create('li.right a', ['href' => '/cms/edit/' . $this->mid, 'title' => 'Add new ' . get::__class_name($this->current)], 'Add new ' . get::__class_name($this->current)));
+            $html->nest(node::create('li.right a', ['href' => '/cms/edit/' . $this->mid, 'title' => 'Add new ' . ucwords(str_replace('_', ' ', get::__class_name($this->current)))], 'Add new ' . get::__class_name($this->current)));
         } else if ($this->view === 'module_list') {
             $html->nest(node::create('li.right a', ['href' => '/cms/new_module/', 'title' => 'Add new module'], 'Add new module'));
             $html->nest(node::create('li.right a', ['href' => "/cms/edit/" . object\_cms_group::get_module_id(), 'title' => 'Add new module group'], 'Add new module group'));
         }
         $html->nest(node::create('li.right a', ['href' => '/cms/module_list/', 'title' => 'View all modules'], 'All Modules'));
         return $html;
-    }
-
-    /**
-     * @return node
-     */
-    public function get_new_field_form() {
-        $form = new add_field_form();
-        $form->mid = $this->mid;
-        return $form->get_html();
     }
 
     /**

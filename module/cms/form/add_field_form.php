@@ -86,7 +86,7 @@ abstract class add_field_form extends form {
 
         $obj = $module->get_class();
         $obj->mid = $this->mid;
-        ajax::update($obj->get_cms_edit_module()->get());
+        ajax::update($obj->get_fields_list()->get());
         ajax::update($this->get_html()->get());
     }
 }

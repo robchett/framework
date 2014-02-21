@@ -3,6 +3,8 @@ namespace core\module\cms\object;
 
 use classes\jquery;
 use classes\table;
+use html\node;
+use module\cms\form\add_field_form;
 use module\cms\form\cms_change_group_form;
 use traits\table_trait;
 
@@ -48,7 +50,7 @@ abstract class _cms_module extends table {
 
     public static function create($title, $table_name, $primary_key, $group, $namespace = '') {
         $module = new \module\cms\object\_cms_module();
-        $module->do_retrieve(['title'], ['where_equals'=>['table_name' => $table_name]]);
+        $module->do_retrieve(['title'], ['where_equals' => ['table_name' => $table_name]]);
         if (!$module->get_primary_key()) {
             $module->title = $title;
             $module->table_name = $table_name;
@@ -60,5 +62,47 @@ abstract class _cms_module extends table {
             throw new \Exception('Module ' . $title . ' already exists.');
         }
         return $module;
+    }
+
+    /** @return \html\node */
+    public function get_cms_edit_module() {
+        $form = new \module\cms\form\edit_module_form();
+        $form->set_from_object($this, false);
+        return $form->get_html();
+    }
+
+    public function get_fields_list() {
+
+        $obj = $this->get_class();
+
+        $list = node::create('table#module_def', [],
+            node::create('thead', [],
+                node::create('th', [], 'Live') .
+                node::create('th', [], 'Field id') .
+                node::create('th', [], 'Pos') .
+                node::create('th', [], 'Title') .
+                node::create('th', [], 'Database Title') .
+                node::create('th', [], 'Type') .
+                node::create('th', [], 'List') .
+                node::create('th', [], 'Required') .
+                node::create('th', [], 'Filter') .
+                node::create('th', [], '')
+            ) .
+            $obj->get_fields()->iterate_return(function ($field) use ($obj) {
+                    $field->parent_form = $obj;
+                    return (node::create('tr', [], $field->get_cms_admin_edit()));
+                }
+            )
+        );
+        return $list;
+    }
+
+    /**
+     * @return node
+     */
+    public function get_new_field_form() {
+        $form = new add_field_form();
+        $form->mid = $this->mid;
+        return $form->get_html();
     }
 }

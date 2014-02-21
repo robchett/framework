@@ -1,10 +1,13 @@
 @primary: #0c3f6b;
+@radius: 0;
+.rounded(@radius: 0) {
+  .border-radius(@radius);
+}
 
 .button() {
   display: block;
   padding: 5px;
   .bw-gradient(200, 240);
-  .border-radius(10px, 10px, 10px, 10px);
   border: 1px solid #cccccc;
   text-align: center;
   font-weight: bold;
@@ -54,7 +57,7 @@ ul#pagi {
     width: 30px;
     line-height: 30px;
     text-align: center;
-    .border-radius(30px, 30px, 30px, 30px);
+    .rounded(30);
     &:hover, &.sel {
       background-color: #555;
     }
@@ -69,7 +72,7 @@ ul#pagi {
 form {
   &#filter_form {
     border: @border;
-    .border-radius(10px, 0, 0, 10px);
+    padding: 10px;
     background-color: #5d5d5d;
     li {
       float: left;
@@ -130,17 +133,19 @@ body.login {
       }
       width: 400px;
       margin: auto;
-      border-radius: 30px;
       position: relative;
       padding: 20px;
       background-color: #333333;
       .drop-shadow(0, 6px, 40px, 0.7);
 
       input.submit {
-        margin-top: 10px;
+        position: absolute;
+        top: -99999px;
+        left: -9999px;
+      }
+      .submit {
         .button();
         display: block;
-        width: 390px;
         color: @primary;
       }
       fieldset {
@@ -167,7 +172,7 @@ body.login {
               border: none;
               padding: 8px;
               background-color: #ffffff !important;
-              .border-radius(5px, 5px, 5px, 5px);
+              .rounded(5px);
             }
             select {
               width: 400px;
@@ -214,7 +219,7 @@ body.dashboard {
       padding: 5px;
       margin-bottom: 20px;
       border: @border;
-      .border-radius(10px, 10px, 10px, 10px);
+      .rounded();
       background-color: #252525;
       width: 50%;
       .box-sizing();
@@ -229,7 +234,7 @@ table.module {
   border-collapse: collapse;
   width: 100%;
   border: @border;
-  .border-radius(10px, 10px, 10px, 10px);
+  .rounded();
   background-color: #2e2e2e;
   .box-sizing();
   thead {
@@ -267,15 +272,16 @@ ul#nav {
   margin-left: 0px;
   li {
     float: left;
-    margin-right: 10px;
+    margin-right: -1px;
     padding: 5px 10px;
     border: @border;
     border-bottom: 0;
-    border-top-left-radius: 10px;
     position: relative;
     font-size: 16px;
-    border-top-right-radius: 10px;
+    border-top-left-radius: @radius;
+    border-top-right-radius: @radius;
     ul {
+      width: 200px;
       position: absolute;
       display: none;
       border: @border;
@@ -283,7 +289,7 @@ ul#nav {
       left: -1px;
       top: 24px;
       padding: 10px;
-      .border-radius(0, 10px, 10px, 0);
+      .border-radius(0, @radius, @radius, 0);
       li {
         float: none;
         margin: 0;
@@ -293,6 +299,9 @@ ul#nav {
         font-size: 14px;
         text-align: left;
         border-bottom: 1px solid #2c2c2c;
+        a {
+          text-decoration: none;
+        }
       }
     }
     &.right {
@@ -311,8 +320,8 @@ ul#nav {
   clear: both;
   border: @border;
   padding: 20px;
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
+  border-bottom-left-radius: @radius;
+  border-bottom-right-radius: @radius;
   background-color: #080808;
 }
 
@@ -399,6 +408,12 @@ table.module_list {
   text-align: left;
   ul {
     margin-left: 0;
+    &.hidden {
+      li {
+        padding: 0;
+        border: none;
+      }
+    }
     li {
       width: 100%;
       padding: 5px 0;
@@ -432,6 +447,14 @@ table.module_list {
         }
       }
     }
+  }
+  .submit {
+    .button();
+    color: #537ec8;
+  }
+  input.submit {
+    position: absolute;
+    left: -999999px;
   }
   .form_frame {
     display: none;
@@ -470,9 +493,7 @@ p.success {
 
 .button {
   text-align: center;
-  margin-bottom: 20px;
   display: block;
-  .rounded(10px);
   border: @border;
   background-color: #494949;
   color: #ffffff;
@@ -533,7 +554,7 @@ a.reorder {
 }
 
 #cboxLoadedContent {
-  .border-radius(10px, 10px, 10px, 10px);
+  .rounded();
   background-color: #1f1f1f;
   border: 5px solid #f4f4f4;
   padding: 20px;
@@ -541,4 +562,10 @@ a.reorder {
 
 #cboxClose {
   display: none !important;
+}
+
+.sub_module {
+  .button {
+    //.button();
+  }
 }

@@ -476,4 +476,30 @@ abstract class db implements interfaces\database_interface {
         $string .= ' NOT NULL ' . ($structure->autoincrement ? 'AUTO_INCREMENT' : 'DEFAULT "' . ($structure->default ? : $default) . '"');
         return $string;
     }
+
+    public static function rename_table($old, $new) {
+        echo 'RENAME TABLE ' . $old . ' TO ' . $new;
+        static::query('RENAME TABLE ' . $old . ' TO ' . $new);
+    }
+
+    public static function rename_column($table, $old, $new) {
+        try {
+        $field = static::get_column_definition($table, $old);
+            static::query('ALTER TABLE ' . $table . ' CHANGE ' . $old . ' ' . $new . ' ' . $field);
+        } catch(\Exception $e) {
+            return false;
+        }
+    }
+
+    protected static function get_column_definition($table, $column) {
+        $table = static::result('SHOW CREATE TABLE ' . $table, [], false);
+        $matches = [];
+        if(preg_match('#`' . $column . '` (.*?),#', $table['Create Table'], $matches)) {
+            return $matches[1];
+        } else {
+            throw new \Exception('Could not find column ' . $column . ' in ' . $table);
+        }
+    }
+
+
 }

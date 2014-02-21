@@ -6,6 +6,7 @@ use classes\ajax as _ajax;
 use classes\collection as _collection;
 use classes\get as _get;
 use classes\image_resizer;
+use classes\jquery;
 use classes\table_array as _table_array;
 use classes\table_form;
 use db\insert;
@@ -62,7 +63,7 @@ abstract class table {
      * @param string $size
      * @param int $width
      * @param int $height
-     *@return node
+     * @return node
      * */
     public function get_padded_image($id, $size, $width, $height) {
         $url = $this->get_file($id, $size);
@@ -384,7 +385,7 @@ abstract class table {
         );
     }
 
-    protected function set_primary_key(int $i) {
+    protected function set_primary_key($i) {
         $this->{$this->get_primary_key_name()} = $i;
     }
 
@@ -398,7 +399,7 @@ abstract class table {
         } else {
             $query = new insert($class);
             $top_pos = db::select($class)->add_field_to_retrieve('max(position) as pos')->execute()->fetchObject()->pos;
-            $query->add_value('position', $top_pos ?: 1);
+            $query->add_value('position', $top_pos ? : 1);
         }
         /** @var field $field */
         $this->get_fields()->iterate(function ($field) use ($query) {
@@ -428,7 +429,7 @@ abstract class table {
         }
 
         $key = $query->execute();
-        if(!$this->get_primary_key()) {
+        if (!$this->get_primary_key()) {
             $this->set_primary_key($key);
         }
 
@@ -552,35 +553,16 @@ abstract class table {
         return $form;
     }
 
+    public function get_form_ajax() {
+        $html = utf8_encode($this->get_form()->get_html()->get());
+        jquery::colorbox(['html' => $html]);
+    }
+
     /**
      * @param $fields
      */
     public function lazy_load($fields) {
         $this->do_retrieve_from_id($fields, $this->get_primary_key());
-    }
-
-    /** @return \html\node */
-    public function get_cms_edit_module() {
-        $list = node::create('table#module_def', [],
-            node::create('thead', [],
-                node::create('th', [], 'Live') .
-                node::create('th', [], 'Field id') .
-                node::create('th', [], 'Pos') .
-                node::create('th', [], 'Title') .
-                node::create('th', [], 'Database Title') .
-                node::create('th', [], 'Type') .
-                node::create('th', [], 'List') .
-                node::create('th', [], 'Required') .
-                node::create('th', [], 'Filter') .
-                node::create('th', [], '')
-            ) .
-            $this->get_fields()->iterate_return(function ($field) {
-                    $field->parent_form = $this;
-                    return (node::create('tr', [], $field->get_cms_admin_edit()));
-                }
-            )
-        );
-        return $list;
     }
 
     /**
