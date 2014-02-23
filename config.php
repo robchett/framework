@@ -10,20 +10,6 @@ define('uri', isset($_SERVER['REQUEST_URI']) ? trim($_SERVER['REQUEST_URI'], '/'
 
 define('ip', isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'Unknown_IP');
 
-define('dev', strpos(host, 'local.com') !== false || strpos(host, 'dev.'));
-define('debug', ip == '2.26.220.251');
-date_default_timezone_set('Europe/London');
-if (debug || dev) {
-    error_reporting(-1);
-    ini_set('display_errors', '1');
-}
-if (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') !== false) {
-    define ('ie', true);
-    define ('ie_ver', 0);
-} else {
-    define ('ie', false);
-    define ('ie_ver', 0);
-}
 
 include(root . '/.core/classes/auto_loader.php');
 include(root . '/.core/dependent/classes/auto_loader.php');
@@ -31,6 +17,24 @@ $auto_loader = new \classes\auto_loader();
 
 set_error_handler(['\classes\error_handler', 'handle_error']);
 register_shutdown_function(['\classes\error_handler', 'shutdown']);
+
+define('dev', in_array(host, \classes\ini::get('domain', 'development', [])));
+define('debug', in_array(ip, \classes\ini::get('developers', 'ip', [])));
+
+date_default_timezone_set(\classes\get::ini('zone', 'time', 'Europe/London'));
+
+if (debug || dev) {
+    error_reporting(-1);
+    ini_set('display_errors', '1');
+}
+
+if (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') !== false) {
+    define ('ie', true);
+    define ('ie_ver', 0);
+} else {
+    define ('ie', false);
+    define ('ie_ver', 0);
+}
 
 if (!defined('load_core') || load_core) {
     include(core_dir . '/core.php');
