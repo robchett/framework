@@ -34,7 +34,7 @@ class error_handler {
 
     public static function shutdown() {
         if (self::$file_handler) {
-            if (!(dev || debug)) {
+            if (!dev && !debug) {
                 mail('robchett@gmail.com', 'Error on site ' . $_SERVER['HTTP_HOST'], file_get_contents(self::$file_name));
             }
             //unlink(self::$file_name);
