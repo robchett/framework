@@ -2,6 +2,7 @@
 
 namespace core\classes;
 
+use classes\cache as _cache;
 use classes\ini as _ini;
 
 abstract class cache implements interfaces\cache_interface {
@@ -26,6 +27,10 @@ abstract class cache implements interfaces\cache_interface {
      * @var null
      */
     private static $dependants = null;
+
+    public static function default_connection() {
+        _cache::connect(ini::get('memcached', 'instance'), ini::get('memcached', 'server'), ini::get('memcached', 'port'));
+    }
 
     /**
      * @param string $instance_id
