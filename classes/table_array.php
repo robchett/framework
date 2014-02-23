@@ -8,8 +8,7 @@ use classes\db as _db;
 /**
  * Class table_array
  */
-abstract class
-table_array extends _collection {
+abstract class table_array extends _collection {
 
     /**
      * @var bool
@@ -86,47 +85,54 @@ table_array extends _collection {
         $mlinks = [];
         $obj->set_default_retrieve($fields_to_retrieve, $options);
         table::organise_links($obj, $fields_to_retrieve, $links, $mlinks);
+        $dependencies = [$class];
         foreach ($links as $module => $link_info) {
             $field = $link_info['field'];
             $retrieves = $link_info['retrieve'];
+            $dependencies[] = $module;
             $options['join'][$module] = $module . '.' . $field->field_name . '=' . $obj->class_name() . '.' . $field->field_name;
             foreach ($retrieves as $retrieve) {
                 $fields_to_retrieve[] = $module . '.' . $retrieve;
             }
         }
-        $select = _db::get_query($class, $fields_to_retrieve, $options);
-        $res = $select->execute();
-        if (_db::num($res)) {
-            while ($row = _db::fetch($res, null)) {
-                /** @var table $class */
-                $object = new $class;
-                $object->set_from_row($row, $links);
-                foreach ($mlinks as $module => $blah) {
-                    $object->{$module . '_elements'} = new \classes\table_array();
-                    $object->$module = new _collection();
-                }
-                $this[] = $object;
-            }
-        }
-        $this->reset_iterator();
-        if ($mlinks) {
-            foreach ($mlinks as $module => $link_info) {
-                /** @var \form\field_link $field */
-                $field = $link_info['field'];
-                $retrieves = $link_info['retrieve'];
-                $retrieves[] = 'l.' . $obj->get_primary_key_name() . ' AS linked_id';
-                $sub_class = $field->get_link_object();
-                $classes = $sub_class::get_all($retrieves, ['join' => [get::__class_name($class) . '_link_' . get::__class_name($sub_class) . ' l' => 'l.link_' . $sub_class->get_primary_key_name() . '=' . get::__class_name($sub_class) . '.' . $sub_class->get_primary_key_name()], 'where' => 'l.' . $obj->get_primary_key_name() . ' IN(' . implode(',', $this->get_table_keys()) . ')']);
-                /** @var table $sub_object */
-                foreach ($classes as $sub_object) {
-                    $object = $this->find_table_key($sub_object->linked_id);
-                    if ($object) {
-                        $object->{$module . '_elements'}->push($sub_object);
-                        $object->$module->push($sub_object->get_primary_key());
+        $key = 'get_all_' . $class . '_fetch_' . implode(',', $fields_to_retrieve) . '_options_' . serialize($options);
+        $elements = \classes\cache::grab($key,
+            function () use ($class, $fields_to_retrieve, $options, $links, $mlinks, $obj) {
+                $select = _db::get_query($class, $fields_to_retrieve, $options);
+                $res = $select->execute();
+                if (_db::num($res)) {
+                    while ($row = _db::fetch($res, null)) {
+                        /** @var table $class */
+                        $object = new $class;
+                        $object->set_from_row($row, $links);
+                        foreach ($mlinks as $module => $blah) {
+                            $object->{$module . '_elements'} = new \classes\table_array();
+                            $object->$module = new _collection();
+                        }
+                        $this[] = $object;
                     }
                 }
-            }
-        }
+                $this->reset_iterator();
+                foreach ($mlinks as $module => $link_info) {
+                    /** @var \form\field_link $field */
+                    $field = $link_info['field'];
+                    $retrieves = $link_info['retrieve'];
+                    $retrieves[] = 'l.' . $obj->get_primary_key_name() . ' AS linked_id';
+                    $sub_class = $field->get_link_object();
+                    $classes = $sub_class::get_all($retrieves, ['join' => [get::__class_name($class) . '_link_' . get::__class_name($sub_class) . ' l' => 'l.link_' . $sub_class->get_primary_key_name() . '=' . get::__class_name($sub_class) . '.' . $sub_class->get_primary_key_name()], 'where' => 'l.' . $obj->get_primary_key_name() . ' IN(' . implode(',', $this->get_table_keys()) . ')']);
+                    /** @var table $sub_object */
+                    foreach ($classes as $sub_object) {
+                        $object = $this->find_table_key($sub_object->linked_id);
+                        if ($object) {
+                            $object->{$module . '_elements'}->push($sub_object);
+                            $object->$module->push($sub_object->get_primary_key());
+                        }
+                    }
+                }
+                return $this->exchangeArray([]);
+            }, $dependencies
+        );
+        $this->exchangeArray($elements);
     }
 
     protected function find_table_key($id) {
