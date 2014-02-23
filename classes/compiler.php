@@ -5,7 +5,7 @@ use classes\compiler_page;
 
 class compiler {
 
-    protected static $disabled = false;
+    protected static $disabled = 0;
 
     public static $dependants = [];
 
@@ -39,7 +39,7 @@ class compiler {
     }
 
     public function save($url, compiler_page $content, $parameters = []) {
-        if (!static::$disabled) {
+        if (static::$disabled === 0) {
             $file = md5($url . serialize($parameters));
             $dependents = implode(',', array_unique(self::$dependants));
             db::insert('_compiler_keys')->add_value('file', $file)->add_value('dependants', $dependents)->execute();
@@ -48,7 +48,11 @@ class compiler {
     }
 
     public static function disable() {
-        static::$disabled = true;
+        static::$disabled++;
+    }
+
+    public static function allow() {
+        static::$disabled--;
     }
 }
 

@@ -19,6 +19,7 @@ register_shutdown_function(['\classes\error_handler', 'shutdown']);
 define('dev', in_array(host, \classes\ini::get('domain', 'development', [])));
 define('debug', in_array(ip, \classes\ini::get('developers', 'ip', [])));
 define('admin', \classes\session::is_set('admin'));
+\classes\compiler::allow();
 
 date_default_timezone_set(\classes\get::ini('zone', 'time', 'Europe/London'));
 
