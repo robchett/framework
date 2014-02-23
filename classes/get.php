@@ -110,7 +110,15 @@ abstract class get {
             return "No";
     }
 
+    /**
+     * Read a variable from the sites ini file.
+     * @param string $key
+     * @param string $block
+     * @param mixed $default
+     * @return mixed
+     * @depreciated
+     */
     public static function ini($key, $block = 'site', $default = null) {
-        return ini::get($key, $block, $default);
+        return ini::get($block, $key, $default);
     }
 }
