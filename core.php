@@ -97,7 +97,7 @@ abstract class core {
      */
     public function load_page() {
         $compiler = new compiler();
-        $options = ['ajax' => ajax];
+        $options = ['ajax' => ajax, 'admin' => admin, "dev" => dev, "debug" => debug];
         try {
             $compiler_page = $compiler->load(uri, $options);
         } catch (\Exception $e) {
