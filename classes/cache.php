@@ -21,7 +21,7 @@ abstract class cache implements interfaces\cache_interface {
      * */
     public static $current = null;
 
-    const DEFAULT_CACHE_TIME = 0;
+    const DEFAULT_CACHE_TIME = 86400;
 
     /**
      * @var null
@@ -55,7 +55,7 @@ abstract class cache implements interfaces\cache_interface {
      */
     private static function load_dependants() {
         self::$dependants = [];
-        if (class_exists('db')) {
+        if (class_exists('\classes\db')) {
             if (!db::table_exists('_cache_dependants')) {
                 db::create_table('_cache_dependants',
                     [
@@ -83,7 +83,7 @@ abstract class cache implements interfaces\cache_interface {
         }
         $key = self::get_key($key, $dependencies);
         if (!($res = self::$current->get($key))) {
-            if (self::$current->getResultCode() == \Memcached::RES_NOTFOUND) {
+            if (self::$current->getResultCode() != \Memcached::RES_SUCCESS) {
                 throw new \Exception('Cache key not set, this is common to distinguish from null values', self::ERROR_RETRIEVE);
             }
         }
@@ -125,8 +125,8 @@ abstract class cache implements interfaces\cache_interface {
             self::load_dependants();
         }
         $salt = '';
-        foreach ($dependencies as $key) {
-            $salt .= isset(self::$dependants[$key]) ? self::$dependants[$key] : 0;
+        foreach ($dependencies as $dependant) {
+            $salt .= isset(self::$dependants[$dependant]) ? self::$dependants[$dependant] : 0;
         }
         $key = md5($salt . $key);
         return $key;
@@ -137,5 +137,15 @@ abstract class cache implements interfaces\cache_interface {
      */
     public static function flush() {
         self::$current->flush();
+    }
+
+    public static function grab($key, callable $callback, $dependencies = ['global'], $time = null) {
+        try {
+            $data = cache::get($key, $dependencies);
+        } catch (\Exception $e) {
+            $data = $callback();
+            cache::set([$key => $data], $dependencies, $time);
+        }
+        return $data;
     }
 }
