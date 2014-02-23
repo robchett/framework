@@ -28,7 +28,7 @@ class search_form extends form {
         }
         if (ajax && $_REQUEST['act'] == 'do_search_submit') {
             if (isset($this->identifier)) {
-                $_SESSION[$this->calling_class][$this->identifier]['search'] = $this->keywords;
+                session::set($this->keywords, $this->calling_class, $this->identifier, 'search');
             }
         }
     }

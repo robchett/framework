@@ -2,6 +2,7 @@
 namespace core\traits;
 
 use classes\ajax;
+use classes\session;
 use classes\sort_form;
 use html\node;
 
@@ -31,8 +32,8 @@ trait sortable {
             $this->sort_form = new sort_form($this->get_sortable_fields(), get_class($this));
             $this->sort_form->set_from_request();
             $this->sort_form->attributes['data-ajax-change'] = get_class($this) . ':do_sort_submit';
-            if (isset($_SESSION[get_class($this)][$this->sort_form->identifier]['sort'])) {
-                $this->sort_form->sort = $_SESSION[get_class($this)][$this->sort_form->identifier]['sort'];
+            if (session::is_set(get_class($this), $this->sort_form->identifier, 'sort')) {
+                $this->sort_form->sort = session::get(get_class($this), $this->sort_form->identifier, 'sort');
             }
         }
     }

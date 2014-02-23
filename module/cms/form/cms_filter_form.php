@@ -2,6 +2,7 @@
 namespace core\module\cms\form;
 
 use classes\ajax;
+use classes\session;
 use form\field_boolean;
 use form\form;
 use html\node;
@@ -28,8 +29,8 @@ abstract class cms_filter_form extends form {
         foreach ($super_fields as $field) {
             if ($field->filter) {
                 $field->required = false;
-                if (!ajax && isset($_SESSION['cms'][$class_name][$field->field_name])) {
-                    $field->value = $_SESSION['cms'][$class_name][$field->field_name];
+                if (!ajax && session::is_set('cms', $class_name, $field->field_name)) {
+                    $field->value = session::get('cms', $class_name, $field->field_name);
                 }
                 $fields[] = $field;
             }
@@ -39,7 +40,7 @@ abstract class cms_filter_form extends form {
         $this->submit = 'Filter';
         $this->_class_name = $class_name;
         $this->wrapper_class = '';
-        if (isset($_SESSION['cms'][$class_name])) {
+        if (session::is_set('cms',$class_name)) {
             $this->post_fields_text = node::create('a.button', ['href' => '#', 'data-ajax-click' => 'cms:do_clear_filter', 'data-ajax-post' => '\'{"_class_name":"' . $class_name . '"}\'', 'data-ajax-shroud' => '#filter_form'], 'Clear Filters');
         }
     }
@@ -47,9 +48,9 @@ abstract class cms_filter_form extends form {
     public function do_submit() {
         foreach ($this->fields as $field) {
             if ($field instanceof field_boolean && !$this->{$field->field_name}) {
-                unset($_SESSION['cms'][$this->_class_name][$field->field_name]);
+                session::un_set('cms',$this->_class_name,$field->field_name);
             } else {
-                $_SESSION['cms'][$this->_class_name][$field->field_name] = $this->{$field->field_name};
+                session::set($this->{$field->field_name}, 'cms',$this->_class_name,$field->field_name);
             }
         }
         ajax::add_script('window.location = window.location');

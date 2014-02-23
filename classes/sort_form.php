@@ -27,7 +27,7 @@ class sort_form extends form {
         }
         if (ajax && $_REQUEST['act'] == 'do_sort_submit') {
             if (isset($this->identifier)) {
-                $_SESSION[$this->calling_class][$this->identifier]['sort'] = $this->sort;
+                session::set($this->sort, $this->calling_class, $this->identifier, 'sort');
             }
         }
     }

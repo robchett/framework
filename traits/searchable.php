@@ -3,6 +3,7 @@ namespace core\traits;
 
 use classes\ajax;
 use classes\search_form;
+use classes\session;
 use html\node;
 
 trait searchable {
@@ -27,8 +28,8 @@ trait searchable {
             $this->search_form = new search_form(get_class($this));
             $this->search_form->set_from_request();
             $this->search_form->attributes['data-ajax-change'] = get_class($this) . ':do_search_submit';
-            if (isset($_SESSION[get_class($this)][$this->search_form->identifier]['search'])) {
-                $this->search_form->keywords = $_SESSION[get_class($this)][$this->search_form->identifier]['search'];
+            if (session::is_set(get_class($this), $this->search_form->identifier, 'search')) {
+                $this->search_form->keywords = session::get(get_class($this), $this->search_form->identifier, 'search');
             }
         }
     }

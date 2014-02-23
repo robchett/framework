@@ -5,6 +5,7 @@ use classes\ajax;
 use classes\collection_filter;
 use classes\filter_form;
 use classes\get;
+use classes\session;
 use form\field_link;
 use html\node;
 
@@ -33,8 +34,8 @@ trait filterable {
             $this->filters = new filter_form($this->get_filterable_fields(), $this);
             $this->filters->set_from_request();
             $this->filters->attributes['data-ajax-change'] = get_class($this) . ':do_filter_submit';
-            if (isset($_SESSION[get_class($this)][$this->filters->identifier]['filter'])) {
-                foreach ($_SESSION[get_class($this)][$this->filters->identifier]['filter'] as $filter => $value) {
+            if (session::is_set(get_class($this), $this->filters->identifier, 'filter')) {
+                foreach (session::get(get_class($this), $this->filters->identifier, 'filter') as $filter => $value) {
                     $this->filters->$filter = $value;
                 }
             }

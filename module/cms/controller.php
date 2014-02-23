@@ -7,9 +7,9 @@ use classes\db;
 use classes\get;
 use classes\module;
 use classes\paginate;
+use classes\session;
 use classes\table_array;
 use html\node;
-use module\cms\form\add_field_form;
 use module\cms\form\cms_filter_form;
 use module\cms\form\new_module_form;
 use module\cms\object\_cms_module;
@@ -54,13 +54,13 @@ abstract class controller extends module {
             $this->view = $path[1];
             if (isset($path[2])) {
                 $this->set_from_mid($path[2]);
-                $this->npp = isset($_SESSION['cms'][$this->module->get_class_name()]['npp']) ? $_SESSION['cms'][$this->module->get_class_name()]['npp'] : 25;
+                $this->npp = session::is_set('cms', $this->module->get_class_name(), 'npp') ? session::get('cms', $this->module->get_class_name(), 'npp') : 25;
                 $this->page = isset($path[4]) ? $path[4] : 1;
                 $this->current_class = $this->module->get_class();
                 $this->where = [];
                 foreach ($this->current_class->get_fields() as $field) {
-                    if (isset($_SESSION['cms'][$this->module->get_class_name()][$field->field_name]) && $_SESSION['cms'][$this->module->get_class_name()][$field->field_name]) {
-                        $this->where[$field->field_name] = $_SESSION['cms'][$this->module->get_class_name()][$field->field_name];
+                    if (session::is_set('cms', $this->module->get_class_name(), $field->field_name) && session::get('cms', $this->module->get_class_name(), $field->field_name)) {
+                        $this->where[$field->field_name] = session::get('cms', $this->module->get_class_name(), $field->field_name);
                     }
                 }
                 $query = db::get_query($this->module->table_name, ['count(*) AS count'], ['where_equals' => $this->where]);
@@ -77,10 +77,10 @@ abstract class controller extends module {
      *
      */
     public static function do_clear_filter() {
-        unset($_SESSION['cms'][$_REQUEST['_class_name']]);
+        session::un_set('cms',$_REQUEST['_class_name']);
         $cms_filter_form = new cms_filter_form();
         $cms_filter_form->do_submit();
-        unset($_SESSION['cms'][$_REQUEST['_class_name']]);
+        session::un_set('cms',$_REQUEST['_class_name']);
     }
 
     public static function do_database_repair() {

@@ -3,6 +3,7 @@ namespace core\module\cms\form;
 
 use classes\ajax as _ajax;
 use classes\ini;
+use classes\session;
 use form\form;
 use module\cms\controller;
 use module\cms\object\_cms_user;
@@ -41,7 +42,7 @@ abstract class cms_login_form extends form {
     }
 
     public function do_submit() {
-        $_SESSION['admin'] = true;
+        session::set(true,'admin');
         _ajax::$redirect = '/cms/dashboard';
     }
 }

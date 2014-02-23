@@ -1,6 +1,4 @@
 <?php
-session_start();
-define('admin', isset($_SESSION['admin']));
 define('root', $_SERVER['DOCUMENT_ROOT']);
 define('core_dir', root . '/.core');
 define('ajax', isset($_REQUEST['module']));
@@ -20,6 +18,7 @@ register_shutdown_function(['\classes\error_handler', 'shutdown']);
 
 define('dev', in_array(host, \classes\ini::get('domain', 'development', [])));
 define('debug', in_array(ip, \classes\ini::get('developers', 'ip', [])));
+define('admin', \classes\session::is_set('admin'));
 
 date_default_timezone_set(\classes\get::ini('zone', 'time', 'Europe/London'));
 

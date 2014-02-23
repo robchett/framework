@@ -2,6 +2,7 @@
 namespace core\classes;
 
 use classes\filter_field;
+use classes\session;
 use form\field_collection;
 use form\form;
 use object\filter;
@@ -36,10 +37,10 @@ class filter_form extends form {
         }
         if (ajax && $_REQUEST['act'] == 'do_filter_submit') {
             if (isset($this->identifier)) {
-                $_SESSION[get_class($this->source_data)][$this->identifier]['filter'] = [];
+                session::set([], get_class($this->source_data), $this->identifier, 'filter');
                 foreach ($this->fields as $field) {
                     if (isset($this->{$field->field_name})) {
-                        $_SESSION[get_class($this->source_data)][$this->identifier]['filter'][$field->field_name] = $this->{$field->field_name};
+                        session::set($this->{$field->field_name}, get_class($this->source_data), $this->identifier, 'filter', $field->field_name);
                     }
                 }
             }
