@@ -120,16 +120,16 @@ abstract class core {
                 $this->module = new $class_name();
                 $this->module->__controller($this->path);
                 $this->module->page = $this->pagination_page;
-                $push_state = $this->module->get_push_state();
-                if ($push_state) {
-                    $push_state->data->actions = array_merge($push_state->data->actions, self::$push_state_ajax_calls);
-                }
-                $compiler_page->push_state = $push_state;
                 if (!ajax) {
                     $compiler_page->content = $this->module->view_object->get_page();
                 } else {
                     $compiler_page->content = $this->module->view_object->get();
                 }
+                $push_state = $this->module->get_push_state();
+                if ($push_state) {
+                    $push_state->data->actions = array_merge($push_state->data->actions, self::$push_state_ajax_calls);
+                }
+                $compiler_page->push_state = $push_state;
             }
             $compiler->save(uri, $compiler_page, $options);
         }
