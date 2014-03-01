@@ -164,7 +164,7 @@ $(document).ready(function () {
         });
     };
     $.fn.ajax_factory.defaults = {
-        complete: [],
+        complete: ['initMlink'],
         load_pages_ajax: false
     };
 
@@ -174,6 +174,10 @@ $(document).ready(function () {
         return this.states[state];
     };
 
+    initMlink();
+});
+
+function initMlink() {
     $('select[multiple=multiple]').each(function () {
         var id = $(this).attr('name');
         $(this).hide();
@@ -185,7 +189,7 @@ $(document).ready(function () {
             }
         })
     });
-});
+}
 
 function addMlink(id, value) {
     if (value != -1 && value != 0) {
