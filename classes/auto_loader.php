@@ -12,6 +12,8 @@ abstract class auto_loader {
     }
 
     public function load($class) {
+        static $depth = 0;
+        $depth++;
         if (isset(static::$file_paths[$class])) {
             $path = static::$file_paths[$class];
         } else {
@@ -36,8 +38,15 @@ abstract class auto_loader {
 
         if ($path) {
             require_once($path);
+            if($depth == 1) {
+                if(method_exists($class, 'set_statics')) {
+                    $class::set_statics();
+                }
+            }
+            $depth--;
             return true;
         } else {
+            $depth--;
             return false;
         }
     }

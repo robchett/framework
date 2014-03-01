@@ -30,15 +30,12 @@ abstract class table_array extends _collection {
      */
     public function __construct($input = [], $flags = 0, $iterator_class = "\\classes\\collection_iterator") {
         parent::__construct($input, $flags, $iterator_class);
-        if (!self::$statics_set) {
-            $this->set_statics();
-        }
     }
 
     /**
      *
      */
-    protected function set_statics() {
+    public static function set_statics() {
         self::$statics_set = true;
     }
 
