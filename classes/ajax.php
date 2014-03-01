@@ -3,16 +3,26 @@
 namespace core\classes;
 
 use classes\push_state as _push_state;
+use traits\var_dump_import;
 
 abstract class ajax {
 
-    public static $inject = [];
-    public static $inject_script = [];
-    public static $inject_script_before = [];
-    public static $update = [];
-    public static $remove = [];
-    public static $push_state;
-    public static $redirect = null;
+    use var_dump_import;
+
+    /** @var  ajax */
+    protected static $singleton;
+
+    public $inject = [];
+    public $inject_script = [];
+    public $inject_script_before = [];
+    public $update = [];
+    public $remove = [];
+    public $push_state;
+    public $redirect = null;
+
+    public static function set_statics() {
+        static::$singleton = new \classes\ajax();
+    }
 
     public static function update($html) {
         if ($html) {
@@ -33,7 +43,7 @@ abstract class ajax {
                 foreach ($node->childNodes as $subnode) {
                     $o->html .= $dom->saveXML($subnode);
                 }
-                self::$update[] = $o;
+                static::$singleton->update[] = $o;
             }
         }
     }
@@ -44,31 +54,31 @@ abstract class ajax {
                 self::add_script($script);
             }
         }
-        if (isset(self::$redirect)) {
-            self::inject('body', 'append', '<script id="ajax">window.location.href = "' . self::$redirect . '";</script>', true);
+        if (isset(static::$singleton->redirect)) {
+            self::inject('body', 'append', '<script id="ajax">window.location.href = "' . static::$singleton->redirect . '";</script>', true);
         }
         $o = new \stdClass();
         $o->pre_inject = [];
-        if(self::$inject_script_before) {
+        if (static::$singleton->inject_script_before) {
             $s = new \stdClass();
             $s->id = 'body';
             $s->pos = 'append';
-            $s->html = '<script id="ajax_script_pre">' . implode(';',self::$inject_script_before) . '</script>';
+            $s->html = '<script id="ajax_script_pre">' . implode(';', static::$singleton->inject_script_before) . '</script>';
             $s->over = '#ajax_script_pre';
             $o->pre_inject[] = $s;
         }
-        $o->update = self::$update;
-        $o->inject = self::$inject;
-        if(self::$inject_script) {
+        $o->update = static::$singleton->update;
+        $o->inject = static::$singleton->inject;
+        if (static::$singleton->inject_script) {
             $s = new \stdClass();
             $s->id = 'body';
             $s->pos = 'append';
-            $s->html = '<script id="ajax_script">' . implode(';',self::$inject_script) . '</script>';
+            $s->html = '<script id="ajax_script">' . implode(';', static::$singleton->inject_script) . '</script>';
             $s->over = '#ajax_script';
             $o->inject[] = $s;
         }
-        if (isset(self::$push_state)) {
-            $o->push_state = self::$push_state;
+        if (isset(static::$singleton->push_state)) {
+            $o->push_state = static::$singleton->push_state;
         }
         if (isset($_REQUEST['no_ajax'])) {
             echo '
@@ -92,16 +102,25 @@ abstract class ajax {
         $o = new \stdClass();
         $o->id = $id;
         $o->pos = $pos;
-        $o->html = (string) $html;
+        $o->html = (string)$html;
         $o->over = $overwrite;
-        self::$inject[] = $o;
+        static::$singleton->inject[] = $o;
     }
 
     public static function push_state(_push_state $push_state) {
-        self::$push_state = $push_state;
+        static::$singleton->push_state = $push_state;
     }
 
     public static function add_script($script, $before = false) {
-        self::${'inject_script' . ($before ? '_before' : '')}[] = $script;
+        $var = 'inject_script' . ($before ? '_before' : '');
+        static::$singleton->{$var}[] = $script;
+    }
+
+    public static function current() {
+        return static::$singleton;
+    }
+
+    public static function set_current(ajax $ajax) {
+        static::$singleton = $ajax;
     }
 }

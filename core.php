@@ -124,6 +124,7 @@ abstract class core {
                     $compiler_page->content = $this->module->view_object->get_page();
                 } else {
                     $compiler_page->content = $this->module->view_object->get();
+                    $compiler_page->ajax = ajax::current();
                 }
                 $push_state = $this->module->get_push_state();
                 if ($push_state) {
@@ -141,6 +142,7 @@ abstract class core {
             }
             echo $compiler_page->content;
         } else {
+            ajax::set_current($compiler_page->ajax);
             if ($compiler_page->push_state) {
                 ajax::push_state($compiler_page->push_state);
             }
@@ -148,7 +150,6 @@ abstract class core {
             $function = $class->getMethod('inject');
             $function->invokeArgs(null, $compiler_page->content);
         }
-
     }
 
     /**

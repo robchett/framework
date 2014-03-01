@@ -10,6 +10,8 @@ abstract class compiler_page implements \Serializable {
     public $push_state = false;
     /** @var  string */
     public $content;
+    /** @var  ajax */
+    public $ajax;
 
     /**
      * (PHP 5 &gt;= 5.1.0)<br/>
