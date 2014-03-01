@@ -49,7 +49,10 @@ $(document).ready(function () {
                             window.history.pushState($.fn.ajax_factory.get_state(href), '', href);
                             if (typeof page_handeler != 'undefined') {
                                 page_handeler.toggle_page($page);
-                                page_handeler.perform_page_actions($.fn.ajax_factory.get_state(href).actions, href);
+                                var state = $.fn.ajax_factory.get_state(href);
+                                if ( typeof state != "undefined" && typeof state.actions != undefined) {
+                                    page_handeler.perform_page_actions($.fn.ajax_factory.get_state(href).actions, href);
+                                }
                             }
                         } else {
                             var post = {module: 'core', act: 'load_page'};
