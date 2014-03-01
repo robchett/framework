@@ -24,7 +24,7 @@ $(document).ready(function () {
         var $target = $(event.target);
         if (!$target.attr('disabled') && !$target.hasClass('disabled')) {
             if ($target.attr('data-ajax-click') || $target.parent('a').attr('data-ajax-click')) {
-                if(!$target.attr('data-ajax-click') ){
+                if (!$target.attr('data-ajax-click')) {
                     $target = $target.parent('a');
                 }
                 event.preventDefault();
@@ -98,7 +98,7 @@ $(document).ready(function () {
         }
     });
 
-    $body.on('click', 'form .submit', function(e) {
+    $body.on('click', 'form .submit', function (e) {
         $(this).parents('form').eq(0).submit();
         e.preventDefault();
         return false;
@@ -269,8 +269,10 @@ function handle_json_response(json) {
 }
 
 Array.prototype.each = function (callback, context) {
-    for (var i = 0; i < this.length; i++) {
-        callback(this[i], i, context);
+    for (var i in this) {
+        if (this.hasOwnProperty(i)) {
+            callback(this[i], i, context);
+        }
     }
 };
 Array.prototype.count = function () {
