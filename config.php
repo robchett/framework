@@ -9,8 +9,10 @@ define('uri', isset($_SERVER['REQUEST_URI']) ? trim($_SERVER['REQUEST_URI'], '/'
 define('ip', isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'Unknown_IP');
 
 
-include(root . '/.core/classes/auto_loader.php');
-include(root . '/.core/dependent/classes/auto_loader.php');
+if(!class_exists('\\classes\\autoloader', false)) {
+    require_once(root . '/.core/classes/auto_loader.php');
+    require_once(root . '/.core/dependent/classes/auto_loader.php');
+}
 $auto_loader = new \classes\auto_loader();
 
 set_error_handler(['\classes\error_handler', 'handle_error']);
@@ -37,7 +39,6 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') !== false) {
 }
 
 if (!defined('load_core') || load_core) {
-    include(core_dir . '/core.php');
     $core = new core();
 }
 
