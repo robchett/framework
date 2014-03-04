@@ -26,13 +26,13 @@ abstract class get {
 
     public static function recursive_glob($root, $pattern, $flags = 0) {
         $files = [];
-        $directories = glob(trim($root, '/') . '/*', GLOB_ONLYDIR);
+        $directories = glob('/' . trim($root, '/') . '/*', GLOB_ONLYDIR);
         if ($directories) {
             foreach ($directories as $dir) {
                 $files = array_merge($files, self::recursive_glob($dir, $pattern, $flags));
             }
         }
-        $root_files = glob(trim($root, '/') . '/' . $pattern);
+        $root_files = glob('/' . trim($root, '/') . '/' . $pattern);
         if ($root_files) {
             $files = array_merge($files, $root_files);
         }

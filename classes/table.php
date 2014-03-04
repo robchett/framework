@@ -148,7 +148,7 @@ abstract class table {
      * @return int
      */
     public function do_cms_update() {
-        if (admin) {
+        if (\core::is_admin()) {
             db::update(_get::__class_name($this))->add_value($_REQUEST['field'], $_REQUEST['value'])->filter_field($this->get_primary_key_name(), $_REQUEST['id'])->execute();
         }
         return 1;

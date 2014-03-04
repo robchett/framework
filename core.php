@@ -9,6 +9,7 @@ use classes\get;
 use classes\ini;
 use classes\page_config;
 use classes\push_state;
+use classes\session;
 use module\pages\object\page;
 use template\html;
 
@@ -97,7 +98,7 @@ abstract class core {
      */
     public function load_page() {
         $compiler = new compiler();
-        $options = ['ajax' => ajax, 'admin' => admin, "dev" => dev, "debug" => debug];
+        $options = ['ajax' => ajax, 'admin' => core::is_admin(), "dev" => dev, "debug" => debug];
         try {
             $compiler_page = $compiler->load(uri, $options);
         } catch (\Exception $e) {
@@ -228,5 +229,9 @@ abstract class core {
             $html .= '<link type="text/css" href="' . $css . '" rel="stylesheet"/>';
         }
         return $html;
+    }
+
+    public static function is_admin() {
+        return session::is_set('admin');
     }
 }

@@ -9,6 +9,7 @@ use classes\module;
 use classes\paginate;
 use classes\session;
 use classes\table_array;
+use core\core;
 use html\node;
 use module\cms\form\cms_filter_form;
 use module\cms\form\new_module_form;
@@ -50,7 +51,7 @@ abstract class controller extends module {
             $path[1] = 'dashboard';
         }
         $this->view = 'login';
-        if (isset($path[1]) && !empty($path[1]) && admin) {
+        if (isset($path[1]) && !empty($path[1]) && \core::is_admin()) {
             $this->view = $path[1];
             if (isset($path[2])) {
                 $this->set_from_mid($path[2]);
@@ -67,7 +68,7 @@ abstract class controller extends module {
                 $this->tot = $query->execute()->rowCount();
             }
         }
-        if (isset($path[3]) && !empty($path[3]) && admin) {
+        if (isset($path[3]) && !empty($path[3]) && core::is_admin()) {
             $this->current->do_retrieve_from_id([], $path[3]);
         }
         parent::__controller($path);
