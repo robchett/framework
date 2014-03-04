@@ -17,12 +17,18 @@ class error_handler {
             if (function_exists('xdebug_break')) {
                 xdebug_break();
             }
-            require_once(root . '/.core/core.php');
+            if(!class_exists('\\core')) {
+                require_once(root . '/inc/core.php');
+                require_once(root . '/.core/core.php');
+            }
             $error = '<div class="error_message mysql"><p>Error #' . $errno . ' "' . $errstr . '" in ' . $errfile . ' on line ' . $errline . '</p>' . \core::get_backtrace(1) . '</div>';
             fwrite(self::$file_handler, $error . "\n\n\n---------------\n\n\n");
             if (dev || debug) {
                 if (ajax) {
-                    require_once(root . '/.core/classes/ajax.php');
+                    if(!class_exists('\\classes\\ajax')) {
+                        require_once(root . '/.core/dependents/classes/ajax.php');
+                        require_once(root . '/.core/classes/ajax.php');
+                    }
                     ajax::inject('body', 'append', $error);
                 } else {
                     echo $error;
