@@ -5,7 +5,12 @@ use classes\compiler_page;
 
 class compiler {
 
+    const MODE_MEMCACHED = 2;
+    const MODE_REDIS = 1;
+    const MODE_FILE = 0;
+
     protected static $disabled = 0;
+    protected static $mode = 0;
 
     public static $dependants = [];
 
@@ -15,11 +20,34 @@ class compiler {
         if (in_array($table, static::$ignore_tables)) {
             return;
         }
-        $res = db::select('_compiler_keys')->add_field_to_retrieve('file')->filter('`dependants` LIKE "%' . $table . '%"')->execute();
+        $res = db::select('_compiler_keys')
+                 ->add_field_to_retrieve('file')
+                 ->filter('`dependants` LIKE "%' . $table . '%"')
+                 ->execute();
         while ($row = db::fetch($res)) {
-            unlink(root . '/.cache/compile/' . $row->file);
+            switch (static::$mode) {
+                case static::MODE_FILE :
+                    return static::break_file($row->file);
+                case static::MODE_REDIS:
+                    //return $this->break_redis($row->file);
+                    throw new \Exception('Page caching method is not implemented - Redis');
+                case static::MODE_MEMCACHED :
+                    return static::break_memcached($row->file);
+            }
         }
-        db::delete('_compiler_keys')->filter('`dependants` LIKE "%' . $table . '%"')->execute();
+        db::delete('_compiler_keys')
+          ->filter('`dependants` LIKE "%' . $table . '%"')
+          ->execute();
+    }
+
+    protected static function  break_file($key) {
+        unlink(root . '/.cache/compile/' . $key);
+    }
+
+    protected static function  break_redis($key) { }
+
+    protected static function  break_memcached($key) {
+        cache::remove($key);
     }
 
     /**
@@ -29,7 +57,20 @@ class compiler {
      * @throws \Exception
      */
     public function load($url, $parameters = []) {
-        $file = root . '/.cache/compile/' . md5($url . serialize($parameters));
+        $key = md5($url . serialize($parameters));
+        switch (static::$mode) {
+            case static::MODE_FILE:
+                return $this->load_file($key);
+            case static::MODE_REDIS:
+                //return $this->load_redis($key);
+                throw new \Exception('Page caching method is not implemented - Redis');
+            case static::MODE_MEMCACHED:
+                return $this->load_memcached($key);
+        }
+    }
+
+    protected function load_file($key) {
+        $file = root . '/.cache/compile/' . $key;
         if (file_exists($file)) {
             /** @var compiler_page $content */
             eval('$content = ' . file_get_contents($file) . ';');
@@ -38,13 +79,39 @@ class compiler {
         throw new \Exception('Compiled file not found ' . $file);
     }
 
+    protected function load_memcached($key) {
+        return cache::get($key, []);
+    }
+
     public function save($url, compiler_page $content, $parameters = []) {
         if (static::$disabled === 0) {
-            $file = md5($url . serialize($parameters));
+            $key = md5($url . serialize($parameters));
             $dependents = implode(',', array_unique(self::$dependants));
-            db::insert('_compiler_keys')->add_value('file', $file)->add_value('dependants', $dependents)->execute();
-            file_put_contents(root . '/.cache/compile/' . $file, $content->serialize());
+            db::insert('_compiler_keys')
+              ->add_value('file', $key)
+              ->add_value('dependants', $dependents)
+              ->execute();
+            switch (static::$mode) {
+                case static::MODE_FILE :
+                    $this->save_file($key, $content);
+                    break;
+                case static::MODE_REDIS:
+                    //$this->save_redis($file, $content);
+                    throw new \Exception('Page caching method is not implemented - Redis');
+                    break;
+                case static::MODE_MEMCACHED :
+                    $this->save_memcached($key, $content);
+                    break;
+            }
         }
+    }
+
+    protected function save_file($key, $contents) {
+        file_put_contents(root . '/.cache/compile/' . $key, $contents->serialize());
+    }
+
+    protected function save_memcached($key, $contents) {
+        cache::set([$key => $contents], []);
     }
 
     public static function disable() {
