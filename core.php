@@ -232,6 +232,7 @@ abstract class core {
     }
 
     public static function is_admin() {
+        compiler::allow();
         return session::is_set('admin');
     }
 }
