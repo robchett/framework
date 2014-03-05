@@ -139,6 +139,10 @@ abstract class cache implements interfaces\cache_interface {
         self::$current->flush();
     }
 
+    public static function remove($key) {
+        static::$current->delete($key);
+    }
+
     public static function grab($key, callable $callback, $dependencies = ['global'], $time = null) {
         try {
             $data = cache::get($key, $dependencies);
