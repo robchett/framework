@@ -2,11 +2,11 @@
 
 namespace core\classes;
 
+use classes\ajax_element;
 use classes\push_state as _push_state;
 use traits\var_dump_import;
 
 abstract class ajax {
-
     use var_dump_import;
 
     /** @var  ajax */
@@ -19,6 +19,7 @@ abstract class ajax {
     public $remove = [];
     public $push_state;
     public $redirect = null;
+
 
     public static function set_statics() {
         static::$singleton = new \classes\ajax();
@@ -60,7 +61,7 @@ abstract class ajax {
         $o = new \stdClass();
         $o->pre_inject = [];
         if (static::$singleton->inject_script_before) {
-            $s = new \stdClass();
+            $s = new ajax_element();
             $s->id = 'body';
             $s->pos = 'append';
             $s->html = '<script id="ajax_script_pre">' . implode(';', static::$singleton->inject_script_before) . '</script>';
@@ -70,7 +71,7 @@ abstract class ajax {
         $o->update = static::$singleton->update;
         $o->inject = static::$singleton->inject;
         if (static::$singleton->inject_script) {
-            $s = new \stdClass();
+            $s = new ajax_element();
             $s->id = 'body';
             $s->pos = 'append';
             $s->html = '<script id="ajax_script">' . implode(';', static::$singleton->inject_script) . '</script>';
@@ -99,7 +100,7 @@ abstract class ajax {
     }
 
     public static function inject($id, $pos, $html, $overwrite = '') {
-        $o = new \stdClass();
+        $o = new ajax_element();
         $o->id = $id;
         $o->pos = $pos;
         $o->html = (string)$html;
