@@ -12,8 +12,9 @@ abstract class insert extends _query {
     public function execute() {
         $query = 'INSERT INTO ' . $this->table . ' SET ' . $this->get_values();
         _db::query($query, $this->parameters);
+        $id = _db::insert_id();
         compiler::break_cache($this->table);
-        return _db::insert_id();
+        return $id;
     }
 
     protected function get_values() {

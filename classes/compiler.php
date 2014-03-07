@@ -27,12 +27,15 @@ class compiler {
         while ($row = db::fetch($res)) {
             switch (static::$mode) {
                 case static::MODE_FILE :
-                    return static::break_file($row->file);
+                    static::break_file($row->file);
+                    break;
                 case static::MODE_REDIS:
-                    //return $this->break_redis($row->file);
+                    //$this->break_redis($row->file);
                     throw new \Exception('Page caching method is not implemented - Redis');
+                    break;
                 case static::MODE_MEMCACHED :
-                    return static::break_memcached($row->file);
+                    static::break_memcached($row->file);
+                    break;
             }
         }
         db::delete('_compiler_keys')
