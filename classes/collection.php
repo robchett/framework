@@ -19,7 +19,10 @@ collection extends \ArrayObject {
     }
 
     public function first() {
-        return $this[0];
+        $arr = $this->exchangeArray([]);
+        $res = reset($arr);
+        $this->exchangeArray($arr);
+        return $res;
     }
 
     public function first_index() {
@@ -84,7 +87,10 @@ collection extends \ArrayObject {
     }
 
     public function last() {
-        return $this[$this->count() - 1];
+        $arr = $this->exchangeArray([]);
+        $res = end($arr);
+        $this->exchangeArray($arr);
+        return $res;
     }
 
     public function unshift($int = 1) {
