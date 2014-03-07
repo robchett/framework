@@ -79,8 +79,8 @@ class field_image extends field_file
         $primary = reset($fields)->field_name;
         $html .= $this->get_default_image($this->parent_form->$primary, ['where_equals' => ['default' => true]]) . '<input name="' . $this->field_name . '" id="' . $this->field_name . '"  type="file"/>' . "\n";
         if (isset($this->parent_form->{$this->field_name})) {
-            $path = pathinfo($this->parent_form->{$this->field_name});
-            $html .= '<p><a href="' . $this->parent_form->{$this->field_name} . '" target="blank">' . $path['filename'] . '</a></p>';
+            $path = pathinfo($this->parent_form->{$this->field_name} && $this->parent_form->{$this->field_name});
+            $html .= '<p><a href="' . $this->parent_form->{$this->field_name} . '" target="_blank">' . $path['filename'] . '</a></p>';
         }
         return $html;
 
