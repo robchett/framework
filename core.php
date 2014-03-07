@@ -55,26 +55,28 @@ abstract class core {
     }
 
     public function do_ajax() {
-        if ($_REQUEST['module'] == 'core' || $_REQUEST['module'] == 'this') {
+        $class = $_REQUEST['module'];
+        $function = $_REQUEST['act'];
+        if ($class == 'core' || $class == 'this') {
             $module = 'core';
         } else {
-            if (class_exists($_REQUEST['module'])) {
-                $module = $_REQUEST['module'];
+            if (class_exists($class)) {
+                $module = $class;
             } else {
-                $module = '\\module\\' . $_REQUEST['module'] . '\\controller';
+                $module = '\\module\\' . $class . '\\controller';
             }
         }
         if (class_exists($module)) {
             $class = new \ReflectionClass($module);
-            if ($class->hasMethod($_REQUEST['act'])) {
-                $method = new \ReflectionMethod($module, $_REQUEST['act']);
+            if ($class->hasMethod($function)) {
+                $method = new \ReflectionMethod($module, $function);
                 if ($method->isStatic()) {
-                    $module::{$_REQUEST['act']}();
+                    $module::$function();
                 } else if ($module != 'core') {
                     $object = new $module;
-                    $object->{$_REQUEST['act']}();
+                    $object->$function();
                 } else {
-                    $this->{$_REQUEST['act']}();
+                    $this->$function();
                 }
             }
         }
