@@ -82,11 +82,11 @@ abstract class table_array extends _collection {
         $mlinks = [];
         $obj->set_default_retrieve($fields_to_retrieve, $options);
         table::organise_links($obj, $fields_to_retrieve, $links, $mlinks);
-        $dependencies = [$class];
+        $dependencies = [get::__class_name($class)];
         foreach ($links as $module => $link_info) {
             $field = $link_info['field'];
             $retrieves = $link_info['retrieve'];
-            $dependencies[] = $module;
+            $dependencies[] = get::__class_name($module);
             $options['join'][$module] = $module . '.' . $field->field_name . '=' . $obj->class_name() . '.' . $field->field_name;
             foreach ($retrieves as $retrieve) {
                 $fields_to_retrieve[] = $module . '.' . $retrieve;

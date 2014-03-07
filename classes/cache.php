@@ -3,6 +3,7 @@
 namespace core\classes;
 
 use classes\cache as _cache;
+use classes\compiler;
 use classes\ini as _ini;
 
 abstract class cache implements interfaces\cache_interface {
@@ -144,6 +145,7 @@ abstract class cache implements interfaces\cache_interface {
     }
 
     public static function grab($key, callable $callback, $dependencies = ['global'], $time = null) {
+        compiler::$dependants = array_merge(compiler::$dependants, $dependencies);
         try {
             $data = cache::get($key, $dependencies);
         } catch (\Exception $e) {
