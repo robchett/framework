@@ -35,7 +35,7 @@ abstract class kml {
 
     /**
      * @param $colour
-     * @param collection_iterator $coordinates
+     * @param collection $coordinates
      * @param string $altitude_mode
      * @param bool $extrude
      * @return string
@@ -49,7 +49,7 @@ abstract class kml {
         if ($extrude)
             $xml .= '<extrude>' . $extrude . '</extrude>';
         $xml .= '<coordinates>';
-        $coordinates->rewind();
+        $coordinates->reset_iterator();
         foreach ($coordinates as $coord) {
             $xml .= $coord->get_kml_coordinate();
         }
