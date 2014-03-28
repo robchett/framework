@@ -5,6 +5,7 @@ namespace core;
 use classes\ajax;
 use classes\compiler;
 use classes\compiler_page;
+use classes\css\css;
 use classes\get;
 use classes\ini;
 use classes\page_config;
@@ -236,5 +237,25 @@ abstract class core {
     public static function is_admin() {
         compiler::allow();
         return session::is_set('admin');
+    }
+
+    public function get_style_sheet() {
+        header("Content-type: text/css");
+        $css = new css('less');
+        $css->add_resource_root('/.core/css/');
+        if(uri == 'css/cms') {
+            $css->add_resource_root('/.core/module/cms/css/');
+            $css->add_resource_root('/module/cms/css/');
+            $css->cached_name = 'cms_css';
+            echo $css->compile();
+        } else {
+            $css->add_resource_root('/css/');
+            $css->cached_name = 'global_css';
+        }
+        echo $css->compile();
+    }
+
+    public function get_js_sheet() {
+        \classes\js\js::get_js();
     }
 }
