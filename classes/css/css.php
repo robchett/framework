@@ -1,6 +1,7 @@
 <?php
 namespace core\classes\css;
 
+use classes\ini;
 use classes\interfaces\asset;
 
 class css extends asset {
@@ -20,15 +21,6 @@ class css extends asset {
         } else {
             throw new \RuntimeException('Class ' . $class . ' was not found so can\'t compile your css!');
         }
-    }
-
-    public static function get_css() {
-        header("Content-type: text/css");
-        $css = new self('less');
-        $css->add_resource_root('/.core/css/');
-        $css->add_resource_root('/css/');
-        $css->cached_name = 'global_css';
-        echo $css->compile();
     }
 
     public function add_resource_root($root) {

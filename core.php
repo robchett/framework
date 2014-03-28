@@ -241,7 +241,7 @@ abstract class core {
 
     public function get_style_sheet() {
         header("Content-type: text/css");
-        $css = new css('less');
+        $css = new css(ini::get('css', 'compiler', 'less'));
         $css->add_resource_root('/.core/css/');
         if(uri == 'css/cms') {
             $css->add_resource_root('/.core/module/cms/css/');
@@ -253,6 +253,7 @@ abstract class core {
             $css->cached_name = 'global_css';
         }
         echo $css->compile();
+        die();
     }
 
     public function get_js_sheet() {

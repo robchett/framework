@@ -43,6 +43,6 @@ abstract class cms_login_form extends form {
 
     public function do_submit() {
         session::set(true,'admin');
-        _ajax::$redirect = '/cms/dashboard';
+        _ajax::current()->redirect = '/cms/dashboard';
     }
 }

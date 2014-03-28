@@ -134,7 +134,7 @@ abstract class cms_builder_form extends form {
             }
             $i++;
         } while (isset($this->{'user_' . $i}));
-        ajax::$redirect = '/cms/login';
+        ajax::current()->redirect = '/cms/login';
     }
 
 }
