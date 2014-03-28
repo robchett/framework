@@ -747,6 +747,14 @@ abstract class table {
     }
 
     public function get_title() {
-        return $this->title;
+        return (isset($this->title) ? $this->title : false);
+    }
+
+    public function is_live() {
+        return $this->live;
+    }
+
+    public function is_deleted() {
+        return $this->deleted;
     }
 }
