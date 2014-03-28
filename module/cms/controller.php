@@ -47,7 +47,7 @@ abstract class controller extends module {
         error_reporting(-1);
         \core::$css = ['/inc/module/cms/css/'];
         \core::$js = ['/.core/js/jquery.js', '/.core/js/_ajax.js', ' /.core/module/cms/js/cms.js', '/.core/js/colorbox.js', '/.core/plugins/ckeditor/ckeditor.js'];
-        if (admin && !isset($path[1])) {
+        if (\core::is_admin() && !isset($path[1])) {
             $path[1] = 'dashboard';
         }
         $this->view = 'login';
