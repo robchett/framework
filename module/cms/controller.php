@@ -69,6 +69,10 @@ abstract class controller extends module {
             }
         }
         if (isset($path[3]) && !empty($path[3]) && core::is_admin()) {
+            /** @var table $class */
+            $class = $this->current_class;
+            $class::$retrieve_unlive = true;
+            $class::$retrieve_deleted = true;
             $this->current->do_retrieve_from_id([], $path[3]);
         }
         parent::__controller($path);
