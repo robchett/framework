@@ -516,6 +516,7 @@ abstract class table {
      */
     public function get_cms_edit() {
         $form = $this->get_form();
+        $form->id = 'cms_edit';
         $form->set_from_request();
         $form->set_from_object($this);
         foreach ($form->fields as $field) {

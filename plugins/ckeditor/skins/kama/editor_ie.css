@@ -20,7 +20,7 @@ For licensing, see LICENSE.md or http://ckeditor.com/license
 
 .cke_reset_all select { box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box }
 
-.cke_chrome { display: block; -moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px; border: 1px solid #d3d3d3; padding: 5px }
+.cke_chrome { display: block; -moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px; ; padding: 5px }
 
 .cke_hc.cke_chrome { padding: 2px }
 
