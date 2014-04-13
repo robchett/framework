@@ -1,0 +1,77 @@
+// Normaliser
+form {
+  fieldset {
+    border: none;
+    ul {
+      li {
+        input, textarea, select {
+          border: 0;
+          background-color: #ffffff;
+          -webkit-appearance: none;
+        }
+      }
+    }
+  }
+}
+.form_frame {
+  display: none;
+}
+
+@mixin form($width: 0, $height: 40, $padding: 5) {
+  form {
+    legend {
+      @extend %form_legend;
+    }
+    fieldset {
+      ul {
+        li {
+          label {
+            display: block;
+            span {
+
+            }
+          }
+          input, textarea, select {
+            display: block;
+            @include box-sizing(border-box);
+            padding: 0 $padding + px;
+            width: $width + px;
+            height: $height + px;
+          }
+          textarea {
+            height: $height * 2+ px;
+
+          }
+          &.field_boolean_wrapper {
+            input {
+              width: $height + px;
+              -webkit-appearance: checkbox;
+            }
+          }
+          &.form_submit {
+            input {
+              position: absolute;
+              top: -99999px;
+              left: -9999px;
+            }
+            .submit {
+              @include button($height);
+              display: block;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+%form_legend {
+  legend {
+    display: block;
+    width: 100%;
+    font-size: 24px;
+    border-bottom: 4px solid #ffffff;
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+  }
+}

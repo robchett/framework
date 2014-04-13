@@ -3,18 +3,22 @@ namespace core\module\cms\form;
 
 use classes\ajax;
 use classes\session;
+use classes\table;
 use form\field_boolean;
 use form\form;
 use html\node;
+use module\cms\object\_cms_module;
+use module\cms\object\_cms_table_list;
 
 abstract class cms_filter_form extends form {
 
     public $npp;
 
-    public function __construct($class_name = 'string') {
+    public function __construct($mid = 0) {
         if (ajax) {
-            $class_name = $_REQUEST['_class_name'];
+            $mid = $_REQUEST['_mid'];
         }
+        $class_name = table::get_class_from_mid($mid);
         /** @var \classes\table $class */
         $class = new $class_name;
         $super_fields = $class->get_fields();
@@ -23,38 +27,56 @@ abstract class cms_filter_form extends form {
                 ->set_attr('label', 'Number per page')
                 ->set_attr('options', [25 => 25, 50 => 50, 75 => 75, 100 => 100, 0 => 'All'])
                 ->set_attr('required', false),
-            form::create('field_string', '_class_name')
+            form::create('field_int', '_mid')
                 ->set_attr('hidden', true)
         ];
+        /** @var \form\field $field */
         foreach ($super_fields as $field) {
             if ($field->filter) {
                 $field->required = false;
-                if (!ajax && session::is_set('cms', $class_name, $field->field_name)) {
-                    $field->value = session::get('cms', $class_name, $field->field_name);
-                }
                 $fields[] = $field;
             }
         }
         parent::__construct($fields);
+        /** @var \form\field $field */
+        foreach ($fields as $field) {
+            if (session::is_set('cms', 'filter', $mid, $field->field_name)) {
+                $this->{$field->field_name} = session::get('cms', 'filter', $mid, $field->field_name);
+            }
+        }
         $this->id = 'filter_form';
         $this->submit = 'Filter';
-        $this->_class_name = $class_name;
+        $this->_mid = $mid;
         $this->wrapper_class = '';
-        if (session::is_set('cms',$class_name)) {
-            $this->post_fields_text = node::create('a.button', ['href' => '#', 'data-ajax-click' => 'cms:do_clear_filter', 'data-ajax-post' => '\'{"_class_name":"' . $class_name . '"}\'', 'data-ajax-shroud' => '#filter_form'], 'Clear Filters');
+        if (session::is_set('cms', 'filter', $mid)) {
+            $this->post_fields_text = node::create('a#clear_filters.button', [
+                'href'             => '#',
+                'data-ajax-click'  => '\module\cms\form\cms_filter_form:do_clear_filter',
+                'data-ajax-post'   => '{"_mid":"' . $mid . '"}',
+                'data-ajax-shroud' => '#filter_form'], 'Clear Filters');
         }
+    }
+
+    public static function do_clear_filter() {
+        session::un_set('cms', 'filter', $_REQUEST['_mid']);
+        $cms_filter_form = new static();
+        $cms_filter_form->do_submit();
+        session::un_set('cms', 'filter', $_REQUEST['_mid']);
     }
 
     public function do_submit() {
         foreach ($this->fields as $field) {
             if ($field instanceof field_boolean && !$this->{$field->field_name}) {
-                session::un_set('cms',$this->_class_name,$field->field_name);
+                session::un_set('cms', 'filter', $this->_mid, $field->field_name);
             } else {
-                session::set($this->{$field->field_name}, 'cms',$this->_class_name,$field->field_name);
+                session::set($this->{$field->field_name}, 'cms', 'filter', $this->_mid, $field->field_name);
             }
         }
-        ajax::add_script('window.location = window.location');
-        // TODO make this a true ajax act.
+        $module = new _cms_module();
+        $module->do_retrieve([], ['where_equals' => ['mid' => $this->_mid]]);
+        $module->where = session::get('cms', 'filter', $this->_mid);
+        $list = new _cms_table_list($module, 1);
+        ajax::update($list->get_table());
     }
 
     public function get_html() {

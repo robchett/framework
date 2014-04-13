@@ -12,7 +12,15 @@ abstract class node {
         $this->set_standard_attributes();
         $html = '';
         foreach ($this->attributes as $attr => $value) {
-            $html .= ' ' . $attr . '="' . htmlentities($value, ENT_QUOTES) . '"';
+            if(is_array($value)) {
+                if($attr == 'class') {
+                    $html .= ' ' . $attr . '="' . htmlentities(implode(' ', $value), ENT_QUOTES) . '"';
+                } else {
+                    $html .= ' ' . $attr . '=\'' . json_encode($value) . '\'';
+                }
+            } else {
+                $html .= ' ' . $attr . '="' . htmlentities($value, ENT_QUOTES) . '"';
+            }
         }
         return $html;
     }

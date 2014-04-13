@@ -21,6 +21,7 @@ abstract class cms_login_form extends form {
         parent::__construct($fields);
         $this->h2 = 'Admin Login - ' . ini::get('site', 'title_tag');
         $this->submit = 'Login';
+        $this->id = 'cms_login';
     }
 
     public function do_validate() {

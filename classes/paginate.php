@@ -13,6 +13,7 @@ class paginate {
     public $act;
     public $title;
     public $post_title;
+    public $post_data = [];
 
     public function get() {
         $node = node::create('div.paginate_wrapper');
@@ -22,19 +23,23 @@ class paginate {
                 $node->add_child(node::create('span.title', [], $this->do_replace($this->title)));
             }
             if ($pages > 40) {
-                $_node = node::create('select', ['data-ajax-change' => $this->act]);
+                $options['data-ajax-change'] = $this->act;
+                $options['data-ajax-post'] = $this->post_data;
+                $_node = node::create('select', $options);
                 for ($i = 1; $i <= $pages; $i++) {
                     $attributes = ['value' => $i];
-                    if ($this->page = $i) {
+                    if ($this->page == $i) {
                         $attributes['selected'] = 'selected';
                     }
-                    $_node->add_child(node::create('option', ['value' => $i], $i));
+                    $_node->add_child(node::create('option', $attributes, $i));
                 }
                 $node->add_child($_node);
             } else {
                 $_node = node::create('ul#pagi.cf');
                 for ($i = 1; $i <= $pages; $i++) {
-                    $_node->add_child(node::create('li' . ($this->page == $i ? '.sel' : '') . ' a', ['href' => '/' . trim($this->base_url, '/') . '/page/' . $i], $i));
+                    $options['data-ajax-click'] = $this->act;
+                    $options['data-ajax-post'] = $this->post_data + ['value' => $i];
+                    $_node->add_child(node::create('li' . ($this->page == $i ? '.sel' : '') . ' a', $options, $i));
                 }
                 $node->add_child($_node);
             }

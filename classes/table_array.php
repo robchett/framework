@@ -10,34 +10,18 @@ use classes\db as _db;
  */
 abstract class table_array extends _collection {
 
-    /**
-     * @var bool
-     */
-    protected static $statics_set = false;
+    protected $fields;
+    protected $options;
+    protected $class;
+
     /* @var table_iterator */
     public $iterator;
-    /**
-     * @var array
-     */
-    protected $retrieved_fields = [];
-    /**
-     * @var array
-     */
-    protected $original_retrieve_options = [];
 
-    /**
-     *
-     */
     public function __construct($input = [], $flags = 0, $iterator_class = "\\classes\\collection_iterator") {
         parent::__construct($input, $flags, $iterator_class);
     }
 
-    /**
-     *
-     */
-    public static function set_statics() {
-        self::$statics_set = true;
-    }
+    public static function set_statics() {}
 
     /**
      * @param array $keys
@@ -50,7 +34,7 @@ abstract class table_array extends _collection {
             }
         }
         if (!empty($fields_to_retrieve)) {
-            $this->do_retrieve($fields_to_retrieve, $this->original_retrieve_options);
+            $this->do_retrieve($fields_to_retrieve, $this->options);
         }
     }
 
@@ -59,7 +43,7 @@ abstract class table_array extends _collection {
      * @return bool
      */
     public function has_field($name) {
-        return (isset($this->retrieved_fields[$name]) ? $this->retrieved_fields[$name] : false);
+        return in_array($name, $this->fields);
     }
 
     /**
@@ -76,6 +60,10 @@ abstract class table_array extends _collection {
      * @param array $options
      */
     public function get_all($class, array $fields_to_retrieve, $options = []) {
+        $this->fields = $fields_to_retrieve;
+        $this->options = $options;
+        $this->class = $class;
+
         /** @var table $obj */
         $obj = new $class();
         $links = [];
@@ -159,7 +147,6 @@ abstract class table_array extends _collection {
      */
     public function get_class() {
         return str_replace('_array', '', get_class($this));
-
     }
 
     /**
@@ -177,5 +164,15 @@ abstract class table_array extends _collection {
      */
     public function rewind() {
         $this->iterator->rewind();
+    }
+
+    public function get_total_count() {
+        if(isset($this->options['limit'])) {
+            $options = $this->options;
+            unset($options['limit']);
+            $query = db::get_query($this->class, ['COUNT(*)'], $options)->execute()->fetch();
+            return $query[0];
+        }
+        return $this->count();
     }
 }

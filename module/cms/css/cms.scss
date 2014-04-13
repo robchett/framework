@@ -1,40 +1,39 @@
-$primary: #0c3f6b;
+$primary: #515151;
 $radius: 0;
 @mixin rounded($radius: 0) {
   @include border-radius($radius);
 }
 
-@mixin button() {
-  display: block;
-  padding: 5px;
-  @include bw-gradient(200, 240);
-  border: 1px solid #cccccc;
+@mixin button($height: 40) {
   text-align: center;
-  font-weight: bold;
-  color: $primary;
+  display: block;
+  border: $border;
+  background-color: #494949;
+  padding: 0 10px;
+  line-height: $height + px;
+  text-decoration: none;
+  color: #aeaeae;
   cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 $border: 1px solid #6a6a6a;
-html {
-  height: 100%
-}
 
-body {
-  padding: 10px 20px;
-  margin: 0;
-  font: 12px/14px helvetica;
-  text-align: center;
-  color: white;
-  background-color: #131313 !important;
+html {
+  height: 100%;
+  body {
+    margin: 0;
+    font: 12px/14px helvetica;
+    text-align: center;
+    color: #ffffff;
+    background-color: #131313 !important;
+  }
 }
 
 a {
   color: #d2e0ff
-}
-
-input, textarea, select {
-  margin-left: 10px;
 }
 
 .loading_shroud {
@@ -48,45 +47,74 @@ input, textarea, select {
   left: 0;
 }
 
-ul#pagi {
+.paginate_wrapper {
   margin-bottom: 20px;
-  height: 30px;
-  width: 100%;
-  text-align: center;
-  li {
-    display: inline-block;
-    margin: 0 5px;
-    background-color: #777;
+  @extend %cf;
+  ul#pagi {
     height: 30px;
-    width: 30px;
-    line-height: 30px;
+    width: 100%;
     text-align: center;
-    @include rounded(30);
-    &:hover, &.sel {
-      background-color: #555;
+    li {
+      display: inline-block;
+      margin: 0 5px;
+      background-color: #777;
+      height: 30px;
+      width: 30px;
+      line-height: 30px;
+      text-align: center;
+      @include rounded(30);
+      cursor: pointer;
+      &:hover, &.sel {
+        background-color: #3a3a3a;
+      }
+      a {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
     }
-    a {
-      display: block;
-      width: 100%;
-      height: 100%;
+  }
+  select {
+    height: 30px;
+    float: left;
+  }
+}
+
+#filter_form_wrapper {
+  @include form(200, 30);
+  margin-bottom: 10px;
+  @extend %cf;
+  background-color: #5d5d5d;
+  border: $border;
+  padding: 10px;
+  form {
+    fieldset {
+      ul {
+        li {
+          float: left;
+          text-align: left;
+          margin-right: 10px;
+          label {
+            span {
+              display: block;
+              margin-bottom: 5px;
+            }
+          }
+          &.form_submit {
+            margin-top: 18px;
+          }
+        }
+      }
     }
+  }
+  #clear_filters {
+    margin-top: 10px;
+    @include button(30);
+    float: left;
   }
 }
 
 form {
-  &#filter_form {
-    border: $border;
-    padding: 10px;
-    background-color: #5d5d5d;
-    li {
-      float: left;
-      margin-right: 10px;
-      height: 25px;
-      select {
-        width: 200px;
-      }
-    }
-  }
   .mlink_selected_wrapper {
     li {
       margin-left: 214px;
@@ -100,16 +128,6 @@ form {
       }
     }
   }
-}
-
-form fieldset {
-  border: none;
-}
-
-ul, li {
-  padding: 0;
-  margin: 0;
-  list-style: none;
 }
 
 body.login {
@@ -127,84 +145,52 @@ body.login {
       line-height: 36px;
     }
     div.form_wrapper {
+      @include form(400);
+      margin: 0 auto;
+      background-color: #5b5b5b;
+      padding: 20px;
+      &#cms_login_wrapper {
+        width: 400px;
+        label {
+          span {
+            display: none;
+          }
+          input {
+            text-align: center;
+            font-size: 16px;
+          }
+        }
+      }
       &#cms_builder_wrapper {
         width: 900px;
-        padding: 20px 0;
         @include cf();
         fieldset {
           float: left;
           width: 400px;
           margin: 0 20px;
-        }
-      }
-      width: 400px;
-      margin: auto;
-      position: relative;
-      padding: 20px;
-      background-color: #333333;
-      @include drop-shadow(0, 6px, 40px, 0.7);
-
-      input.submit {
-        position: absolute;
-        top: -99999px;
-        left: -9999px;
-      }
-      .submit {
-        @include button();
-        display: block;
-        color: $primary;
-      }
-      fieldset {
-        legend {
-          display: block;
-          width: 100%;
-          font-size: 24px;
-          border-bottom: 4px solid #ffffff;
-          padding-bottom: 5px;
-          margin-bottom: 5px;
-        }
-        padding: 0;
-        li {
-          border-bottom: none;
-          label {
-            span {
-              display: none
-            }
-            input, select {
-              margin: 0;
-              width: 384px;
-              text-align: center;
-              font-size: 20px;
-              border: none;
-              padding: 8px;
-              background-color: #ffffff !important;
-              @include rounded(5px);
-            }
-            select {
-              width: 400px;
-            }
-          }
-          &.field_checkboxes_wrapper {
-            label {
-              span {
-                display: block;
-                font-size: 14px;
-                padding-bottom: 5px;
-                margin-bottom: 5px;
-                border-bottom: 2px solid #ffffff;
-                width: 100%;
-              }
-              div {
-                padding-bottom: 10px;
-                @include cf();
+          ul {
+            li {
+              &.field_checkboxes_wrapper {
                 label {
-                  font-size: 10px;
-                  float: left;
-                  width: 33%;
-                  margin-bottom: 5px;
-                  input {
-                    width: 20px;
-                    float: left;
+                  span {
+                    display: block;
+                    font-size: 14px;
+                    padding-bottom: 5px;
+                    width: 100%;
+                  }
+                  div {
+                    padding-bottom: 10px;
+                    @include cf();
+                    label {
+                      font-size: 10px;
+                      float: left;
+                      width: 33%;
+                      margin-bottom: 5px;
+                      input {
+                        width: 20px;
+                        float: left;
+                      }
+                    }
                   }
                 }
               }
@@ -218,18 +204,28 @@ body.login {
 
 body.dashboard {
   #summaries {
+    padding-top: 20px;
+    @extend %cf;
+    background-color: #252525;
     h4 {
       font-size: 24px;
+      line-height: 34px;
+      margin-bottom: 33px;
     }
     div {
-      padding: 5px;
-      margin-bottom: 20px;
-      border: $border;
+      padding: 0 20px;
+      margin-bottom: 33px;
       @include rounded();
-      background-color: #252525;
-      width: 50%;
       @include box-sizing();
+      width: 50%;
       float: left;
+      table {
+        thead {
+          th {
+            padding: 10px;
+          }
+        }
+      }
     }
   }
   #latest_flights {
@@ -274,9 +270,11 @@ div#admin_box > div {
 }
 
 ul#nav {
-  clear: both;
+  @extend %cf;
   margin-left: 0px;
-  li {
+  background-color: #515151;
+  border-bottom: $border;
+  > li {
     float: left;
     margin-right: -1px;
     padding: 5px 10px;
@@ -284,29 +282,33 @@ ul#nav {
     border-bottom: 0;
     position: relative;
     font-size: 16px;
+    line-height: 24px;
     border-top-left-radius: $radius;
     border-top-right-radius: $radius;
+    &:first-of-type {
+      border-left: 0;
+    }
     ul {
+      text-align: left;
       width: 200px;
       position: absolute;
       display: none;
       border: $border;
       background-color: #333333;
       left: -1px;
-      top: 24px;
-      padding: 10px;
+      top: 34px;
       @include border-radius(0, $radius, $radius, 0);
       li {
-        float: none;
-        margin: 0;
-        padding: 5px 10px;
-        border: 0;
+        padding: 0 10px;
         color: #ffffff;
-        font-size: 14px;
-        text-align: left;
-        border-bottom: 1px solid #2c2c2c;
+        &:hover {
+          background-color: #515151;
+        }
         a {
           text-decoration: none;
+          font-size: 14px;
+          line-height: 30px;
+          display: block;
         }
       }
     }
@@ -323,12 +325,8 @@ ul#nav {
 }
 
 #content {
-  clear: both;
-  border: $border;
+  @extend %cf;
   padding: 20px;
-  border-bottom-left-radius: $radius;
-  border-bottom-right-radius: $radius;
-  background-color: #080808;
 }
 
 table.module_list {
@@ -423,7 +421,6 @@ table.module_list {
     li {
       width: 100%;
       padding: 5px 0;
-      border-bottom: $border;
       label {
         span {
           font-size: 16px;
@@ -453,17 +450,6 @@ table.module_list {
         }
       }
     }
-  }
-  .submit {
-    @include button();
-    color: #537ec8;
-  }
-  input.submit {
-    position: absolute;
-    left: -999999px;
-  }
-  .form_frame {
-    display: none;
   }
 }
 
@@ -506,19 +492,6 @@ p.warning {
   font-size: 18px;
   padding: 10px;
   text-align: center;
-}
-
-.button {
-  text-align: center;
-  display: block;
-  border: $border;
-  background-color: #494949;
-  color: #ffffff;
-  padding: 10px;
-  text-decoration: none;
-  &:hover {
-    text-decoration: underline;;
-  }
 }
 
 table#module_def {

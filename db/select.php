@@ -17,7 +17,7 @@ abstract class select extends _query {
     protected function get_fields() {
         $fields = [];
         foreach ($this->fields as $field) {
-            if (strstr($field, ' ') === false && strstr($field, '.') === false) {
+            if (strstr($field, ' ') === false && strstr($field, '.') === false && strstr($field, '(') === false) {
                 $fields[] = '`' . $field . '`';
             } else {
                 $fields[] = $field;
