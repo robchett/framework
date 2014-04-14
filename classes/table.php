@@ -3,7 +3,9 @@
 namespace core\classes;
 
 use classes\ajax as _ajax;
+use classes\ajax;
 use classes\collection as _collection;
+use classes\collection;
 use classes\get as _get;
 use classes\image_resizer;
 use classes\jquery;
@@ -20,6 +22,7 @@ use form\field_link;
 use form\field_mlink;
 use form\field_textarea;
 use form\form;
+use html\a;
 use html\node;
 use module\cms\object\_cms_field;
 use module\cms\object\_cms_module;
@@ -635,6 +638,35 @@ abstract class table {
         }
     }
 
+    public static function reset_module_fields ($mid) {
+        $fields = _cms_field::get_all([
+                'fid',
+                'parent_fid',
+                'field_name',
+                'title',
+                'type',
+                'mid',
+                'list',
+                'filter',
+                'required',
+                'link_module',
+                'link_field'
+            ], ['where_equals'=>['mid'=>$mid]]
+        );
+        $module = new _cms_module([], $mid);
+        $module = self::$cms_modules[trim($module->get_class_name(), '\\')];
+        $module->_cms_field_elements = new field_collection();
+        $fields->iterate(function (_cms_field $row) use ($module) {
+                $class = 'form\field_' . $row->type;
+                /** @var field $field */
+                $field = new $class($row->field_name, []);
+                $field->label = $row->title;
+                $field->set_from_row($row);
+                $module->_cms_field_elements[] = $field;
+            }
+        );
+    }
+
     public static function reload_table_definitions() {
         self::$cms_modules = null;
         self::set_cms_modules();
@@ -734,7 +766,8 @@ abstract class table {
                 db::query('UPDATE ' . _get::__class_name($object) . ' SET position =' . $object->position . ' WHERE position=' . ($object->position - 1));
                 db::query('UPDATE ' . _get::__class_name($object) . ' SET position =' . ($object->position - 1) . ' WHERE ' . $object->get_primary_key_name() . '=' . $object->get_primary_key());
             }
-            ajax::add_script('document.location = document.location#' . _get::__class_name($object) . ($_REQUEST['id'] - 1));
+            $list = new _cms_table_list(self::$cms_modules[get_called_class()], 1);
+            ajax::update($list->get_table());
         }
     }
 

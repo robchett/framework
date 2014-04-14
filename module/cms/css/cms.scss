@@ -427,7 +427,7 @@ table.module_list {
   }
 }
 
-#cms_edit_wrapper {
+#cms_edit_wrapper, #module_edit_wrapper, #add_field_form_wrapper, #new_module_wrapper {
   @include form(777, 30);
   fieldset {
     padding: 20px;

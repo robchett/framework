@@ -32,6 +32,7 @@ abstract class edit_module_form extends form {
                 form::create('field_int', 'mid', ['hidden' => true]),
             ]
         );
+        $this->id = 'module_edit';
     }
 
     public function do_submit() {

@@ -147,8 +147,8 @@ abstract class field extends node {
         $cols[] = node::create('td', [], ($this->live ? 'Live' : 'Not Live'));
         $cols[] = node::create('td', [], $this->fid);
         $cols[] = node::create('td', [],
-            node::create('a.up.reorder', ['data-ajax-click' => 'cms:do_reorder_fields', 'data-ajax-post' => '{"mid":' . $this->parent_form->mid . ',"fid":' . $this->fid . ',"dir":"up"}'], 'Up') .
-            node::create('a.down.reorder', ['data-ajax-click' => 'cms:do_reorder_fields', 'data-ajax-post' => '{"mid":' . $this->parent_form->mid . ',"fid":' . $this->fid . ',"dir":"down"}'], 'Down')
+            node::create('a.up.reorder', ['data-ajax-click' => 'cms:do_reorder_fields', 'data-ajax-post' => '{"mid":' . $this->parent_form->get_module_id() . ',"fid":' . $this->fid . ',"dir":"up"}'], 'Up') .
+            node::create('a.down.reorder', ['data-ajax-click' => 'cms:do_reorder_fields', 'data-ajax-post' => '{"mid":' . $this->parent_form->get_module_id() . ',"fid":' . $this->fid . ',"dir":"down"}'], 'Down')
         );
         $cols[] = node::create('td', [], $this->title);
         $cols[] = node::create('td', [], $this->field_name);

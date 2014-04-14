@@ -33,6 +33,7 @@ abstract class new_module_form extends form {
                 form::create('field_boolean', 'nestable', ['label' => 'Nestable']),
             ]
         );
+        $this->id = 'new_module';
     }
 
     public function do_submit() {

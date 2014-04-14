@@ -6,6 +6,7 @@ use classes\db;
 use classes\get;
 use classes\module;
 use classes\session;
+use classes\table;
 use core\core;
 use html\node;
 use module\cms\form\new_module_form;
@@ -122,13 +123,15 @@ abstract class controller extends module {
                 $fields->reverse();
             }
             $fields->uasort(function (object\_cms_field $a, object\_cms_field $b) {
-                    return $b->position - $a->position;
+                    return $a->position - $b->position;
                 }
             );
-            $fields->iterate(function (object\_cms_field $field) {
-                    db::update('_cms_field')->add_value('position', $field->position)->filter_field('fid', $field->fid)->execute();
+            $cnt = 1;
+            $fields->iterate(function (object\_cms_field $field) use (&$cnt) {
+                    db::update('_cms_field')->add_value('position', $cnt++)->filter_field('fid', $field->fid)->execute();
                 }
             );
+            table::reset_module_fields($this->module->mid);
             ajax::update($this->module->get_fields_list()->get());
         }
     }

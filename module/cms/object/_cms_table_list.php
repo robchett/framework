@@ -88,7 +88,7 @@ class _cms_table_list {
     /**
      * @return array
      */
-    public function get_list() {
+    protected function get_list() {
         return [
             $this->get_filters($this->class),
             $this->get_list_inner(),

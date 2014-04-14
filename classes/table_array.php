@@ -83,6 +83,9 @@ abstract class table_array extends _collection {
         $key = 'get_all_' . $class . '_fetch_' . implode(',', $fields_to_retrieve) . '_options_' . serialize($options);
         $elements = \classes\cache::grab($key,
             function () use ($class, $fields_to_retrieve, $options, $links, $mlinks, $obj) {
+                if(!isset($options['order'])) {
+                    $options['order'] = get::__class_name($class) . '.position';
+                }
                 $select = _db::get_query($class, $fields_to_retrieve, $options);
                 $res = $select->execute();
                 if (_db::num($res)) {
