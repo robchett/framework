@@ -23,6 +23,7 @@ use form\form;
 use html\node;
 use module\cms\object\_cms_field;
 use module\cms\object\_cms_module;
+use module\cms\object\_cms_table_list;
 use object\filter;
 use object\image_size;
 
@@ -666,7 +667,7 @@ abstract class table {
         $fields = $this->get_fields(true);
         return
             node::create('td.edit a.edit', ['href' => '/cms/edit/' . static::get_module_id() . '/' . $this->get_primary_key()]) .
-            node::create('td.edit a.live' . ($this->live ? '' : 'not_live'), ['href' => '#', 'data-ajax-click' => get_class($this) . ':do_toggle_live', 'data-ajax-post' => '{"mid":' . static::get_module_id() . ',"id":' . $this->get_primary_key() . '}'], ($this->live ? 'Live' : 'Not Live')) .
+            node::create('td.edit a.live' . ($this->live ? '' : '.not_live'), ['href' => '#', 'data-ajax-click' => get_class($this) . ':do_toggle_live', 'data-ajax-post' => '{"mid":' . static::get_module_id() . ',"id":' . $this->get_primary_key() . '}'], ($this->live ? 'Live' : 'Not Live')) .
             node::create('td.position', [],
                 node::create('a.up.reorder', ['data-ajax-click' => get_class($this) . ':do_reorder', 'data-ajax-post' => '{"mid":' . static::get_module_id() . ',"id":' . $this->get_primary_key() . ',"dir":"up"}'], 'Up') .
                 node::create('a.down.reorder', ['data-ajax-click' => get_class($this) . ':do_reorder', 'data-ajax-post' => '{"mid":' . static::get_module_id() . ',"id":' . $this->get_primary_key() . ',"dir":"down"}'], 'Down')
@@ -679,7 +680,7 @@ abstract class table {
                     return '';
                 }
             ) .
-            node::create('td.delete a.delete', ['href' => '#', 'data-ajax-click' => 'cms:do_delete', 'data-ajax-post' => '{"id":"' . $this->get_primary_key() . '","object":"' . str_replace('\\', '\\\\', get_class($this)) . '"}'], 'delete');
+            node::create('td.delete a.delete', ['href' => '#', 'data-ajax-click' => 'cms:do_delete', 'data-ajax-post' => '{"id":"' . $this->get_primary_key() . '","mid":"' . $this->get_module_id() . '"}'], 'delete');
     }
 
     /**
@@ -743,7 +744,11 @@ abstract class table {
             $object = new static(['live'], $_REQUEST['id']);
             $object->live = !$object->live;
             $object->do_save();
-            ajax::add_script('document.location = document.location#' . _get::__class_name($object) . ($_REQUEST['id'] - 1));
+
+            $module = new _cms_module();
+            $module->do_retrieve([], ['where_equals' => ['mid' => $_REQUEST['mid']]]);
+            $list = new _cms_table_list($module, 1);
+            ajax::update($list->get_table());
         }
     }
 

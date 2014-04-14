@@ -346,6 +346,9 @@ table.module_list {
       &.edit, &.delete {
         width: 16px;
       }
+      &.field_date {
+        width: 65px;
+      }
     }
   }
   tr {
@@ -353,6 +356,11 @@ table.module_list {
       background-color: #373737;
       .form\\field_string:first-of-type {
         text-indent: 10px;
+      }
+    }
+    &.deleted {
+      td {
+        text-decoration:line-through;
       }
     }
     td {
@@ -375,6 +383,17 @@ table.module_list {
         width: 19px;
         height: 19px;
         text-indent: -9999px;
+      }
+      a.live {
+        background: url('/.core/images/sprites.png') -305px -375px;
+        display: block;
+        width: 19px;
+        margin: auto;
+        height: 19px;
+        text-indent: -9999px;
+        &.not_live {
+          background-position: -275px -375px;
+        }
       }
       a.delete {
         background: url('/.core/images/sprites.png') -47px -89px;

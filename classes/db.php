@@ -9,6 +9,7 @@ use db\count as _count;
 use db\delete as _delete;
 use db\insert as _insert;
 use db\select as _select;
+use db\replace as _replace;
 use db\update as _update;
 use html\node;
 use module\cms\object\_cms_module;
@@ -49,6 +50,9 @@ abstract class db implements interfaces\database_interface {
 
     public static function delete($table_name) {
         return new _delete($table_name);
+    }
+    public static function replace($table_name) {
+        return new _replace($table_name);
     }
 
     public static function count($table_name, $primary_key = '*') {

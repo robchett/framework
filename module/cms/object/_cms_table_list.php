@@ -27,6 +27,7 @@ class _cms_table_list {
         $this->module = $module;
         $this->page = $page;
         $this->npp = session::is_set('cms', 'filter', $module->mid, 'npp') ? session::get('cms', 'filter', $module->mid, 'npp') : 25;
+        $this->deleted = session::is_set('cms', 'filter', $module->mid, 'deleted') ? session::get('cms', 'filter', $module->mid, 'deleted') : false;
         $this->where = [];
 
         $class = $this->module->get_class_name();
@@ -47,6 +48,9 @@ class _cms_table_list {
         }
         $class = $this->class_name;
         $class::$retrieve_unlive = true;
+        if($this->deleted) {
+            $class::$retrieve_deleted = true;
+        }
         $this->elements = $class::get_all([], $options);
         return node::create('div#inner', [], $this->get_list());
     }
@@ -113,7 +117,7 @@ class _cms_table_list {
             node::create('th.position', [], 'Position') .
             $obj->get_fields()->iterate_return(function ($field) use ($obj) {
                     if ($field->list) {
-                        return node::create('th.' . get_class($field) . '.' . $field->field_name . ($field->field_name == $obj->get_primary_key_name() ? '.primary' : ''), [], $field->title);
+                        return node::create('th.' . get::__class_name($field) . '.' . $field->field_name . ($field->field_name == $obj->get_primary_key_name() ? '.primary' : ''), [], $field->title);
                     }
                     return '';
                 }
@@ -150,9 +154,9 @@ class _cms_table_list {
                         }
                     );
                 }
-                return node::create('tr#' . get::__class_name($obj) . $obj->get_primary_key(), [], $obj->get_cms_list()) .
+                return node::create('tr#' . get::__class_name($obj) . $obj->get_primary_key() . ($obj->deleted ? '.deleted' : ''), [], $obj->get_cms_list()) .
                 (isset($obj->children) ? $obj->children->iterate_return(function ($child) {
-                        return node::create('tr.child', [], $child->get_cms_list());
+                        return node::create('tr#' . get::__class_name($child) . $child->get_primary_key() . ($child->deleted ? '.deleted' : '') . '.child', [], $child->get_cms_list());
                     }
                 ) : '');
             }

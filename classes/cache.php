@@ -22,6 +22,8 @@ abstract class cache implements interfaces\cache_interface {
      * */
     public static $current = null;
 
+    protected static $ignore_tables = ['_cache_dependants', '_compiler_keys'];
+
     const DEFAULT_CACHE_TIME = 86400;
 
     /**
@@ -142,6 +144,15 @@ abstract class cache implements interfaces\cache_interface {
 
     public static function remove($key) {
         static::$current->delete($key);
+    }
+
+    public static function break_cache($table) {
+        if (in_array($table, static::$ignore_tables)) {
+            return;
+        }
+        $time = microtime(true);
+        db::replace('_cache_dependants')->add_value('key', $table)->add_value('hash', $time)->execute();
+        self::$dependants[$table] = $time;
     }
 
     public static function grab($key, callable $callback, $dependencies = ['global'], $time = null) {

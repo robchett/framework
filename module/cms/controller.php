@@ -208,10 +208,23 @@ abstract class controller extends module {
     }
 
     public function do_delete() {
-        /** @var \classes\table $object */
-        $object = new $_REQUEST['object'];
-        db::update(get::__class_name($_REQUEST['object']))->add_value('deleted', 1)->filter($object->get_primary_key_name() . '=' . $_REQUEST['id'])->execute();
-        ajax::add_script('document.location = document.location');
+        $module = new _cms_module([], $_REQUEST['mid']);
+        $object = $module->get_class();
+        $class = $module->get_class_name();
+        $class::$retrieve_deleted = true;
+        $object->do_retrieve_from_id(['deleted'], $_REQUEST['id']);
+        if($object->get_primary_key()){
+            if ($object->deleted) {
+                db::delete(get::__class_name($class))
+                  ->filter($object->get_primary_key_name() . '=' . $_REQUEST['id'])
+                  ->execute();
+            } else {
+                $object->deleted = true;
+                $object->do_save();
+            }
+        }
+        $list = new object\_cms_table_list($module, 1);
+        ajax::update($list->get_table());
     }
 
     /**

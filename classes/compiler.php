@@ -14,7 +14,7 @@ class compiler {
 
     public static $dependants = [];
 
-    protected static $ignore_tables = ['_compiler_keys'];
+    protected static $ignore_tables = ['_cache_dependants', '_compiler_keys'];
 
     public static function break_cache($table) {
         if (in_array($table, static::$ignore_tables)) {

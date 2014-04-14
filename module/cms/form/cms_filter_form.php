@@ -15,7 +15,7 @@ abstract class cms_filter_form extends form {
     public $npp;
 
     public function __construct($mid = 0) {
-        if (ajax) {
+        if (ajax && !$mid) {
             $mid = $_REQUEST['_mid'];
         }
         $class_name = table::get_class_from_mid($mid);
@@ -23,6 +23,10 @@ abstract class cms_filter_form extends form {
         $class = new $class_name;
         $super_fields = $class->get_fields();
         $fields = [
+            form::create('field_boolean', 'deleted')
+                ->set_attr('label', 'Show deleted?')
+                ->set_attr('options', [25 => 25, 50 => 50, 75 => 75, 100 => 100, 0 => 'All'])
+                ->set_attr('required', false),
             form::create('field_select', 'npp')
                 ->set_attr('label', 'Number per page')
                 ->set_attr('options', [25 => 25, 50 => 50, 75 => 75, 100 => 100, 0 => 'All'])
@@ -60,21 +64,22 @@ abstract class cms_filter_form extends form {
     public static function do_clear_filter() {
         session::un_set('cms', 'filter', $_REQUEST['_mid']);
         $cms_filter_form = new static();
-        $cms_filter_form->do_submit();
-        session::un_set('cms', 'filter', $_REQUEST['_mid']);
+        $cms_filter_form->post_fields_text = '';
+        $cms_filter_form->do_submit(true);
     }
 
-    public function do_submit() {
-        foreach ($this->fields as $field) {
-            if ($field instanceof field_boolean && !$this->{$field->field_name}) {
-                session::un_set('cms', 'filter', $this->_mid, $field->field_name);
-            } else {
-                session::set($this->{$field->field_name}, 'cms', 'filter', $this->_mid, $field->field_name);
+    public function do_submit($no_session  = false) {
+        if (!$no_session) {
+            foreach ($this->fields as $field) {
+                if ($field instanceof field_boolean && !$this->{$field->field_name}) {
+                    session::un_set('cms', 'filter', $this->_mid, $field->field_name);
+                } else {
+                    session::set($this->{$field->field_name}, 'cms', 'filter', $this->_mid, $field->field_name);
+                }
             }
         }
         $module = new _cms_module();
         $module->do_retrieve([], ['where_equals' => ['mid' => $this->_mid]]);
-        $module->where = session::get('cms', 'filter', $this->_mid);
         $list = new _cms_table_list($module, 1);
         ajax::update($list->get_table());
     }
