@@ -3,6 +3,7 @@ namespace core\module\cms\form;
 
 use classes\ajax;
 use classes\db;
+use classes\table;
 use form\form;
 use module\cms\object\_cms_module;
 use module\cms\object\field_type;
@@ -84,9 +85,9 @@ abstract class add_field_form extends form {
         }
         $insert->execute();
 
-        $obj = $module->get_class();
-        $obj->mid = $this->mid;
-        ajax::update($obj->get_fields_list()->get());
+        table::reset_module_fields($module->mid);
+
+        ajax::update($module->get_fields_list()->get());
         ajax::update($this->get_html()->get());
     }
 }

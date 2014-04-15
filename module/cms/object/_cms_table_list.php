@@ -28,6 +28,7 @@ class _cms_table_list {
         $this->page = $page;
         $this->npp = session::is_set('cms', 'filter', $module->mid, 'npp') ? session::get('cms', 'filter', $module->mid, 'npp') : 25;
         $this->deleted = session::is_set('cms', 'filter', $module->mid, 'deleted') ? session::get('cms', 'filter', $module->mid, 'deleted') : false;
+        $this->allowed_keys = ['' => 0] + (session::is_set('cms', 'expand', $module->mid) ? session::get('cms', 'expand', $module->mid) : []);
         $this->where = [];
 
         $class = $this->module->get_class_name();
@@ -42,16 +43,9 @@ class _cms_table_list {
     }
 
     public function get_table() {
-        $options = ['where_equals' => $this->where, 'order' => $this->order ? : 'position'];
-        if ($this->npp) {
-            $options['limit'] = ($this->page - 1) * $this->npp . ',' . $this->npp;
+        if(!isset($this->elements)) {
+            $this->elements = $this->get_elements(0);
         }
-        $class = $this->class_name;
-        $class::$retrieve_unlive = true;
-        if($this->deleted) {
-            $class::$retrieve_deleted = true;
-        }
-        $this->elements = $class::get_all([], $options);
         return node::create('div#inner', [], $this->get_list());
     }
 
@@ -62,6 +56,21 @@ class _cms_table_list {
         $filter_form = new cms_filter_form($this->module->mid);
         $wrapper = node::create('div#filter_wrapper ul', [], $this->get_pagi($this->elements->count()) . $filter_form->get_html());
         return $wrapper;
+    }
+
+    protected function get_elements($parent_id = 0) {
+        $class = $this->class_name;
+        /** @var \classes\table $obj */
+        $obj = new $class;
+        $options = ['where_equals' => $this->where + ['parent_' . $obj->get_primary_key_name() => $parent_id], 'order' => $this->order ? : 'position',];
+        if ($this->npp && $parent_id === 0) {
+            $options['limit'] = ($this->page - 1) * $this->npp . ',' . $this->npp;
+        }
+        $class::$retrieve_unlive = true;
+        if($this->deleted) {
+            $class::$retrieve_deleted = true;
+        }
+        return $class::get_all(['*', '(SELECT COUNT(' . $obj->get_primary_key_name() . ') FROM ' . get::__class_name($obj) . ' t WHERE t.parent_' . $obj->get_primary_key_name() . ' = ' . get::__class_name($obj) . '.' . $obj->get_primary_key_name() . ' LIMIT 1) AS _has_child'], $options);
     }
 
     /**
@@ -101,7 +110,7 @@ class _cms_table_list {
             $this->module->get_cms_pre_list() .
             node::create('table.module_list', [],
                 $this->get_table_head() .
-                $this->get_table_rows()
+                $this->get_table_rows($this->elements)
             ) .
             $this->module->get_cms_post_list();
     }
@@ -114,6 +123,7 @@ class _cms_table_list {
         $node = node::create('thead', [],
             node::create('th.edit') .
             node::create('th.live', [], 'Live') .
+            node::create('th.expand', [], 'Expand') .
             node::create('th.position', [], 'Position') .
             $obj->get_fields()->iterate_return(function ($field) use ($obj) {
                     if ($field->list) {
@@ -128,37 +138,26 @@ class _cms_table_list {
     }
 
     /**
+     * @param table_array $elements
+     * @param string  $class
      * @return node
      */
-    public function get_table_rows() {
+    public function get_table_rows($elements, $class = '') {
         $nodes = node::create('tbody');
-        $new_collection = new table_array();
-        /** @var \classes\table $table */
-        $this->elements->iterate(function ($table) use ($new_collection) {
-                if ($table->{'parent_' . $table->get_primary_key_name()} == 0) {
-                    $table->children = new collection();
-                    $new_collection[$table->get_primary_key()] = $table;
-                } else if (isset($new_collection[$table->{'parent_' . $table->get_primary_key_name()}])) {
-                    $new_collection[$table->{'parent_' . $table->get_primary_key_name()}]->children[] = $table;
-                }
-            }
-        );
+        $keys = $this->allowed_keys;
         /**
          * @var \classes\table $obj
          * @return string
          */
-        return $new_collection->iterate_return(function ($obj) use ($nodes) {
-                if (isset($obj->children)) {
-                    $obj->children->uasort(function ($a, $b) {
-                            return $b->position - $a->position;
-                        }
-                    );
+        return $elements->iterate_return(function ($obj) use ($nodes, $keys, $class) {
+                if ($obj->_has_child && in_array($obj->get_primary_key(), $keys)) {
+                    $obj->_is_expanded = true;
+                    $children = $this->get_elements($obj->get_primary_key());
+                } else {
+                    $obj->_is_expanded = false;
+                    $children = false;
                 }
-                return node::create('tr#' . get::__class_name($obj) . $obj->get_primary_key() . ($obj->deleted ? '.deleted' : ''), [], $obj->get_cms_list()) .
-                (isset($obj->children) ? $obj->children->iterate_return(function ($child) {
-                        return node::create('tr#' . get::__class_name($child) . $child->get_primary_key() . ($child->deleted ? '.deleted' : '') . '.child', [], $child->get_cms_list());
-                    }
-                ) : '');
+                return node::create('tr#' . get::__class_name($obj) . $obj->get_primary_key() . ($obj->deleted ? '.deleted' : '') . $class, [], $obj->get_cms_list()) . ($children ? $this->get_table_rows($children, '.child') : '' );
             }
         );
     }

@@ -329,7 +329,7 @@ ul#nav {
   padding: 20px;
 }
 
-table.module_list {
+table.module_list, table#module_def {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 20px;
@@ -384,7 +384,7 @@ table.module_list {
         height: 19px;
         text-indent: -9999px;
       }
-      a.live {
+      .live {
         background: url('/.core/images/sprites.png') -305px -375px;
         display: block;
         width: 19px;
@@ -513,25 +513,6 @@ p.warning {
   font-size: 18px;
   padding: 10px;
   text-align: center;
-}
-
-table#module_def {
-  width: 100%;
-  border-collapse: collapse;
-  thead {
-    th {
-      background-color: #474747;
-      border: $border;
-      padding: 5px;
-    }
-  }
-  tr {
-    td {
-      border: $border;
-      padding: 1px;
-    }
-  }
-
 }
 
 a.reorder {

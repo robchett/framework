@@ -9,6 +9,7 @@ use classes\collection;
 use classes\get as _get;
 use classes\image_resizer;
 use classes\jquery;
+use classes\session;
 use classes\table_array as _table_array;
 use classes\table_form;
 use db\insert;
@@ -700,6 +701,7 @@ abstract class table {
         return
             node::create('td.edit a.edit', ['href' => '/cms/edit/' . static::get_module_id() . '/' . $this->get_primary_key()]) .
             node::create('td.edit a.live' . ($this->live ? '' : '.not_live'), ['href' => '#', 'data-ajax-click' => get_class($this) . ':do_toggle_live', 'data-ajax-post' => '{"mid":' . static::get_module_id() . ',"id":' . $this->get_primary_key() . '}'], ($this->live ? 'Live' : 'Not Live')) .
+            node::create('td.edit a.expand' . ($this->_has_child ? '' : '.no_expand'), ['href' => '#', 'data-ajax-click' => get_class($this) . ':do_toggle_expand', 'data-ajax-post' => '{"mid":' . static::get_module_id() . ',"id":' . $this->get_primary_key() . '}'], ($this->_has_child ? (!$this->_is_expanded ? 'Expand' : 'Compact') : '')) .
             node::create('td.position', [],
                 node::create('a.up.reorder', ['data-ajax-click' => get_class($this) . ':do_reorder', 'data-ajax-post' => '{"mid":' . static::get_module_id() . ',"id":' . $this->get_primary_key() . ',"dir":"up"}'], 'Up') .
                 node::create('a.down.reorder', ['data-ajax-click' => get_class($this) . ':do_reorder', 'data-ajax-post' => '{"mid":' . static::get_module_id() . ',"id":' . $this->get_primary_key() . ',"dir":"down"}'], 'Down')
@@ -780,6 +782,27 @@ abstract class table {
 
             $module = new _cms_module();
             $module->do_retrieve([], ['where_equals' => ['mid' => $_REQUEST['mid']]]);
+            $list = new _cms_table_list($module, 1);
+            ajax::update($list->get_table());
+        }
+    }
+
+    public function do_toggle_expand() {
+        if (isset($_REQUEST['id'])) {
+            $module = new _cms_module();
+            $module->do_retrieve([], ['where_equals' => ['mid' => $_REQUEST['mid']]]);
+            if(session::is_set('cms', 'expand', $module->mid)) {
+                $value = session::get('cms', 'expand', $module->mid);
+                if(($key = array_search($_REQUEST['id'], $value)) !== false) {
+                    unset($value[$key]);
+                } else {
+                    $value[] = $_REQUEST['id'];
+                }
+                session::set($value, 'cms', 'expand', $module->mid);
+            } else {
+                session::set([$_REQUEST['id']], 'cms', 'expand', $module->mid);
+            }
+
             $list = new _cms_table_list($module, 1);
             ajax::update($list->get_table());
         }

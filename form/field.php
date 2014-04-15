@@ -144,7 +144,7 @@ abstract class field extends node {
 
     public function get_cms_admin_edit() {
         $cols = [];
-        $cols[] = node::create('td', [], ($this->live ? 'Live' : 'Not Live'));
+        $cols[] = node::create('td span.live' . ($this->live ? '' : '.not_live'), [], ($this->live ? 'Live' : 'Not Live'));
         $cols[] = node::create('td', [], $this->fid);
         $cols[] = node::create('td', [],
             node::create('a.up.reorder', ['data-ajax-click' => 'cms:do_reorder_fields', 'data-ajax-post' => '{"mid":' . $this->parent_form->get_module_id() . ',"fid":' . $this->fid . ',"dir":"up"}'], 'Up') .
