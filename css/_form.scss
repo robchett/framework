@@ -13,6 +13,7 @@ form {
     }
   }
 }
+
 .form_frame {
   display: none;
 }
@@ -40,10 +41,11 @@ form {
             height: $height * 2+ px;
 
           }
-          &.field_boolean_wrapper {
+          &.field_boolean_wrapper, &.field_checkboxes_wrapper {
             input {
               width: $height + px;
               -webkit-appearance: checkbox;
+              vertical-align: text-bottom;
             }
           }
           &.form_submit {
@@ -55,6 +57,24 @@ form {
             .submit {
               @include button($height);
               display: block;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@mixin form_block() {
+  form {
+    fieldset {
+      ul {
+        li {
+
+          label {
+            span {
+              display: block;
+              margin-bottom: 5px;
             }
           }
         }
