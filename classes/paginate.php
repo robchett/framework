@@ -38,7 +38,7 @@ class paginate {
                 $_node = node::create('ul#pagi.cf');
                 for ($i = 1; $i <= $pages; $i++) {
                     $options['data-ajax-click'] = $this->act;
-                    $options['data-ajax-post'] = $this->post_data + ['value' => $i];
+                    $options['data-ajax-post'] = $this->post_data + ['value' =>  $i];
                     $_node->add_child(node::create('li' . ($this->page == $i ? '.sel' : '') . ' a', $options, $i));
                 }
                 $node->add_child($_node);
@@ -56,7 +56,9 @@ class paginate {
 
     public function do_replace($source) {
         foreach ($this as $key => $value) {
-            $source = str_replace('{' . $key . '}', $value, $source);
+            if(!is_array($value)) {
+                $source = str_replace('{' . $key . '}', $value, $source);
+            }
         }
         return $source;
     }
