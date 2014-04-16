@@ -74,7 +74,7 @@ trait paginatable {
             if (strstr(uri, '/page/') !== false) {
                 $path = explode('/', uri);
                 foreach ($path as $key => $value) {
-                    if ($value == 'path') {
+                    if ($value == 'page') {
                         return $path[$key + 1];
                     }
                 }
