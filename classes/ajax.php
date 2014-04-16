@@ -32,7 +32,7 @@ abstract class ajax {
             $dom->loadHTML($html);
             $xpath = new \DOMXPath($dom);
             foreach ($xpath->query('/html/body/*') as $node) {
-                $o = new \stdClass();
+                $o = new ajax_element();
                 $o->id = $node->nodeName;
                 $o->html = '';
                 if (isset($node->attributes->getNamedItem('id')->nodeValue)) {
@@ -95,7 +95,11 @@ abstract class ajax {
             window.top.window.handle_json_response(' . json_encode($o) . ')
     </script>';
         } else {
-            echo json_encode($o);
+            if($json = json_encode($o)) {
+                echo json_encode($o);
+            } else {
+                trigger_error('Could not encode data.');
+            }
         }
     }
 
