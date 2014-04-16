@@ -73,7 +73,7 @@ $(document).ready(function () {
                 var arr = $target.attr('data-ajax-change').split(':');
                 var module = arr[0];
                 var act = arr[1];
-                var data = eval('(' + $target.attr('data-ajax-post') + ')') || {};
+                var data = $target.attr('data-ajax-post') || {};
                 if ($target.attr('type') === 'checkbox') {
                     data.value = ($target.is(':checked') ? 1 : 0 );
                 } else {
@@ -150,7 +150,8 @@ $(document).ready(function () {
             }
             $(options.loading_target).prepend(div);
         }
-        $.extend(post, ({'module': module, 'act': act}));
+        post['module'] = module;
+        post['act'] = act;
         $(".error_message").remove();
         $.ajax({
             url: options.call_as_uri || window.location,
