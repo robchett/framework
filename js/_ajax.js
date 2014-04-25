@@ -180,15 +180,17 @@ $(document).ready(function () {
 
 function initMlink() {
     $('select[multiple=multiple]').each(function () {
-        var id = $(this).attr('name');
-        $(this).hide();
-        $(this).after('<select class="' + id + '_select" onchange="addMlink(\'' + id + '\',this.value)"><option value=\'-1\'>Select Another</option></select><ul class="' + id + '_selected mlink_selected_wrapper"></ul>');
-        $(this).find('option:not(optgroup > option) ,optgroup').each(function () {
-            $(this).clone().appendTo($('.' + id + '_select'));
-            if ($(this).is(':selected')) {
-                addMlink(id, $(this).val());
-            }
-        })
+        if(!$(this).siblings('select').length) {
+            var id = $(this).attr('name');
+            $(this).hide();
+            $(this).after('<select class="' + id + '_select" onchange="addMlink(\'' + id + '\',this.value)"><option value=\'-1\'>Select Another</option></select><ul class="' + id + '_selected mlink_selected_wrapper"></ul>');
+            $(this).find('option:not(optgroup > option) ,optgroup').each(function () {
+                $(this).clone().appendTo($('.' + id + '_select'));
+                if ($(this).is(':selected')) {
+                    addMlink(id, $(this).val());
+                }
+            })
+        }
     });
 }
 
