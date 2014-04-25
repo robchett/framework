@@ -7,6 +7,8 @@ form {
         input, textarea, select {
           border: 0;
           background-color: #ffffff;
+        }
+        input, textarea {
           -webkit-appearance: none;
         }
       }
@@ -18,46 +20,57 @@ form {
   display: none;
 }
 
-@mixin form($width: 0, $height: 40, $padding: 5) {
-  form {
-    legend {
-      @extend %form_legend;
-    }
-    fieldset {
-      ul {
-        li {
-          margin-bottom: 10px;
-          label {
-            display: block;
-            text-align: left;
-          }
-          input, textarea, select {
-            @include box-sizing(border-box);
-            padding: 0 $padding + px;
-            width: $width + px;
-            height: $height + px;
-          }
-          textarea {
-            height: $height * 2+ px;
+$form_border_width: 1;
+$form_border_colour: #333333;
+$form_border_style: 'solid';
+$form_default_height: 40;
+$form_default_padding: 5;
+$form_disabled_color: #cacaca;
 
+@mixin form($width: 0, $height: $form_default_height, $padding: $form_default_padding) {
+  legend {
+    @extend %form_legend;
+  }
+  fieldset {
+    ul {
+      li {
+        margin-bottom: 10px;
+        label {
+          display: block;
+          text-align: left;
+        }
+        input, textarea, select {
+          @include box-sizing(border-box);
+          padding: 0 $padding + px;
+          border: $form_border_width+px + #{' '} + $form_border_style + #{' '} + $form_border_colour;
+          @if ($width > 0) {
+            width: $width + px;
           }
-          &.field_boolean_wrapper, &.field_checkboxes_wrapper {
-            input {
-              width: $height + px;
-              -webkit-appearance: checkbox;
-              vertical-align: text-bottom;
-            }
+          height: $height + px;
+          &[disabled] {
+            background-color: $form_disabled_color;
           }
-          &.form_submit {
-            input {
-              position: absolute;
-              top: -99999px;
-              left: -9999px;
-            }
-            .submit {
-              @include button($height);
-              display: block;
-            }
+        }
+        textarea {
+          height: $height * 2+ px;
+
+        }
+        &.field_boolean_wrapper, &.field_checkboxes_wrapper {
+          input {
+            width: $height + px;
+            -webkit-appearance: checkbox;
+            vertical-align: text-bottom;
+          }
+        }
+        &.form_submit {
+          input {
+            position: absolute;
+            top: -99999px;
+            left: -9999px;
+          }
+          .submit {
+            @include button($height);
+            display: block;
           }
         }
       }
@@ -66,16 +79,13 @@ form {
 }
 
 @mixin form_block() {
-  form {
-    fieldset {
-      ul {
-        li {
-
-          label {
-            span {
-              display: block;
-              margin-bottom: 5px;
-            }
+  fieldset {
+    ul {
+      li {
+        label {
+          span {
+            display: block;
+            margin-bottom: 5px;
           }
         }
       }
