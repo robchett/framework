@@ -5,7 +5,7 @@ class ini {
 
     private static $settings;
 
-    public static function get($block, $key,  $default = null) {
+    public static function get($block, $key, $default = null) {
         if (!isset(self::$settings)) {
             self::load();
         }
@@ -16,6 +16,20 @@ class ini {
             return $default;
         } else {
             throw new \Exception('Setting [' . $block . ']:' . $key . ' not found and no default provided');
+        }
+    }
+
+
+    public static function get_block($block, $default = null) {
+        if (!isset(self::$settings)) {
+            self::load();
+        }
+        if (isset(self::$settings[$block])) {
+            return self::$settings[$block];
+        } else if (isset($default)) {
+            return $default;
+        } else {
+            throw new \Exception('ini block [' . $block . '] not found and no default provided');
         }
     }
 
@@ -43,11 +57,11 @@ class ini {
 
     public static function save($file, $options) {
         $string = '';
-        foreach($options as $block => $keys) {
+        foreach ($options as $block => $keys) {
             $string .= '[' . $block . ']' . "\n";
-            foreach($keys as $key => $value) {
-                if(is_array($value)) {
-                    foreach($value as $sub_value) {
+            foreach ($keys as $key => $value) {
+                if (is_array($value)) {
+                    foreach ($value as $sub_value) {
                         $string .= $key . '[] = "' . $sub_value . '"' . "\n";
                     }
                 } else {
