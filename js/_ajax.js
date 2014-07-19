@@ -50,13 +50,13 @@ $(document).ready(function () {
                             if (typeof page_handeler != 'undefined') {
                                 page_handeler.toggle_page($page);
                                 var state = $.fn.ajax_factory.get_state(href);
-                                if ( typeof state != "undefined" && typeof state.actions != undefined) {
+                                if (typeof state != "undefined" && typeof state.actions != undefined) {
                                     page_handeler.perform_page_actions($.fn.ajax_factory.get_state(href).actions, href);
                                 }
                             }
                         } else {
                             var post = {module: 'core', act: 'load_page'};
-                            var options = {call_as_uri: href, loading_target: '#main' };
+                            var options = {call_as_uri: href, loading_target: '#main'};
                             $.fn.ajax_factory('core', 'load_page', post, options);
                         }
                     }
@@ -114,41 +114,32 @@ $(document).ready(function () {
         var act = arr[1];
         var ajax_shroud = $(this).attr('data-ajax-shroud');
         var data = get_form_data($(this));
-        var options = {loading_target: ajax_shroud};
+        var options = $(this).data().extend({loading_target: ajax_shroud});
         data.ajax_origin = $(e.target)[0].id;
-
         $.fn.ajax_factory(module, act, data, options);
         return false;
     });
     $body.on('submit', 'form.noajax', function () {
         var ajax_shroud = $(this).attr('data-ajax-shroud');
-        if (typeof ajax_shroud != 'undefined') {
-            var div = document.createElement('div');
-            div.className = 'loading_shroud';
-            div.style.width = $(ajax_shroud).outerWidth() + 'px';
-            div.style.height = $(ajax_shroud).outerHeight() + 'px';
-            div.style.left = 0;
-            div.style.top = 0;
-            if ($(ajax_shroud).css('position') != 'absolute' || $(ajax_shroud).css('position') != 'relative') {
-                $(ajax_shroud).css({'position': 'relative'});
+        var div = add_loading_shroud(ajax_shroud);
+        if ($(this).data('ajax-socket')) {
+            var socketId = add_socket_io($(this).data('ajax-socket'), div);
+            if (!$(this).find('input[name=data-socket]').length) {
+                var input = document.createElement('input');
+                input.className = 'hidden';
+                input.name = 'data-socket';
+                input.type = 'hidden';
+                input.value = socketId;
+                $(this).prepend(input);
             }
-            $(ajax_shroud).prepend(div);
         }
     });
     $.fn.ajax_factory = function (module, act, post, options) {
         options = options || {};
         post = post || {};
-        if (typeof (options.loading_target) !== 'undefined') {
-            var div = document.createElement('div');
-            div.className = 'loading_shroud';
-            div.style.width = $(options.loading_target).outerWidth() + 'px';
-            div.style.height = $(options.loading_target).outerHeight() + 'px';
-            div.style.left = 0;
-            div.style.top = 0;
-            if ($(options.loading_target).css('position') != 'absolute' || $(options.loading_target).css('position') != 'relative') {
-                $(options.loading_target).css({'position': 'relative'});
-            }
-            $(options.loading_target).prepend(div);
+        var div = add_loading_shroud(options.loading_target);
+        if (options.ajaxSocket) {
+            post['data-socket'] = add_socket_io(options.ajaxSocket, div);
         }
         post['module'] = module;
         post['act'] = act;
@@ -168,9 +159,7 @@ $(document).ready(function () {
         complete: ['initMlink'],
         load_pages_ajax: false
     };
-
     $.fn.ajax_factory.states = [];
-
     $.fn.ajax_factory.get_state = function (state) {
         return this.states[state];
     };
@@ -180,7 +169,7 @@ $(document).ready(function () {
 
 function initMlink() {
     $('select[multiple=multiple]').each(function () {
-        if(!$(this).siblings('select').length) {
+        if (!$(this).siblings('select').length) {
             var id = $(this).attr('name');
             $(this).hide();
             $(this).after('<select class="' + id + '_select" onchange="addMlink(\'' + id + '\',this.value)"><option value=\'-1\'>Select Another</option></select><ul class="' + id + '_selected mlink_selected_wrapper"></ul>');
@@ -291,3 +280,36 @@ Array.prototype.count = function () {
 String.prototype.isNumber = function () {
     return !isNaN(parseFloat(this)) && isFinite(this);
 };
+
+function add_loading_shroud(ajax_shroud) {
+    if (typeof ajax_shroud != 'undefined') {
+        var div = document.createElement('div');
+        div.className = 'loading_shroud';
+        div.style.width = $(ajax_shroud).outerWidth() + 'px';
+        div.style.height = $(ajax_shroud).outerHeight() + 'px';
+        div.style.left = 0;
+        div.style.top = 0;
+        if ($(ajax_shroud).css('position') != 'absolute' || $(ajax_shroud).css('position') != 'relative') {
+            $(ajax_shroud).css({'position': 'relative'});
+        }
+        $(ajax_shroud).prepend(div);
+        return div;
+    }
+    return false;
+}
+var socketId = false;
+function add_socket_io(ajaxSocket, write_element) {
+    if (!socketId) {
+        socketId = randomString(32, 'aA#');
+        if (write_element) {
+            $.getScript(window.location.origin + ':8000/socket.io/socket.io.js', function () {
+                var socket = io.connect(window.location.origin + ':8000');
+                socket.emit('set nickname', socketId);
+                socket.on('message', function (data) {
+                    $(write_element).append('<code>' + data + '</code>');
+                });
+            });
+        }
+    }
+    return socketId;
+}
