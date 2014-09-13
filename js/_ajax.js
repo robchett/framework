@@ -114,7 +114,7 @@ $(document).ready(function () {
         var act = arr[1];
         var ajax_shroud = $(this).attr('data-ajax-shroud');
         var data = get_form_data($(this));
-        var options = $(this).data().extend({loading_target: ajax_shroud});
+        var options = $.fn.extend($(this).data(), {loading_target: ajax_shroud});
         data.ajax_origin = $(e.target)[0].id;
         $.fn.ajax_factory(module, act, data, options);
         return false;
