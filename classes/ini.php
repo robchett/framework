@@ -1,10 +1,33 @@
 <?php
 namespace core\classes;
 
+
+/**
+ * Class ini
+ *
+ * Read/write controller for .ini files,
+ *
+ * Loads values from /.conf/config.ini
+ * Merged with /.conf/$_SERVER["HTTP_HOST"].ini
+ *
+ * @package core\classes
+ */
 class ini {
 
+    /** @var [] */
     private static $settings;
 
+    /**
+     * Get a  value from the conf files.
+     *
+     * @param string $block
+     * @param string $key
+     * @param null   $default
+     *
+     * @return string|array
+     *
+     * @throws \Exception
+     */
     public static function get($block, $key, $default = null) {
         if (!isset(self::$settings)) {
             self::load();
@@ -20,6 +43,15 @@ class ini {
     }
 
 
+    /**
+     * Get a block from the config file
+     *
+     * @param      $block
+     * @param null $default
+     *
+     * @throws \Exception
+     * @return []
+     */
     public static function get_block($block, $default = null) {
         if (!isset(self::$settings)) {
             self::load();
@@ -33,10 +65,23 @@ class ini {
         }
     }
 
+    /**
+     * Reload the config files
+     * (Lazy: will be loaded on next call)
+     *
+     * @return void
+     */
     public static function reload() {
         self::$settings = null;
     }
 
+    /**
+     * Load the ini files
+     * Loads values from /.conf/config.ini
+     * Merged with /.conf/$_SERVER["HTTP_HOST"].ini
+     *
+     * @return void
+     */
     public static function load() {
         if (is_readable(root . '/.conf/config.ini')) {
             self::$settings = parse_ini_file(root . '/.conf/config.ini', true);
@@ -55,6 +100,14 @@ class ini {
         }
     }
 
+    /**
+     * Format and save and ini file with given options
+     *
+     * @param $file
+     * @param $options
+     *
+     * @return void
+     */
     public static function save($file, $options) {
         $string = '';
         foreach ($options as $block => $keys) {
@@ -73,6 +126,16 @@ class ini {
         file_put_contents($file, $string);
     }
 
+    /**
+     * Modify and save an ini value
+     * Only supports the default file
+     *
+     * @param string $key
+     * @param string $value
+     * @param string $block
+     *
+     * @return void
+     */
     public static function modify($key, $value, $block = 'site') {
         self::$settings[$block][$value] = $key;
         self::save(root . '/.conf/config.ini', self::$settings);
