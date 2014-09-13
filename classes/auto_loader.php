@@ -22,7 +22,7 @@ abstract class auto_loader {
             $path = false;
             $local_path = root . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . $class_path . '.php';
             $dependent_path = root . DIRECTORY_SEPARATOR . '.core' . DIRECTORY_SEPARATOR . 'dependent' . DIRECTORY_SEPARATOR . $class_path . '.php';
-            $core_path = root . DIRECTORY_SEPARATOR . str_replace('core/', '.core/', $class_path) . '.php';
+            $core_path = root . DIRECTORY_SEPARATOR . str_replace('core' . DIRECTORY_SEPARATOR, '.core' . DIRECTORY_SEPARATOR, $class_path) . '.php';
             $library_path = root . DIRECTORY_SEPARATOR . 'library' . DIRECTORY_SEPARATOR . $class_path . '.php';
             if (is_readable($local_path)) {
                 $path = $local_path;
