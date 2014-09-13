@@ -9,7 +9,7 @@ use classes\collection;
 use classes\get as _get;
 use classes\image_resizer;
 use classes\jquery;
-use classes\session;
+use classes\session as _session;
 use classes\table_array as _table_array;
 use classes\table_form;
 use db\insert;
@@ -39,7 +39,7 @@ abstract class table {
     /**
      * @var collection
      */
-    private static $cms_modules;
+    protected static $cms_modules;
     public $live;
     public $deleted;
     public $ts;
@@ -791,16 +791,16 @@ abstract class table {
         if (isset($_REQUEST['id'])) {
             $module = new _cms_module();
             $module->do_retrieve([], ['where_equals' => ['mid' => $_REQUEST['mid']]]);
-            if(session::is_set('cms', 'expand', $module->mid)) {
-                $value = session::get('cms', 'expand', $module->mid);
+            if(_session::is_set('cms', 'expand', $module->mid)) {
+                $value = _session::get('cms', 'expand', $module->mid);
                 if(($key = array_search($_REQUEST['id'], $value)) !== false) {
                     unset($value[$key]);
                 } else {
                     $value[] = $_REQUEST['id'];
                 }
-                session::set($value, 'cms', 'expand', $module->mid);
+                _session::set($value, 'cms', 'expand', $module->mid);
             } else {
-                session::set([$_REQUEST['id']], 'cms', 'expand', $module->mid);
+                _session::set([$_REQUEST['id']], 'cms', 'expand', $module->mid);
             }
 
             $list = new _cms_table_list($module, 1);
