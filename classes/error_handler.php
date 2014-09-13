@@ -11,7 +11,7 @@ class error_handler {
     public static function handle_error($errno, $errstr, $errfile, $errline) {
         if (!self::$file_handler) {
             self::$file_name = root . '/log/error_' . time() . '.log';
-            self::$file_handler = fopen(self::$file_name, 'w+');
+            //self::$file_handler = fopen(self::$file_name, 'w+');
         }
         if (strpos($errfile, 'xdebug') !== 0) {
             if (function_exists('xdebug_break')) {
@@ -22,7 +22,7 @@ class error_handler {
                 require_once(root . '/.core/core.php');
             }
             $error = '<div class="error_message mysql"><p>Error #' . $errno . ' "' . $errstr . '" in ' . $errfile . ' on line ' . $errline . '</p>' . \core::get_backtrace(1) . '</div>';
-            fwrite(self::$file_handler, $error . "\n\n\n---------------\n\n\n");
+            //fwrite(self::$file_handler, $error . "\n\n\n---------------\n\n\n");
             if (dev || debug) {
                 if (ajax) {
                     if(!class_exists('\\classes\\ajax')) {
