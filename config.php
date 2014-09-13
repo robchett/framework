@@ -19,6 +19,7 @@ set_error_handler(['\classes\error_handler', 'handle_error']);
 register_shutdown_function(['\classes\error_handler', 'shutdown']);
 
 define('dev', in_array(host, \classes\ini::get('domain', 'development', [])));
+define('local', in_array(host, \classes\ini::get('domain', 'local', ['localhost'])));
 define('debug', in_array(ip, \classes\ini::get('developers', 'ip', [])));
 
 date_default_timezone_set(\classes\get::ini('zone', 'time', 'Europe/London'));
