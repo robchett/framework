@@ -110,7 +110,9 @@ class compiler {
     }
 
     protected function save_file($key, $contents) {
-        file_put_contents(root . '/.cache/compile/' . $key, $contents->serialize());
+        if(!local) {
+            file_put_contents(root . '/.cache/compile/' . $key, $contents->serialize());
+        }
     }
 
     protected function save_memcached($key, $contents) {
