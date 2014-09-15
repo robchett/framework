@@ -3,7 +3,7 @@ namespace core\form;
 
 use html\node;
 
-abstract class field_file extends field {
+abstract class field_file extends \form\field {
 
     public $external = false;
 

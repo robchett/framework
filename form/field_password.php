@@ -1,7 +1,7 @@
 <?php
 namespace core\form;
 
-abstract class field_password extends field {
+abstract class field_password extends \form\field {
 
     public function __construct($title, $options = []) {
         parent::__construct($title, $options);

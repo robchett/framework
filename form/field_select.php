@@ -1,7 +1,7 @@
 <?php
 namespace core\form;
 
-abstract class field_select extends field {
+abstract class field_select extends \form\field {
 
     public $default = 'Please Choose';
     public $options = [];
@@ -12,8 +12,9 @@ abstract class field_select extends field {
     }
 
     public function get_html() {
-        $html = '';
-        $html .= '<select ' . $this->get_attributes() . '>' . "\n";
+        $attributes = $this->attributes;
+        $this->set_standard_attributes($attributes);
+        $html = '<select ' . static::get_attributes($attributes) . '>' . "\n";
         if (!empty($this->default) && !$this->required) $html .= '<option value="default">' . $this->default . '</option>' . "\n";
         foreach ($this->options as $k => $v) {
             $html .= '<option value="' . $k . '" ' . ($this->parent_form->{$this->field_name} == $k ? 'selected="selected"' : '') . '>' . $v . '</option>' . "\n";

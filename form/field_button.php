@@ -3,7 +3,7 @@ namespace core\form;
 
 use html\node;
 
-abstract class field_button extends field {
+abstract class field_button extends \form\field {
 
     /** @var string */
     public $title;

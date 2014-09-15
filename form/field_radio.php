@@ -1,7 +1,7 @@
 <?php
 namespace core\form;
 
-abstract class field_radio extends field {
+abstract class field_radio extends \form\field {
 
     public $options = [];
 

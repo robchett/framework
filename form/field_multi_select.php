@@ -1,7 +1,7 @@
 <?php
 namespace core\form;
 
-abstract class field_multi_select extends field {
+abstract class field_multi_select extends \form\field {
 
     public $default = 'Please Choose';
     public $options = [];

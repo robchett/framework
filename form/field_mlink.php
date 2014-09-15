@@ -36,9 +36,9 @@ abstract class field_mlink extends _field_link {
         return false;
     }
 
-    public function set_standard_attributes() {
-        parent::set_standard_attributes();
-        $this->attributes['multiple'] = 'multiple';
+    public function set_standard_attributes(&$attributes) {
+        parent::set_standard_attributes($attributes);
+        $attributes['multiple'] = 'multiple';
     }
 
     public function set_from_request() {

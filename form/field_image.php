@@ -9,7 +9,7 @@ use form\field_file;
 use html\node;
 use object\image_size;
 
-class field_image extends field_file
+class field_image extends \form\field_file
 {
 
     protected static $image_sizes;

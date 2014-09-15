@@ -1,7 +1,9 @@
 <?php
 namespace core\form;
 
-abstract class field_boolean extends field {
+use html\node;
+
+abstract class field_boolean extends \form\field {
 
     public function  __construct($title = '', $options = []) {
         parent::__construct($title, $options);
@@ -28,14 +30,16 @@ abstract class field_boolean extends field {
     }
 
     public function get_html() {
+        $attributes = $this->attributes;
+        $this->set_standard_attributes($attributes);
         if ($this->required) {
             $this->class[] = 'required';
             $this->required = 0;
         }
         if ($this->parent_form->{$this->field_name}) {
-            $this->attributes['checked'] = 'checked';
+            $attributes['checked'] = 'checked';
         }
-        return '<span class="checkbox_replace"><input ' . $this->get_attributes() . '/></span>' . "\n";
+        return '<input ' . static::get_attributes($attributes) . '/>';
     }
 
 }

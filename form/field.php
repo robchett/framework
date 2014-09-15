@@ -2,6 +2,7 @@
 namespace core\form;
 
 use classes\get;
+use classes\icon;
 use classes\table;
 use classes\db;
 use form\field_image;
@@ -20,11 +21,11 @@ abstract class field extends node {
     public $raw = false;
     public $required = true;
     public $attributes = [
-        'type' => 'text',
+        'type' => 'text'
     ];
     public $hidden;
     public $disabled = false;
-    public $class = [];
+    public $class = ['form-control'];
     public $title;
     public $wrapper_class = [];
     /** @var  form|table */
@@ -47,15 +48,21 @@ abstract class field extends node {
         $html = '';
         $html .= $this->pre_text;
 
-        if (!$this->hidden && isset($this->label) && !empty($this->label)) $html .= '<label id="' . $this->field_name . '_wrapper"><span>' . $this->label . '</span>' . "\n";
-        $html .= $this->get_html() . "\n";
-        if (!$this->hidden && isset($this->label) && !empty($this->label)) $html .= '</label>' . "\n";
+        if (!$this->hidden && isset($this->label) && !empty($this->label)) {
+            $html .= node::create('label.control-label.col-md-' . $this->parent_form->bootstrap[0], [
+                'for' => $this->field_name,
+                'id' => $this->field_name . '_wrapper'
+            ], $this->label);
+        }
+        $html .= node::create('div.col-md-' . $this->parent_form->bootstrap[1], [], $this->get_html());
         $html .= $this->post_text;
         return $html;
     }
 
     public function get_html() {
-        return '<input ' . $this->get_attributes() . ' value="' . htmlentities($this->get_value()) . '"/>' . "\n";
+        $attributes = $this->attributes;
+        $this->set_standard_attributes($attributes);
+        return '<input ' . static::get_attributes($attributes) . ' value="' . htmlentities($this->get_value()) . '"/>';
     }
 
     public static function sanitise_from_db($value) {
@@ -66,18 +73,23 @@ abstract class field extends node {
         return $this->parent_form->{$this->field_name};
     }
 
-    public function set_standard_attributes() {
-        if ($this->hidden)
-            $this->attributes['type'] = 'hidden';
-        if (!isset($this->attributes['name']))
-            $this->attributes['name'] = $this->field_name;
-        if (!isset($this->attributes['id']))
-            $this->attributes['id'] = $this->field_name;
-        if ($this->disabled)
-            $this->attributes['disabled'] = 'disabled';
-        if ($this->required)
+    public function set_standard_attributes(&$attributes) {
+        if ($this->hidden) {
+            $attributes['type'] = 'hidden';
+        }
+        if (!isset($attributes['name'])) {
+            $attributes['name'] = $this->field_name;
+        }
+        if (!isset($attributes['id'])) {
+            $attributes['id'] = $this->field_name;
+        }
+        if ($this->disabled) {
+            $attributes['disabled'] = 'disabled';
+        }
+        if ($this->required) {
             $this->class[] = 'required';
-        $this->attributes['class'] = implode(' ', $this->class);
+        }
+        $attributes['class'] = $this->class;
     }
 
     public function do_validate(&$error_array) {
@@ -144,11 +156,16 @@ abstract class field extends node {
 
     public function get_cms_admin_edit() {
         $cols = [];
-        $cols[] = node::create('td span.live' . ($this->live ? '' : '.not_live'), [], ($this->live ? 'Live' : 'Not Live'));
+        $cols[] = node::create('td span.btn.btn-default.live' . ($this->live ? '' : '.not_live'), [], icon::get($this->live ? 'ok' : 'remove'));
+        $cols[] = node::create('td span.btn.btn-default.edit', [
+            'href'        => '/' . $this->fid . '/?module=\module\cms\object\_cms_module&act=get_edit_field_form&fid=' . $this->fid,
+            'data-target' => '#modal',
+            'data-toggle' => 'modal'
+        ], icon::get('pencil'));
         $cols[] = node::create('td', [], $this->fid);
         $cols[] = node::create('td', [],
-            node::create('a.up.reorder', ['data-ajax-click' => 'cms:do_reorder_fields', 'data-ajax-post' => '{"mid":' . $this->parent_form->get_module_id() . ',"fid":' . $this->fid . ',"dir":"up"}'], 'Up') .
-            node::create('a.down.reorder', ['data-ajax-click' => 'cms:do_reorder_fields', 'data-ajax-post' => '{"mid":' . $this->parent_form->get_module_id() . ',"fid":' . $this->fid . ',"dir":"down"}'], 'Down')
+            node::create('a.up.reorder.btn.btn-default', ['data-ajax-click' => 'cms:do_reorder_fields', 'data-ajax-post' => '{"mid":' . $this->parent_form->get_module_id() . ',"fid":' . $this->fid . ',"dir":"up"}'], icon::get('arrow-up')) .
+            node::create('a.down.reorder.btn.btn-default', ['data-ajax-click' => 'cms:do_reorder_fields', 'data-ajax-post' => '{"mid":' . $this->parent_form->get_module_id() . ',"fid":' . $this->fid . ',"dir":"down"}'], icon::get('arrow-down'))
         );
         $cols[] = node::create('td', [], $this->title);
         $cols[] = node::create('td', [], $this->field_name);

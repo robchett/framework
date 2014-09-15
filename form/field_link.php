@@ -5,7 +5,7 @@ use classes\collection;
 use classes\table;
 use module\cms\object\_cms_field;
 
-abstract class field_link extends field {
+abstract class field_link extends \form\field {
 
     /** @var int|string */
     public $link_module;
@@ -36,7 +36,9 @@ abstract class field_link extends field {
 
     public function get_html() {
         if (!$this->hidden) {
-            return '<select ' . $this->get_attributes() . '>' . $this->get_options() . '</select>' . "\n";
+            $attributes = $this->attributes;
+            $this->set_standard_attributes($attributes);
+            return '<select ' . static::get_attributes($attributes) . '>' . $this->get_options() . '</select>' . "\n";
         } else {
             return parent::get_html();
         }

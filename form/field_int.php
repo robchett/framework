@@ -1,7 +1,7 @@
 <?php
 namespace core\form;
 
-abstract class field_int extends field {
+abstract class field_int extends \form\field {
 
     public function __construct($title = '', $options = []) {
         parent::__construct($title, $options);

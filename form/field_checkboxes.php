@@ -1,7 +1,7 @@
 <?php
 namespace core\form;
 
-abstract class field_checkboxes extends field {
+abstract class field_checkboxes extends \form\field {
 
     public $options = [];
     public $value = [];
