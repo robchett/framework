@@ -129,6 +129,9 @@ abstract class cache implements interfaces\cache_interface {
         }
         $salt = '';
         foreach ($dependencies as $dependant) {
+            if(!isset(self::$dependants[$dependant])) {
+                self::break_cache($dependant);
+            }
             $salt .= isset(self::$dependants[$dependant]) ? self::$dependants[$dependant] : 0;
         }
         $key = md5($salt . $key);
