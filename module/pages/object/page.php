@@ -16,7 +16,7 @@ abstract class page extends table {
     public $nav;
     public $pid;
     public $body;
-    public $module_name = '';
+    public $module_name;
     public $title;
 
 
