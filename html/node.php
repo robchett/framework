@@ -1,17 +1,19 @@
 <?php
 namespace core\html;
 
+use classes\get;
 use html\node as _node;
 
 abstract class node {
 
     /**
+     * @param array $attributes
+     *
      * @return string
      */
-    public function get_attributes() {
-        $this->set_standard_attributes();
+    public static function get_attributes($attributes) {
         $html = '';
-        foreach ($this->attributes as $attr => $value) {
+        foreach ($attributes as $attr => $value) {
             if(is_array($value)) {
                 if($attr == 'class') {
                     $html .= ' ' . $attr . '="' . htmlentities(implode(' ', $value), ENT_QUOTES) . '"';
@@ -33,9 +35,9 @@ abstract class node {
     }
 
     /**
-     *
+     * @param $attributes
      */
-    public function set_standard_attributes() {
+    public function set_standard_attributes(&$attributes) {
     }
 
     public $parent;
@@ -105,12 +107,16 @@ abstract class node {
      * @return string
      */
     public function get() {
-        $html = '<' .
-            $this->type .
-            (!empty($this->id) ? ' id="' . str_replace(' ', '-', $this->id) . '"' : '') .
-            (!empty($this->class) ? ' class=" ' . implode(' ', $this->class) . '"' : '') .
-            $this->get_attributes() .
-            '>';
+        $attributes = $this->attributes;
+        $this->set_standard_attributes($attributes);
+        if($this->id) {
+            $attributes['id'] = str_replace(' ', '-', $this->id);
+        }
+        if($this->class) {
+            if(!isset($attributes['class'])) $attributes['class'] = [];
+            $attributes['class'] = array_merge($attributes['class'], $this->class);
+        }
+        $html = '<' . $this->type . static::get_attributes($attributes) . '>';
         if (is_array($this->content)) {
             $html .= implode('', $this->content);
         } else {
