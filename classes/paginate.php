@@ -35,11 +35,11 @@ class paginate {
                 }
                 $node->add_child($_node);
             } else {
-                $_node = node::create('ul#pagi.cf');
+                $_node = node::create('ul#pagi.pagination');
                 for ($i = 1; $i <= $pages; $i++) {
                     $options['data-ajax-click'] = $this->act;
                     $options['data-ajax-post'] = $this->post_data + ['value' =>  $i];
-                    $_node->add_child(node::create('li' . ($this->page == $i ? '.sel' : '') . ' a', $options, $i));
+                    $_node->add_child(node::create('li' . ($this->page == $i ? '.active' : '') . ' a', $options, $i));
                 }
                 $node->add_child($_node);
             }
