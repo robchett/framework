@@ -3,7 +3,7 @@ namespace core\form;
 
 use classes\ajax;
 use classes\get;
-use form\field;
+use form\field as _field;
 use form\field_file as _field_file;
 use html\node;
 
@@ -98,7 +98,7 @@ abstract class form {
         }
     }
 
-    public function add_field(field $field) {
+    public function add_field(_field $field) {
         $field->parent_form = $this;
         $this->{$field->field_name} = $field->value;
         if ($field instanceof _field_file) {
