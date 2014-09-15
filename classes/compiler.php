@@ -44,7 +44,10 @@ class compiler {
     }
 
     protected static function  break_file($key) {
-        unlink(root . '/.cache/compile/' . $key);
+        $file = root . '/.cache/compile/' . $key;
+        if($file) {
+            unlink(root . '/.cache/compile/' . $key);
+        }
     }
 
     protected static function  break_redis($key) { }
