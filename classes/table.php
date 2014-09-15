@@ -6,7 +6,7 @@ use classes\ajax as _ajax;
 use classes\ajax;
 use classes\collection as _collection;
 use classes\collection;
-use classes\db;
+use classes\db as _db;
 use classes\get as _get;
 use classes\icon;
 use classes\image_resizer;
@@ -148,7 +148,7 @@ abstract class table {
     public static function get_count() {
         $class = get_called_class();
         $return = new $class();
-        return db::count($class, $return->get_primary_key_name())->execute();
+        return _db::count($class, $return->get_primary_key_name())->execute();
     }
 
     /**
@@ -156,7 +156,7 @@ abstract class table {
      */
     public function do_cms_update() {
         if (\core::is_admin()) {
-            db::update(_get::__class_name($this))->add_value($_REQUEST['field'], $_REQUEST['value'])->filter_field($this->get_primary_key_name(), $_REQUEST['id'])->execute();
+            _db::update(_get::__class_name($this))->add_value($_REQUEST['field'], $_REQUEST['value'])->filter_field($this->get_primary_key_name(), $_REQUEST['id'])->execute();
         }
         return 1;
     }
@@ -304,11 +304,11 @@ abstract class table {
                 $fields[] = $module . '.' . $retrieve;
             }
         }
-        $query = db::get_query(get_class($this), $fields, $options);
+        $query = _db::get_query(get_class($this), $fields, $options);
         $res = $query->execute();
         //$before = memory_get_usage();
-        if (db::num($res)) {
-            $this->set_from_row(db::fetch($res), $links);
+        if (_db::num($res)) {
+            $this->set_from_row(_db::fetch($res), $links);
         }
         /** @var field_link $field */
         foreach ($mlinks as $module => $fields) {
@@ -405,7 +405,7 @@ abstract class table {
             $query = new update($class);
         } else {
             $query = new insert($class);
-            $top_pos = db::select($class)->add_field_to_retrieve('max(position) as pos')->execute()->fetchObject()->pos;
+            $top_pos = _db::select($class)->add_field_to_retrieve('max(position) as pos')->execute()->fetchObject()->pos;
             $query->add_value('position', $top_pos ? : 1);
         }
         /** @var field $field */
@@ -443,10 +443,10 @@ abstract class table {
                     if (isset($this->{$field->field_name}) && $field instanceof field_mlink) {
                         $source_module = new _cms_module(['table_name', 'primary_key'], $field->get_link_mid());
                         $module = new _cms_module(['table_name', 'primary_key'], static::get_module_id());
-                        db::delete($module->table_name . '_link_' . $source_module->table_name)->filter_field($module->primary_key, $this->get_primary_key())->execute();
+                        _db::delete($module->table_name . '_link_' . $source_module->table_name)->filter_field($module->primary_key, $this->get_primary_key())->execute();
                         if ($this->{$field->field_name}) {
                             foreach ($this->{$field->field_name} as $value) {
-                                db::insert($module->table_name . '_link_' . $source_module->table_name)
+                                _db::insert($module->table_name . '_link_' . $source_module->table_name)
                                     ->add_value($module->primary_key, $this->get_primary_key())
                                     ->add_value('link_' . $source_module->primary_key, $value)
                                     ->add_value('fid', $field->fid)
@@ -800,11 +800,11 @@ abstract class table {
             static::$retrieve_deleted = true;
             $object = new static(['position'], $_REQUEST['id']);
             if (isset($_REQUEST['dir']) && $_REQUEST['dir'] == 'down') {
-                db::update(_get::__class_name($object))->add_value('position', $object->position)->filter_field('position', $object->position + 1)->execute();
-                db::update(_get::__class_name($object))->add_value('position', $object->position + 1)->filter_field($object->get_primary_key_name(), $object->get_primary_key())->execute();
+                _db::update(_get::__class_name($object))->add_value('position', $object->position)->filter_field('position', $object->position + 1)->execute();
+                _db::update(_get::__class_name($object))->add_value('position', $object->position + 1)->filter_field($object->get_primary_key_name(), $object->get_primary_key())->execute();
             } else {
-                db::update(_get::__class_name($object))->add_value('position', $object->position)->filter_field('position', $object->position - 1)->execute();
-                db::update(_get::__class_name($object))->add_value('position', $object->position - 1)->filter_field($object->get_primary_key_name(), $object->get_primary_key())->execute();
+                _db::update(_get::__class_name($object))->add_value('position', $object->position)->filter_field('position', $object->position - 1)->execute();
+                _db::update(_get::__class_name($object))->add_value('position', $object->position - 1)->filter_field($object->get_primary_key_name(), $object->get_primary_key())->execute();
             }
             $list = new _cms_table_list(self::$cms_modules[get_called_class()], 1);
             ajax::update($list->get_table());
