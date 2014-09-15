@@ -10,10 +10,16 @@ admin_edit extends cms_view {
     public $module;
 
     public function get_view() {
-        $html = node::create('div', [],
-            $this->module->module->get_cms_edit_module() .
-            $this->module->module->get_fields_list() .
-            $this->module->module->get_new_field_form()
+        $html = node::create('div.container', [], [
+                $this->module->module->get_cms_edit_module(),
+                $this->module->module->get_fields_list(),
+                node::create('button.btn.btn-default.btn-block', [
+                    'href'        => '/?module=' . get_class($this->module->module) . '&act=get_new_field_form',
+                    'data-target' => '#modal',
+                    'data-toggle' => 'modal'
+                ], 'Add another field'),
+                node::create('div#modal.modal.fade div.modal-dialog div.modal-content', ['role' => 'dialog', 'aria-hidden' => 'true'])
+            ]
         );
         return $html;
     }

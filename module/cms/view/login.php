@@ -15,6 +15,10 @@ abstract class login extends cms_view {
             return $form->get_html();
         }
         $form = new cms_login_form();
+        $form->wrapper_class[] = 'container';
+        $form->wrapper_class[] = 'form-signin';
+        $form->submit_attributes['class'][] = 'btn-block';
+        $form->submit_attributes['class'][] = 'btn-lg';
         return $form->get_html();
     }
 

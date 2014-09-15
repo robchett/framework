@@ -6,6 +6,9 @@ use classes\table;
 use html\node;
 use module\cms\form\add_field_form;
 use module\cms\form\cms_change_group_form;
+use module\cms\form\edit_field_form;
+use module\cms\form\edit_module_form;
+use module\cms\object\_cms_field;
 use traits\table_trait;
 
 abstract class _cms_module extends table {
@@ -68,16 +71,17 @@ abstract class _cms_module extends table {
     public function get_cms_edit_module() {
         $form = new \module\cms\form\edit_module_form();
         $form->set_from_object($this, false);
-        return $form->get_html();
+        return node::create('div.panel.panel-body', [], $form->get_html());
     }
 
     public function get_fields_list() {
 
         $obj = $this->get_class();
 
-        $list = node::create('table#module_def', [],
+        $list = node::create('table#module_def.table.table-striped.', [],
             node::create('thead', [],
                 node::create('th', [], 'Live') .
+                node::create('th', [], 'Edit') .
                 node::create('th', [], 'Field id') .
                 node::create('th', [], 'Pos') .
                 node::create('th', [], 'Title') .
@@ -88,13 +92,29 @@ abstract class _cms_module extends table {
                 node::create('th', [], 'Filter') .
                 node::create('th', [], '')
             ) .
-            $obj->get_fields()->iterate_return(function ($field) use ($obj) {
+            $obj->get_fields()->iterate_return(function (\form\field $field) use ($obj) {
                     $field->parent_form = $obj;
-                    return (node::create('tr', [], $field->get_cms_admin_edit()));
+                    return (node::create('tr.vertical-align', [], $field->get_cms_admin_edit()));
                 }
             )
         );
         return $list;
+    }
+
+
+    /**
+     * @return node
+     */
+    public function get_edit_field_form() {
+        $form = new edit_field_form();
+        $form->mid = $this->mid;
+        $field = new _cms_field([], $_REQUEST['fid']);
+        $form->set_from_object($field, false);
+        die(
+            node::create('div.modal-header', [], 'Add new field') .
+            node::create('div.modal-body', [], $form->get_html()) .
+            '<script>' . implode("\n", \core::$inline_script) . '</script>'
+        );
     }
 
     /**
@@ -103,6 +123,10 @@ abstract class _cms_module extends table {
     public function get_new_field_form() {
         $form = new add_field_form();
         $form->mid = $this->mid;
-        return $form->get_html();
+        die(
+            node::create('div.modal-header', [], 'Add new field') .
+            node::create('div.modal-body', [], $form->get_html()) .
+            '<script>' . implode("\n", \core::$inline_script) . '</script>'
+        );
     }
 }

@@ -5,6 +5,7 @@ use classes\ajax as _ajax;
 use classes\ini;
 use classes\session;
 use form\form;
+use html\node;
 use module\cms\controller;
 use module\cms\object\_cms_user;
 
@@ -19,7 +20,7 @@ abstract class cms_login_form extends form {
             form::create('field_password', 'password')->set_attr('label', 'Password')
         ];
         parent::__construct($fields);
-        $this->h2 = 'Admin Login - ' . ini::get('site', 'title_tag');
+        $this->pre_fields_text = node::create('h2.form-signin-heading.text-center', [], node::create('small', [], 'Admin Login<br/>') .ini::get('site', 'title_tag'))->get();
         $this->submit = 'Login';
         $this->id = 'cms_login';
     }

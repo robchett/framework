@@ -42,8 +42,8 @@ abstract class controller extends module {
     public function __controller(array $path) {
         \classes\compiler::disable();
         error_reporting(-1);
-        \core::$css = ['/css/cms'];
-        \core::$js = ['/.core/js/jquery.js', '/.core/js/_ajax.js', ' /.core/module/cms/js/cms.js', '/.core/js/colorbox.js', '/.core/plugins/ckeditor/ckeditor.js'];
+        \core::$css = ['/.core/module/cms/css/styles.css'];
+        \core::$js = ['/.core/js/jquery.js', '/.core/js/_ajax.js', '/.core/module/cms/js/cms.js', '/.core/js/colorbox.js', '/.core/plugins/ckeditor/ckeditor.js'];
         if (\core::is_admin() && !isset($path[1])) {
             $path[1] = 'dashboard';
         }
@@ -147,6 +147,7 @@ abstract class controller extends module {
      */
     public function get_admin_new_module_form() {
         $form = new new_module_form();
+        $form->wrapper_class[] = 'container';
         return $form->get_html();
     }
 
@@ -177,37 +178,68 @@ abstract class controller extends module {
         return $html;
     }
 
+    protected function get_right_nav() {
+        $nodes = [];
+        if (isset($this->mid)) {
+            $nodes[] = node::create('li.right a', ['href' => '/cms/admin_edit/' . $this->mid, 'title' => 'Edit ' . get_class($this->current)], 'Edit Module');
+            $nodes[] = node::create('li.right a', ['href' => '/cms/edit/' . $this->mid, 'title' => 'Add new ' . ucwords(str_replace('_', ' ', get::__class_name($this->current)))], 'Add new ' . get::__class_name($this->current));
+        } else if ($this->view === 'module_list') {
+            $nodes[] = node::create('li.right a', ['href' => '/cms/new_module/', 'title' => 'Add new module'], 'Add new module');
+            $nodes[] = node::create('li.right a', ['href' => "/cms/edit/" . object\_cms_group::get_module_id(), 'title' => 'Add new module group'], 'Add new module group');
+        }
+        $nodes[] = node::create('li.right a', ['href' => '/cms/module_list/', 'title' => 'View all modules'], 'All Modules');
+        return $nodes;
+    }
+
     /**
      * @return string
      */
     function get_main_nav() {
         $groups = object\_cms_group::get_all([]);
-        $html = node::create('ul#nav', [],
-            $groups->iterate_return(
-                function (object\_cms_group $row) {
-                    $modules = object\_cms_module::get_all([], ['where_equals' => ['gid' => $row->gid, 'parent_mid' => 0]]);
-                    return node::create('li', [],
-                        node::create('span', [], $row->title) .
-                        node::create('ul', [],
-                            $modules->iterate_return(
-                                function (object\_cms_module $srow) {
-                                    return node::create('li span a', ['href' => '/cms/module/' . $srow->mid], $srow->title);
-                                }
-                            )
-                        )
-                    );
-                }
+        $html = node::create('nav#nav.navbar.navbar-default', ['role' => 'navigation'],
+            node::create('div.container-fluid', [],
+                node::create('ul.nav.navbar-nav', [],
+                    node::create('li a.navbar-brand', ['href'=> '/cms'], 'CMS') .
+                    $groups->iterate_return(
+                        function (object\_cms_group $row) {
+                            $modules = object\_cms_module::get_all([], [
+                                'where_equals' => [
+                                    'gid'        => $row->gid,
+                                    'parent_mid' => 0]
+                            ]);
+                            return node::create('li', [],
+                                node::create('a.dropdown-toggle', ['data-toggle'=>'dropdown'], $row->title . node::create('span.caret', [], '')) .
+                                node::create('ul.dropdown-menu', ['role' => 'menu'],
+                                    $modules->iterate_return(
+                                        function (object\_cms_module $srow) {
+                                            return node::create('li a', ['href' => '/cms/module/' . $srow->mid], $srow->title);
+                                        }
+                                    )
+                                )
+                            );
+                        }
+                    )
+                ) .
+                node::create('ul.nav.navbar-nav.navbar-right', [],
+                    $this->get_right_nav()
+                )
             )
         );
-        if (isset($this->mid)) {
-            $html->nest(node::create('li.right a', ['href' => '/cms/admin_edit/' . $this->mid, 'title' => 'Edit ' . get_class($this->current)], 'Edit Module'));
-            $html->nest(node::create('li.right a', ['href' => '/cms/edit/' . $this->mid, 'title' => 'Add new ' . ucwords(str_replace('_', ' ', get::__class_name($this->current)))], 'Add new ' . get::__class_name($this->current)));
-        } else if ($this->view === 'module_list') {
-            $html->nest(node::create('li.right a', ['href' => '/cms/new_module/', 'title' => 'Add new module'], 'Add new module'));
-            $html->nest(node::create('li.right a', ['href' => "/cms/edit/" . object\_cms_group::get_module_id(), 'title' => 'Add new module group'], 'Add new module group'));
-        }
-        $html->nest(node::create('li.right a', ['href' => '/cms/module_list/', 'title' => 'View all modules'], 'All Modules'));
         return $html;
+    }
+
+    public function do_undelete() {
+        $module = new _cms_module([], $_REQUEST['mid']);
+        $object = $module->get_class();
+        $class = $module->get_class_name();
+        $class::$retrieve_deleted = true;
+        $object->do_retrieve_from_id(['deleted'], $_REQUEST['id']);
+        if($object->get_primary_key()){
+            $object->deleted = false;
+            $object->do_save();
+        }
+        $list = new object\_cms_table_list($module, 1);
+        ajax::update($list->get_table());
     }
 
     public function do_delete() {

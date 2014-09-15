@@ -13,7 +13,8 @@ use module\cms\object\field_type;
  */
 abstract class add_field_form extends form {
 
-    public $link_module;
+    public $link_module = 0;
+    public $link_field = 0;
     public $mid;
     public $title;
     public $type;
@@ -37,7 +38,7 @@ abstract class add_field_form extends form {
             $form.find("#add_field_form_field_link_module").hide();
             $form.find("#add_field_form_field_link_field").hide();
             $form.find("[name=type]").change(function() {
-                if($(this).val() == 3 || $(this).val() == 4) {
+                if($(this).val() == 8 || $(this).val() == 9) {
                      $form.find("#add_field_form_field_link_module").show();
                      $form.find("#add_field_form_field_link_field").show();
                 } else {
@@ -50,7 +51,7 @@ abstract class add_field_form extends form {
     }
 
     public function do_form_submit() {
-        if ($_REQUEST['type'] == 3) {
+        if ($_REQUEST['type'] == 8 || $_REQUEST['type'] == 9) {
             $this->get_field_from_name('link_field')->required = true;
             $this->get_field_from_name('link_module')->required = true;
         }

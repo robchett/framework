@@ -243,17 +243,9 @@ abstract class core {
         header("Content-type: text/css");
         $css = new css(ini::get('css', 'compiler', 'less'));
         $css->add_resource_root('/.core/css/');
-        if(uri == 'css/cms') {
-            $css->add_resource_root('/.core/module/cms/css/');
-            $css->add_resource_root('/module/cms/css/');
-            $css->cached_name = 'cms_css';
-            echo $css->compile();
-        } else {
-            $css->add_resource_root('/css/');
-            $css->cached_name = 'global_css';
-        }
+        $css->add_resource_root('/css/');
+        $css->cached_name = 'global_css';
         echo $css->compile();
-        die();
     }
 
     public function get_js_sheet() {

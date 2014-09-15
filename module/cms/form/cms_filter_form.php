@@ -12,6 +12,8 @@ use module\cms\object\_cms_table_list;
 
 abstract class cms_filter_form extends form {
 
+    public $bootstrap = [0,0,''];
+
     public $npp;
 
     public function __construct($mid = 0) {
@@ -51,14 +53,19 @@ abstract class cms_filter_form extends form {
         $this->id = 'filter_form';
         $this->submit = 'Filter';
         $this->_mid = $mid;
-        $this->wrapper_class = '';
-        if (session::is_set('cms', 'filter', $mid)) {
-            $this->post_fields_text = node::create('a#clear_filters.button', [
+        $this->attributes['class'][] = 'navbar-form';
+    }
+
+    public function get_submit() {
+        $html = parent::get_submit();
+        if (session::is_set('cms', 'filter', $this->_mid)) {
+            $html .= node::create('a.btn.btn-default', [
                 'href'             => '#',
                 'data-ajax-click'  => '\module\cms\form\cms_filter_form:do_clear_filter',
-                'data-ajax-post'   => '{"_mid":"' . $mid . '"}',
+                'data-ajax-post'   => '{"_mid":"' .  $this->_mid . '"}',
                 'data-ajax-shroud' => '#filter_form'], 'Clear Filters');
         }
+        return node::create('span', [], $html);
     }
 
     public static function do_clear_filter() {

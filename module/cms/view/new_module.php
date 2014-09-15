@@ -9,8 +9,8 @@ abstract class new_module extends cms_view {
     public $module;
 
     public function get_view() {
-        $html = node::create('div', [],
-            node::create('h2', [], 'New Module') .
+        $html = node::create('div.container-fluid', [],
+            node::create('h2.page-header', [], 'New Module') .
             node::create('p', [], 'Create a new module and nest it under a group.') .
             $this->module->get_admin_new_module_form()
         );

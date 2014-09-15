@@ -11,7 +11,7 @@ abstract class module extends cms_view {
 
     public function get_view() {
         $html = node::create('div', [],
-            node::create('h2', [], 'View all ' . ucwords(get::__class_name($this->module->current)) . 's') .
+            node::create('h2.page-header.container-fluid', [], 'View all ' . ucwords(get::__class_name($this->module->current)) . 's') .
             $this->module->get_inner()
         );
         return $html;

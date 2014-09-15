@@ -7,6 +7,7 @@ use classes\get;
 use classes\paginate;
 use classes\session;
 use classes\table_array;
+use html\bootstrap\modal;
 use html\node;
 use module\cms\form\cms_filter_form;
 use module\cms\object\_cms_module as __cms_module;
@@ -46,7 +47,78 @@ class _cms_table_list {
         if(!isset($this->elements)) {
             $this->elements = $this->get_elements(0);
         }
-        return node::create('div#inner', [], $this->get_list());
+        return node::create('div#inner', [], array_merge($this->get_list(), $this->get_delete_modal()));
+    }
+
+    protected function get_delete_modal() {
+        \core::$inline_script[] = <<<JS
+        $("body").on('click', 'button.delete', function(e) {
+            $("#delete, #undelete").data('ajax-post', $(this).data('ajax-post'));
+        });
+JS;
+
+        return [
+            modal::create('delete_modal', [
+                    'class'       => ['delete_modal', 'modal', 'fade'],
+                    'role'        => 'dialog',
+                    'tabindex'    => -1,
+                    'aria-hidden' => true
+                ],
+                [
+                    node::create('button.close', ['data-dismiss' => 'modal'], '<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>'),
+                    node::create('div.modal-title', [], 'Delete')
+                ],
+                [node::create('p', [], 'Are you sure you want to do this?')],
+                [
+                    node::create('button.btn.btn-default', ['data-dismiss' => 'modal'], 'Cancel') .
+                    node::create('button#delete.btn.btn-primary', [
+                        'data-dismiss'    => 'modal',
+                        'data-ajax-click' => 'cms:do_delete'
+                    ], 'Delete')
+                ]
+            ),
+            modal::create('undelete_modal', [
+                    'class'       => ['undelete_modal', 'modal', 'fade'],
+                    'role'        => 'dialog',
+                    'tabindex'    => -1,
+                    'aria-hidden' => true
+                ],
+                [
+                    node::create('button.close', ['data-dismiss' => 'modal'], '<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>'),
+                    node::create('div.modal-title', [], 'Un Delete')
+                ],
+                [node::create('p', [], 'Are you sure you want to do this?')],
+                [
+                    node::create('button.btn.btn-default', ['data-dismiss' => 'modal'], 'Cancel') .
+                    node::create('button#undelete.btn.btn-primary', [
+                        'data-dismiss'    => 'modal',
+                        'data-ajax-click' => 'cms:do_undelete'
+                    ], 'Un-delete')
+                ]
+            ),
+            modal::create('true_delete_modal', [
+                    'class'       => ['true_delete_modal', 'modal', 'fade'],
+                    'role'        => 'dialog',
+                    'tabindex'    => -1,
+                    'aria-hidden' => true
+                ],
+                [
+                    node::create('button.close', ['data-dismiss' => 'modal'], '<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>'),
+                    node::create('div.modal-title', [], 'Completely Delete')
+                ],
+                [
+                    node::create('h2', [], 'This cannot be reversed!'),
+                    node::create('p', [], 'Are you sure you want to do this?'),
+                ],
+                [
+                    node::create('button.btn.btn-default', ['data-dismiss' => 'modal'], 'Cancel') .
+                    node::create('button#undelete.btn.btn-primary', [
+                        'data-dismiss'    => 'modal',
+                        'data-ajax-click' => 'cms:do_delete'
+                    ], 'Delete')
+                ]
+            )
+        ];
     }
 
     /**
@@ -54,7 +126,10 @@ class _cms_table_list {
      */
     public function get_filters() {
         $filter_form = new cms_filter_form($this->module->mid);
-        $wrapper = node::create('div#filter_wrapper ul', [], $this->get_pagi($this->elements->count()) . $filter_form->get_html());
+        $wrapper = node::create('nav.navbar.navbar-inverse div.container-fluid', [],
+            node::create('div.nav.navbar-nav', [], $filter_form->get_html()) .
+            node::create('div.nav.navbar-nav.navbar-right', [], $this->get_pagi($this->elements->count()))
+        );
         return $wrapper;
     }
 
@@ -101,14 +176,14 @@ class _cms_table_list {
         return [
             $this->get_filters($this->class),
             $this->get_list_inner(),
-            $this->get_pagi()
+            $this->get_pagi(),
         ];
     }
 
     protected function get_list_inner() {
         return
             $this->module->get_cms_pre_list() .
-            node::create('table.module_list', [],
+            node::create('div.container-fluid table.module_list.table.table-striped', [],
                 $this->get_table_head() .
                 $this->get_table_rows($this->elements)
             ) .
@@ -122,12 +197,12 @@ class _cms_table_list {
         $obj = $this->class;
         $node = node::create('thead', [],
             node::create('th.edit') .
-            node::create('th.live', [], 'Live') .
-            node::create('th.expand', [], 'Expand') .
-            node::create('th.position', [], 'Position') .
+            node::create('th.live', [], '') .
+            node::create('th.expand', [], '') .
+            node::create('th.position', [], '') .
             $obj->get_fields()->iterate_return(function ($field) use ($obj) {
                     if ($field->list) {
-                        return node::create('th.' . get::__class_name($field) . '.' . $field->field_name . ($field->field_name == $obj->get_primary_key_name() ? '.primary' : ''), [], $field->title);
+                        return node::create('th.' . get::__class_name($field) . '.header_' . $field->field_name . ($field->field_name == $obj->get_primary_key_name() ? '.primary' : ''), [], $field->title);
                     }
                     return '';
                 }
@@ -157,7 +232,7 @@ class _cms_table_list {
                     $obj->_is_expanded = false;
                     $children = false;
                 }
-                return node::create('tr#' . get::__class_name($obj) . $obj->get_primary_key() . ($obj->deleted ? '.deleted' : '') . $class, [], $obj->get_cms_list()) . ($children ? $this->get_table_rows($children, '.child') : '' );
+                return node::create('tr#' . get::__class_name($obj) . $obj->get_primary_key() . ($obj->deleted ? '.danger.deleted' : '') . $class . '.vertical-align', [], $obj->get_cms_list()) . ($children ? $this->get_table_rows($children, '.child') : '' );
             }
         );
     }
