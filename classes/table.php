@@ -6,7 +6,9 @@ use classes\ajax as _ajax;
 use classes\ajax;
 use classes\collection as _collection;
 use classes\collection;
+use classes\db;
 use classes\get as _get;
+use classes\icon;
 use classes\image_resizer;
 use classes\jquery;
 use classes\session as _session;
@@ -371,8 +373,8 @@ abstract class table {
     public function do_submit() {
         $type = (!$this->get_primary_key() ? 'Added' : 'Updated');
 
-        _ajax::add_script('$(".success").remove()', true);
-        _ajax::inject('#' . $_REQUEST['ajax_origin'], 'before', node::create('p.success.boxed.' . strtolower($type), [], $type . ' successfully'));
+        _ajax::add_script('$(".bs-callout-info").remove()', true);
+        _ajax::inject('#' . $_REQUEST['ajax_origin'], 'before', node::create('div.bs-callout.bs-callout-info.' . strtolower($type) . ' p', [], $type . ' successfully'));
     }
 
     /**
@@ -410,24 +412,22 @@ abstract class table {
         $this->get_fields()->iterate(function ($field) use ($query) {
                 $field->parent_form = $this;
                 if ($field->field_name != $this->get_primary_key_name()) {
-                    if (isset($this->{$field->field_name}) && !($field instanceof field_file)) {
+                    if (isset($this->{$field->field_name}) && !($field instanceof field_file) && !($field instanceof field_mlink)) {
                         if (!$this->{$field->field_name} && $field instanceof field_fn && isset($this->title)) {
                             $this->{$field->field_name} = _get::unique_fn(_get::__class_name($this), $field->field_name, $this->title);
                         }
-                        if (!($field instanceof field_mlink)) {
-                            try {
-                                $data = $field->get_save_sql();
-                                $query->add_value($field->field_name, $data);
-                            } catch (\RuntimeException $e) {
+                        try {
+                            $data = $field->get_save_sql();
+                            $query->add_value($field->field_name, $data);
+                        } catch (\RuntimeException $e) {
 
-                            }
                         }
                     }
                 }
             }
         );
         $query->add_value('live', isset($this->live) ? $this->live : true);
-        $query->add_value('deleted', isset($this->live) ? $this->deleted : false);
+        $query->add_value('deleted', isset($this->deleted) ? $this->deleted : false);
         $query->add_value('ts', date('Y-m-d H:i:s'));
         if ($this->get_primary_key()) {
             $query->filter_field($this->get_primary_key_name(), $this->get_primary_key());
@@ -521,6 +521,9 @@ abstract class table {
      */
     public function get_cms_edit() {
         $form = $this->get_form();
+        $form->wrapper_class[] = 'container';
+        $form->wrapper_class[] = 'panel';
+        $form->wrapper_class[] = 'panel-body';
         $form->id = 'cms_edit';
         $form->set_from_request();
         $form->set_from_object($this);
@@ -536,7 +539,7 @@ abstract class table {
             } else if ($field instanceof field_link) {
                 $field->order = 'title';
             }
-            $field->label .= '<span class="field_name">' . $field->field_name . '</span>';
+            $field->label .= '<br/><small class="field_name">' . $field->field_name . '</small>';
             $field->raw = true;
         }
         if (!$this->get_primary_key()) {
@@ -698,13 +701,38 @@ abstract class table {
      */
     public function get_cms_list() {
         $fields = $this->get_fields(true);
+        $live_attributes = [
+            'href'            => '#',
+            'data-ajax-click' => get_class($this) . ':do_toggle_live',
+            'data-ajax-post'  => '{"mid":' . static::get_module_id() . ',"id":' . $this->get_primary_key() . '}'
+        ];
+        $up_attributes = [
+            'data-ajax-click' => get_class($this) . ':do_reorder',
+            'data-ajax-post'  => '{"mid":' . static::get_module_id() . ',"id":' . $this->get_primary_key() . ',"dir":"up"}'
+        ];
+        $down_attributes = [
+            'data-ajax-click' => get_class($this) . ':do_reorder',
+            'data-ajax-post'  => '{"mid":' . static::get_module_id() . ',"id":' . $this->get_primary_key() . ',"dir":"down"}'
+        ];
+        $delete_attributes = $undelete_attributes = $true_delete_attributes = [
+            'data-ajax-post'  => '{"id":"' . $this->get_primary_key() . '","mid":"' . $this->get_module_id() . '"}',
+            'data-toggle'     => 'modal',
+            'data-target'     => '#delete_modal'
+        ];
+        $undelete_attributes['data-target'] = '#undelete_modal';
+        $true_delete_attributes['data-target'] = '#true_delete_modal';
+        $expand_attributes = [
+            'href'            => '#',
+            'data-ajax-click' => get_class($this) . ':do_toggle_expand',
+            'data-ajax-post'  => '{"mid":' . static::get_module_id() . ',"id":' . $this->get_primary_key() . '}'
+        ];
         return
-            node::create('td.edit a.edit', ['href' => '/cms/edit/' . static::get_module_id() . '/' . $this->get_primary_key()]) .
-            node::create('td.edit a.live' . ($this->live ? '' : '.not_live'), ['href' => '#', 'data-ajax-click' => get_class($this) . ':do_toggle_live', 'data-ajax-post' => '{"mid":' . static::get_module_id() . ',"id":' . $this->get_primary_key() . '}'], ($this->live ? 'Live' : 'Not Live')) .
-            node::create('td.edit a.expand' . ($this->_has_child ? '' : '.no_expand'), ['href' => '#', 'data-ajax-click' => get_class($this) . ':do_toggle_expand', 'data-ajax-post' => '{"mid":' . static::get_module_id() . ',"id":' . $this->get_primary_key() . '}'], ($this->_has_child ? (!$this->_is_expanded ? 'Expand' : 'Compact') : '')) .
+            node::create('td.edit a.edit.btn.btn-primary', ['href' => '/cms/edit/' . static::get_module_id() . '/' . $this->get_primary_key()], icon::get('pencil')) .
+            node::create('td.edit a.live.btn.btn-primary', $live_attributes, icon::get($this->live ? 'ok' : 'remove')) .
+            node::create('td.edit' . ($this->_has_child ? '' : '.no_expand'), $expand_attributes, ($this->_has_child ? node::create('a.expand.btn.btn-primary', [], icon::get(!$this->_is_expanded ? 'plus' : 'minus')) : '')) .
             node::create('td.position', [],
-                node::create('a.up.reorder', ['data-ajax-click' => get_class($this) . ':do_reorder', 'data-ajax-post' => '{"mid":' . static::get_module_id() . ',"id":' . $this->get_primary_key() . ',"dir":"up"}'], 'Up') .
-                node::create('a.down.reorder', ['data-ajax-click' => get_class($this) . ':do_reorder', 'data-ajax-post' => '{"mid":' . static::get_module_id() . ',"id":' . $this->get_primary_key() . ',"dir":"down"}'], 'Down')
+                node::create('a.up.reorder.btn.btn-primary', $up_attributes, icon::get('arrow-up')) .
+                node::create('a.down.reorder.btn.btn-primary', $down_attributes, icon::get('arrow-down'))
             ) .
             $fields->iterate_return(function ($field) {
                     $field->parent_form = $this;
@@ -714,7 +742,15 @@ abstract class table {
                     return '';
                 }
             ) .
-            node::create('td.delete a.delete', ['href' => '#', 'data-ajax-click' => 'cms:do_delete', 'data-ajax-post' => '{"id":"' . $this->get_primary_key() . '","mid":"' . $this->get_module_id() . '"}'], 'delete');
+            node::create('td.delete', [],
+                ($this->deleted ?
+                        [
+                            node::create('button.delete.btn.btn-info', $undelete_attributes, '<s>' . icon::get('trash') . '</s>'),
+                            node::create('button.delete.btn.btn-warning', $true_delete_attributes, '<s>' . icon::get('fire') . '</s>'),
+                        ] :
+                        node::create('button.delete.btn.btn-warning', $delete_attributes, icon::get('trash'))
+                )
+            );
     }
 
     /**
@@ -760,13 +796,15 @@ abstract class table {
     public function do_reorder() {
         if (isset($_REQUEST['id'])) {
             /** @var table $object */
+            static::$retrieve_unlive = true;
+            static::$retrieve_deleted = true;
             $object = new static(['position'], $_REQUEST['id']);
             if (isset($_REQUEST['dir']) && $_REQUEST['dir'] == 'down') {
-                db::query('UPDATE ' . _get::__class_name($object) . ' SET position =' . $object->position . ' WHERE position=' . ($object->position + 1));
-                db::query('UPDATE ' . _get::__class_name($object) . ' SET position =' . ($object->position + 1) . ' WHERE ' . $object->get_primary_key_name() . '=' . $object->get_primary_key());
+                db::update(_get::__class_name($object))->add_value('position', $object->position)->filter_field('position', $object->position + 1)->execute();
+                db::update(_get::__class_name($object))->add_value('position', $object->position + 1)->filter_field($object->get_primary_key_name(), $object->get_primary_key())->execute();
             } else {
-                db::query('UPDATE ' . _get::__class_name($object) . ' SET position =' . $object->position . ' WHERE position=' . ($object->position - 1));
-                db::query('UPDATE ' . _get::__class_name($object) . ' SET position =' . ($object->position - 1) . ' WHERE ' . $object->get_primary_key_name() . '=' . $object->get_primary_key());
+                db::update(_get::__class_name($object))->add_value('position', $object->position)->filter_field('position', $object->position - 1)->execute();
+                db::update(_get::__class_name($object))->add_value('position', $object->position - 1)->filter_field($object->get_primary_key_name(), $object->get_primary_key())->execute();
             }
             $list = new _cms_table_list(self::$cms_modules[get_called_class()], 1);
             ajax::update($list->get_table());
