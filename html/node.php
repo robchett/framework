@@ -103,6 +103,18 @@ abstract class node {
         return $node->get();
     }
 
+    protected function combine_nodes($nodes) {
+        if (is_array($nodes)) {
+            $html = '';
+            foreach($nodes as $node) {
+                $html .= $this->combine_nodes($node);
+            }
+        } else {
+            $html = $nodes;
+        }
+        return $html;
+    }
+
     /**
      * @return string
      */
@@ -117,11 +129,7 @@ abstract class node {
             $attributes['class'] = array_merge($attributes['class'], $this->class);
         }
         $html = '<' . $this->type . static::get_attributes($attributes) . '>';
-        if (is_array($this->content)) {
-            $html .= implode('', $this->content);
-        } else {
-            $html .= $this->content;
-        }
+        $html .= $this->combine_nodes($this->content);
         /** @var node $child */
         foreach ($this->children as $child) {
             $html .= $child->get();
