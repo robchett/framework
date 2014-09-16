@@ -45,7 +45,7 @@ class compiler {
 
     protected static function  break_file($key) {
         $file = root . '/.cache/compile/' . $key;
-        if($file) {
+        if(is_readable($file)) {
             unlink(root . '/.cache/compile/' . $key);
         }
     }
