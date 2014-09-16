@@ -12,7 +12,7 @@ use module\cms\object\_cms_table_list;
 
 abstract class cms_filter_form extends form {
 
-    public $bootstrap = [0,0,''];
+    public $bootstrap = [2, 10, 'form-horizontal'];
 
     public $npp;
 
@@ -53,7 +53,6 @@ abstract class cms_filter_form extends form {
         $this->id = 'filter_form';
         $this->submit = 'Filter';
         $this->_mid = $mid;
-        $this->attributes['class'][] = 'navbar-form';
     }
 
     public function get_submit() {
@@ -62,7 +61,7 @@ abstract class cms_filter_form extends form {
             $html .= node::create('a.btn.btn-default', [
                 'href'             => '#',
                 'data-ajax-click'  => '\module\cms\form\cms_filter_form:do_clear_filter',
-                'data-ajax-post'   => '{"_mid":"' .  $this->_mid . '"}',
+                'data-ajax-post'   => '{"_mid":"' . $this->_mid . '"}',
                 'data-ajax-shroud' => '#filter_form'], 'Clear Filters');
         }
         return node::create('span', [], $html);
@@ -75,7 +74,7 @@ abstract class cms_filter_form extends form {
         $cms_filter_form->do_submit(true);
     }
 
-    public function do_submit($no_session  = false) {
+    public function do_submit($no_session = false) {
         if (!$no_session) {
             foreach ($this->fields as $field) {
                 if ($field instanceof field_boolean && !$this->{$field->field_name}) {

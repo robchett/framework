@@ -8369,17 +8369,29 @@ a {
 }
 
 /* line 11, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
-.navbar .pagination {
-  margin-top: 8px;
-  margin-bottom: 2px;
-  margin-right: 15px;
+.panel-heading .pagination {
+  margin-top: 0px;
+  margin-bottom: 0px;
 }
 
 /* line 18, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
+col.btn-col, th.btn-col, td.btn-col {
+  width: 56px !important;
+}
+/* line 21, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
+col.btn-col2, th.btn-col2, td.btn-col2 {
+  width: 96px !important;
+}
+/* line 26, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
+col.field_date, th.field_date, td.field_date {
+  width: 90px !important;
+}
+
+/* line 33, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
 .module_list .edit, .module_list .position, .module_list .delete {
   vertical-align: middle;
 }
-/* line 21, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
+/* line 36, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
 .module_list td {
   max-width: 500px;
 }
@@ -8387,7 +8399,7 @@ a {
 /* Side notes for calling out things
 -------------------------------------------------- */
 /* Base styles (regardless of theme) */
-/* line 30, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
+/* line 45, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
 .bs-callout {
   margin: 20px 0;
   padding: 15px 30px 15px 15px;
@@ -8395,78 +8407,78 @@ a {
   color: #3b3b3b;
 }
 
-/* line 37, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
+/* line 52, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
 .bs-callout h4 {
   margin-top: 0;
 }
 
-/* line 41, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
+/* line 56, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
 .bs-callout p:last-child {
   margin-bottom: 0;
 }
 
-/* line 45, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
+/* line 60, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
 .bs-callout code,
 .bs-callout .highlight {
   background-color: #fff;
 }
 
 /* Themes for different contexts */
-/* line 51, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
+/* line 66, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
 .bs-callout-danger {
   background-color: #fcf2f2;
   border-color: #dFb5b4;
 }
 
-/* line 56, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
+/* line 71, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
 .bs-callout-warning {
   background-color: #f1c49c;
   border-color: #fe8969;
 }
 
-/* line 61, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
+/* line 76, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
 .bs-callout-info {
   background-color: #f0f7fd;
   border-color: #d0e3f0;
 }
 
-/* line 66, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
+/* line 81, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
 .form-signin {
   max-width: 630px;
   padding: 15px;
   margin: 0 auto;
 }
 
-/* line 72, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
+/* line 87, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
 .form-signin .form-signin-heading {
   margin-bottom: 10px;
 }
 
-/* line 76, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
+/* line 91, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
 .form-signin .form-group {
   margin-bottom: 0;
 }
 
-/* line 79, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
+/* line 95, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
 .form-signin label {
   display: none;
 }
 
-/* line 83, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
+/* line 99, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
 .form-signin input[type="text"] {
   margin-bottom: -1px;
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
 }
 
-/* line 89, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
+/* line 105, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
 .form-signin input[type="password"] {
   margin-bottom: 15px;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
 
-/* line 95, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
+/* line 111, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
 .loading_shroud {
   position: absolute !important;
   width: 100% !important;
@@ -8477,7 +8489,14 @@ a {
   z-index: 99999 !important;
 }
 
-/* line 105, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
+/* line 121, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
 tr.vertical-align > th, tr.vertical-align > td {
   vertical-align: middle !important;
+}
+
+/* line 125, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
+.col-md-0 {
+  display: inline-block;
+  padding-right: 15px;
+  padding-left: 15px;
 }

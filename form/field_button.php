@@ -1,6 +1,7 @@
 <?php
 namespace core\form;
 
+use classes\icon;
 use html\node;
 
 abstract class field_button extends \form\field {
@@ -20,7 +21,7 @@ abstract class field_button extends \form\field {
         $this->attributes['data-ajax-click'] = $object_class . ':' . $this->field_name;
         $this->attributes['data-ajax-post'] = '{"id":' . $id . '}';
         $this->attributes['data-ajax-shroud'] = '#button' . $this->field_name . $id;
-        return node::create('a#button' . $this->field_name . $id . '.button', $this->attributes, $this->title);
+        return node::create('a#button_' . $this->field_name . $id . '.btn.btn-default', $this->attributes, icon::get($this->field_name));
     }
 
     public function get_save_sql() {

@@ -604,6 +604,7 @@ abstract class table {
                     'primary_key',
                     'namespace',
                     'table_name',
+                    'nestable'
                 ]
             );
             $modules->iterate(function (_cms_module $module) {
@@ -726,13 +727,14 @@ abstract class table {
             'data-ajax-click' => get_class($this) . ':do_toggle_expand',
             'data-ajax-post'  => '{"mid":' . static::get_module_id() . ',"id":' . $this->get_primary_key() . '}'
         ];
+        $nestable = static::$cms_modules[get_class($this)]->nestable;
         return
-            node::create('td.edit a.edit.btn.btn-primary', ['href' => '/cms/edit/' . static::get_module_id() . '/' . $this->get_primary_key()], icon::get('pencil')) .
-            node::create('td.edit a.live.btn.btn-primary', $live_attributes, icon::get($this->live ? 'ok' : 'remove')) .
-            node::create('td.edit' . ($this->_has_child ? '' : '.no_expand'), $expand_attributes, ($this->_has_child ? node::create('a.expand.btn.btn-primary', [], icon::get(!$this->_is_expanded ? 'plus' : 'minus')) : '')) .
-            node::create('td.position', [],
-                node::create('a.up.reorder.btn.btn-primary', $up_attributes, icon::get('arrow-up')) .
-                node::create('a.down.reorder.btn.btn-primary', $down_attributes, icon::get('arrow-down'))
+            node::create('td.btn-col a.btn.btn-primary', ['href' => '/cms/edit/' . static::get_module_id() . '/' . $this->get_primary_key()], icon::get('pencil')) .
+            node::create('td.bnt-col a.btn.btn-primary', $live_attributes, icon::get($this->live ? 'ok' : 'remove')) .
+            ($nestable ? node::create('td.edit' . ($this->_has_child ? '' : '.no_expand'), $expand_attributes, ($this->_has_child ? node::create('a.expand.btn.btn-primary', [], icon::get(!$this->_is_expanded ? 'plus' : 'minus')) : '')) : '') .
+            node::create('td.btn-col2', [],
+                node::create('a.btn.btn-primary', $up_attributes, icon::get('arrow-up')) .
+                node::create('a.btn.btn-primary', $down_attributes, icon::get('arrow-down'))
             ) .
             $fields->iterate_return(function ($field) {
                     $field->parent_form = $this;
@@ -742,7 +744,7 @@ abstract class table {
                     return '';
                 }
             ) .
-            node::create('td.delete', [],
+            node::create('td.btn-col', [],
                 ($this->deleted ?
                         [
                             node::create('button.delete.btn.btn-info', $undelete_attributes, '<s>' . icon::get('trash') . '</s>'),

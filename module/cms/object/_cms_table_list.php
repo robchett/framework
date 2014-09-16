@@ -6,6 +6,7 @@ use classes\collection;
 use classes\get;
 use classes\paginate;
 use classes\session;
+use classes\table;
 use classes\table_array;
 use html\bootstrap\modal;
 use html\node;
@@ -44,7 +45,7 @@ class _cms_table_list {
     }
 
     public function get_table() {
-        if(!isset($this->elements)) {
+        if (!isset($this->elements)) {
             $this->elements = $this->get_elements(0);
         }
         return node::create('div#inner', [], array_merge($this->get_list(), $this->get_delete_modal()));
@@ -126,10 +127,13 @@ JS;
      */
     public function get_filters() {
         $filter_form = new cms_filter_form($this->module->mid);
-        $wrapper = node::create('nav.navbar.navbar-inverse div.container-fluid', [],
-            node::create('div.nav.navbar-nav', [], $filter_form->get_html()) .
-            node::create('div.nav.navbar-nav.navbar-right', [], $this->get_pagi($this->elements->count()))
-        );
+        $wrapper = node::create('div.container-fluid div.panel.panel-default', [], [
+            node::create('div.panel-heading h4.panel-title.clearfix', [], [
+                node::create('a.btn.btn-default', ['href' => '#filter_bar', 'data-toggle' => 'collapse'], 'Filters'),
+                node::create('div.pull-right', [], $this->get_pagi()),
+            ]),
+            node::create('div#filter_bar.panel-collapse.collapse div.panel-body', [], $filter_form->get_html())
+        ]);
         return $wrapper;
     }
 
@@ -137,15 +141,19 @@ JS;
         $class = $this->class_name;
         /** @var \classes\table $obj */
         $obj = new $class;
-        $options = ['where_equals' => $this->where + ['parent_' . $obj->get_primary_key_name() => $parent_id], 'order' => $this->order ? : 'position',];
+        $options = [
+            'where_equals' => $this->where + ['parent_' . $obj->get_primary_key_name() => $parent_id],
+            'order'        => $this->order ?: 'position',];
         if ($this->npp && $parent_id === 0) {
             $options['limit'] = ($this->page - 1) * $this->npp . ',' . $this->npp;
         }
         $class::$retrieve_unlive = true;
-        if($this->deleted) {
+        if ($this->deleted) {
             $class::$retrieve_deleted = true;
         }
-        return $class::get_all(['*', '(SELECT COUNT(' . $obj->get_primary_key_name() . ') FROM ' . get::__class_name($obj) . ' t WHERE t.parent_' . $obj->get_primary_key_name() . ' = ' . get::__class_name($obj) . '.' . $obj->get_primary_key_name() . ' LIMIT 1) AS _has_child'], $options);
+        return $class::get_all([
+                '*',
+                '(SELECT COUNT(' . $obj->get_primary_key_name() . ') FROM ' . get::__class_name($obj) . ' t WHERE t.parent_' . $obj->get_primary_key_name() . ' = ' . get::__class_name($obj) . '.' . $obj->get_primary_key_name() . ' LIMIT 1) AS _has_child'], $options);
     }
 
     /**
@@ -176,17 +184,17 @@ JS;
         return [
             $this->get_filters($this->class),
             $this->get_list_inner(),
-            $this->get_pagi(),
+            node::create('div.container-fluid', [], $this->get_pagi()),
         ];
     }
 
     protected function get_list_inner() {
         return
             $this->module->get_cms_pre_list() .
-            node::create('div.container-fluid table.module_list.table.table-striped', [],
-                $this->get_table_head() .
+            node::create('div.container-fluid table.module_list.table.table-striped', [], [
+                $this->get_table_head(),
                 $this->get_table_rows($this->elements)
-            ) .
+            ]) .
             $this->module->get_cms_post_list();
     }
 
@@ -195,11 +203,26 @@ JS;
      */
     public function get_table_head() {
         $obj = $this->class;
-        $node = node::create('thead', [],
-            node::create('th.edit') .
-            node::create('th.live', [], '') .
-            node::create('th.expand', [], '') .
-            node::create('th.position', [], '') .
+
+        $nodes = [];
+        $nodes[] = node::create('col.btn-col');
+        $nodes[] = node::create('col.btn-col');
+        if($this->module->nestable) {
+            $nodes[] = node::create('col.btn-col');
+        }
+        $nodes[] = node::create('col.btn-col2');
+        $obj->get_fields()->iterate(function ($field) use (&$nodes) {
+            $nodes[] = node::create('col.' .  get::__class_name($field));
+        });
+        $nodes[] = node::create('col.btn-col');
+        $nodes = [node::create('colgroup', [], $nodes)];
+
+
+        $nodes[] = node::create('thead', [],
+            node::create('th.edit.btn-col') .
+            node::create('th.live.btn-col', [], '') .
+            ($this->module->nestable ? node::create('th.expand.btn-col', [], '') : '') .
+            node::create('th.position.btn-col2', [], '') .
             $obj->get_fields()->iterate_return(function ($field) use ($obj) {
                     if ($field->list) {
                         return node::create('th.' . get::__class_name($field) . '.header_' . $field->field_name . ($field->field_name == $obj->get_primary_key_name() ? '.primary' : ''), [], $field->title);
@@ -207,14 +230,15 @@ JS;
                     return '';
                 }
             ) .
-            node::create('th.delete')
+            node::create('th.delete.btn-col')
         );
-        return $node;
+        return $nodes;
     }
 
     /**
      * @param table_array $elements
-     * @param string  $class
+     * @param string      $class
+     *
      * @return node
      */
     public function get_table_rows($elements, $class = '') {
@@ -224,7 +248,7 @@ JS;
          * @var \classes\table $obj
          * @return string
          */
-        return $elements->iterate_return(function ($obj) use ($nodes, $keys, $class) {
+        return $elements->iterate_return(function (table $obj) use ($nodes, $keys, $class) {
                 if ($obj->_has_child && in_array($obj->get_primary_key(), $keys)) {
                     $obj->_is_expanded = true;
                     $children = $this->get_elements($obj->get_primary_key());
@@ -232,7 +256,7 @@ JS;
                     $obj->_is_expanded = false;
                     $children = false;
                 }
-                return node::create('tr#' . get::__class_name($obj) . $obj->get_primary_key() . ($obj->deleted ? '.danger.deleted' : '') . $class . '.vertical-align', [], $obj->get_cms_list()) . ($children ? $this->get_table_rows($children, '.child') : '' );
+                return node::create('tr#' . get::__class_name($obj) . $obj->get_primary_key() . ($obj->deleted ? '.danger.deleted' : '') . $class . '.vertical-align', [], $obj->get_cms_list()) . ($children ? $this->get_table_rows($children, '.child') : '');
             }
         );
     }

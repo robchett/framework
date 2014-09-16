@@ -85,6 +85,7 @@ abstract class form {
      * @var string
      */
     public $wrapper_class = ['form_wrapper'];
+    public $field_wrapper_class = ['form-group'];
     public $submit_attributes = ['type'=>'submit'];
     protected $table_object;
 
@@ -309,7 +310,7 @@ abstract class form {
                     }
                 }
                 if ($inner = $field->get_html_wrapper()) {
-                    $fields[] = node::create('div#' . $this->id . '_field_' . $field->field_name . '.form-group.' . $field->get_wrapper_class(), ['data-for' => $this->id], $inner);
+                    $fields[] = node::create('div#' . $this->id . '_field_' . $field->field_name . $field->get_wrapper_class(), ['data-for' => $this->id], $inner);
                 }
             }
         }
@@ -324,19 +325,17 @@ abstract class form {
     }
 
     /**
-     * @return bool|node
+     * @return node[]
      */
     public function get_hidden_fields() {
-        $hidden = false;
-        $html = node::create('ul.hidden');
+        $hidden = [];
         foreach ($this->fields as $field) {
             if ($field->hidden) {
-                $hidden = true;
-                $html->add_child(node::create('li', ['data-for' => $this->id, 'class' => $field->get_wrapper_class()], $field->get_html_wrapper()));
+                $hidden[] = $field->get_html_wrapper();
             }
 
         }
-        return ($hidden ? $html : false);
+        return $hidden ? node::create('div.hidden', [], $hidden) : '';
     }
 
     /**

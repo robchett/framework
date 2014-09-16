@@ -125,11 +125,9 @@ abstract class field extends node {
     }
 
     public function get_wrapper_class() {
-        $this->wrapper_class[] = get::__class_name($this) . '_wrapper';
-        if (!empty($this->wrapper_class)) {
-            return '.' . implode('.', $this->wrapper_class);
-        }
-        return '';
+        $classes = array_merge($this->wrapper_class, $this->parent_form->field_wrapper_class);
+        $classes[] = get::__class_name($this) . '_wrapper';
+        return '.' . implode('.', $classes);
     }
 
     public function set_from_request() {

@@ -8,10 +8,25 @@ a {
   }
 }
 
-.navbar .pagination {
-  margin-top: 8px;
-  margin-bottom: 2px;
-  margin-right: 15px;
+.panel-heading .pagination {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+col, th, td {
+  &.btn {
+    &-col {
+      width: 56px !important;
+    }
+    &-col2 {
+      width: 96px !important;
+    }
+  }
+  &.field {
+    &_date {
+      width: 90px !important;
+    }
+  }
 }
 
 .module_list {
@@ -76,6 +91,7 @@ a {
 .form-signin .form-group {
   margin-bottom: 0;
 }
+
 .form-signin label {
   display: none
 }
@@ -104,4 +120,10 @@ a {
 
 tr.vertical-align > th, tr.vertical-align > td {
   vertical-align: middle !important;
+}
+
+.col-md-0 {
+  display: inline-block;
+  padding-right: 15px;
+  padding-left: 15px;
 }
