@@ -25,7 +25,7 @@ class paginate {
             if ($pages > 40) {
                 $options['data-ajax-change'] = $this->act;
                 $options['data-ajax-post'] = $this->post_data;
-                $_node = node::create('select', $options);
+                $_node = node::create('select.form-control', $options);
                 for ($i = 1; $i <= $pages; $i++) {
                     $attributes = ['value' => $i];
                     if ($this->page == $i) {
