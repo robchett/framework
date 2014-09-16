@@ -1,6 +1,7 @@
 <?php
 namespace core\module\cms\view;
 
+use html\a;
 use html\node;
 use module\cms\object\_cms_module;
 
@@ -29,12 +30,13 @@ abstract class module_list extends cms_view {
                     ) .
                     $modules->iterate_return(
                         function (_cms_module $module) {
+                            $attributes = ['href' => '/cms/admin_edit/' . $module->mid];
                             return node::create('tr', [],
-                                node::create('td', [], $module->mid) .
-                                node::create('td', [], $module->_cms_group->title) .
-                                node::create('td', [], $module->title) .
-                                node::create('td', [], $module->table_name) .
-                                node::create('td', [], $module->primary_key)
+                                node::create('td a', $attributes, $module->mid) .
+                                node::create('td a', $attributes, $module->_cms_group->title) .
+                                node::create('td a', $attributes, $module->title) .
+                                node::create('td a', $attributes, $module->table_name) .
+                                node::create('td a', $attributes, $module->primary_key)
                             );
                         }
                     )
