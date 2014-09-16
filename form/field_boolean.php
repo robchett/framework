@@ -5,6 +5,8 @@ use html\node;
 
 abstract class field_boolean extends \form\field {
 
+    public $class = [];
+
     public function  __construct($title = '', $options = []) {
         parent::__construct($title, $options);
         $this->value = false;
@@ -19,6 +21,22 @@ abstract class field_boolean extends \form\field {
 
     public function set_from_request() {
         $this->parent_form->{$this->field_name} = (isset($_REQUEST[$this->field_name]) ? true : false);
+    }
+
+    public function get_html_wrapper() {
+        $html = '';
+        $html .= $this->pre_text;
+
+        $label = '';
+        if (!$this->hidden && isset($this->label) && !empty($this->label)) {
+            $label = node::create('label.control-label.col-md-' . $this->parent_form->bootstrap[0], [
+                'for' => $this->field_name,
+                'id' => $this->field_name . '_wrapper'
+            ], $this->label);
+        }
+        $html .= node::create('div.col-md-offset-' . $this->parent_form->bootstrap[0] . '.col-md-' . $this->parent_form->bootstrap[1] . ' div.checkbox label', [], $this->get_html() . $this->label);
+        $html .= $this->post_text;
+        return $html;
     }
 
     public function get_cms_list_wrapper($value, $object_class, $id) {
