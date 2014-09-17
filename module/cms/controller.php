@@ -165,7 +165,7 @@ abstract class controller extends module {
         if ($collection->count()) {
             $html .= $collection->iterate_return(function (_cms_module $module) {
                     $class = $module->get_class_name();
-                    $list = new _cms_table_list($module, 1);
+                    $list = new object\_cms_table_list($module, 1);
                     $list->where = [$this->module->primary_key => $this->current->get_primary_key()];
                     return node::create('div.sub_module', [],
                         node::create('h3', [], $module->title) .
