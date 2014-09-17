@@ -731,7 +731,7 @@ abstract class table {
         return
             node::create('td.btn-col a.btn.btn-primary', ['href' => '/cms/edit/' . static::get_module_id() . '/' . $this->get_primary_key()], icon::get('pencil')) .
             node::create('td.bnt-col a.btn.btn-primary', $live_attributes, icon::get($this->live ? 'ok' : 'remove')) .
-            ($nestable ? node::create('td.edit' . ($this->_has_child ? '' : '.no_expand'), $expand_attributes, ($this->_has_child ? node::create('a.expand.btn.btn-primary', [], icon::get(!$this->_is_expanded ? 'plus' : 'minus')) : '')) : '') .
+            ($nestable ? node::create('td.edit' . ($this->_has_child ? '' : '.no_expand'), [], ($this->_has_child ? node::create('a.expand.btn.btn-primary', $expand_attributes, icon::get(!$this->_is_expanded ? 'plus' : 'minus')) : '')) : '') .
             node::create('td.btn-col2', [],
                 node::create('a.btn.btn-primary', $up_attributes, icon::get('arrow-up')) .
                 node::create('a.btn.btn-primary', $down_attributes, icon::get('arrow-down'))
