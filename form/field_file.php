@@ -1,6 +1,7 @@
 <?php
 namespace core\form;
 
+use classes\icon;
 use html\node;
 
 abstract class field_file extends \form\field {
@@ -21,9 +22,9 @@ abstract class field_file extends \form\field {
     public function get_cms_list_wrapper($value, $object_class, $id) {
         if (isset($this->parent_form->{$this->field_name}) && !empty($this->parent_form->{$this->field_name})) {
             $this->attributes['href'] = $this->parent_form->{$this->field_name};
-            return node::create('a.button', $this->attributes, 'Download');
+            return node::create('a.btn.btn-success', $this->attributes, icon::get('save'));
         } else {
-            return node::create('span', [], 'No File');
+            return node::create('span.btn.btn-default', ['disabled' => 'disabled'], icon::get('save'));
         }
     }
 
