@@ -256,7 +256,7 @@ JS;
                     $obj->_is_expanded = false;
                     $children = false;
                 }
-                return node::create('tr#' . get::__class_name($obj) . $obj->get_primary_key() . ($obj->deleted ? '.danger.deleted' : '') . $class . '.vertical-align', [], $obj->get_cms_list()) . ($children ? $this->get_table_rows($children, '.child') : '');
+                return node::create('tr#' . get::__class_name($obj) . $obj->get_primary_key() . ($obj->deleted ? '.danger.deleted' : '') . $class . '.vertical-align', [], $obj->get_cms_list()) . ($children ? $this->get_table_rows($children, '.active') : '');
             }
         );
     }
