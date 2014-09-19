@@ -553,7 +553,7 @@ abstract class table {
      * @return form
      */
     public function get_form() {
-        $form = new table_form($this->get_fields()->getArrayCopy());
+        $form = new table_form($this);
         $form->id = str_replace('\\', '_', get_class($this) . '_form');
         if (isset($form->attributes['target'])) {
             $form->attributes['target'] = 'form_target_' . $form->id;
