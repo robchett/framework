@@ -1,22 +1,16 @@
 <?php
 namespace core\form;
 
+use classes\icon;
 use html\node;
 
 abstract class field_file extends \form\field {
 
+    public $attributes = [
+        'type' => 'file'
+    ];
+    public $class = [];
     public $external = false;
-
-    public function get_html() {
-        $html = '';
-        $html .= '<a id="' . $this->field_name . '_wrapper" data-click="file_upload_' . $this->field_name . '" class="file_holder"><span class="icon">+</span><p class="text">Click to select a file<br/><small>Or</small><br/>Drag here to upload</p><input name="' . $this->field_name . '" id="' . $this->field_name . '"  type="file"/></a>' . "\n";
-        if (isset($this->parent_form->{$this->field_name}) && $this->parent_form->{$this->field_name}) {
-            $path = pathinfo($this->parent_form->{$this->field_name});
-            $html .= '<p><a href="' . $this->parent_form->{$this->field_name} . '" target="_blank">' . $path['filename'] . '</a></p>';
-        }
-        return $html;
-
-    }
 
     public function get_cms_list_wrapper($value, $object_class, $id) {
         if (isset($this->parent_form->{$this->field_name}) && !empty($this->parent_form->{$this->field_name})) {
@@ -25,6 +19,32 @@ abstract class field_file extends \form\field {
         } else {
             return node::create('span', [], 'No File');
         }
+    }
+
+    public function get_html_wrapper() {
+        $html = '';
+        $html .= $this->pre_text;
+
+        if (!$this->hidden && isset($this->label) && !empty($this->label)) {
+            $html .= node::create('label.control-label.col-md-' . $this->parent_form->bootstrap[0], [
+                'for' => $this->field_name,
+                'id'  => $this->field_name . '_wrapper'
+            ], $this->label);
+        }
+        $html .= node::create('div.col-md-' . $this->parent_form->bootstrap[1] . ' div.fileinput.fileinput-new.input-group', ['data-provides' => 'fileinput'], [
+            node::create('div.form-control', ['data-trigger' => 'fileinput'], [
+                icon::get('file', 'i', ['class' => ['fileinput-exists']]),
+                node::create('span.fileinput-filename', [], ''),
+            ]),
+            node::create('span.input-group-addon.btn.btn-default.btn-file', [], [
+                node::create('span.fileinput-exists', [], 'Change'),
+                node::create('span.fileinput-new', [], 'Select File'),
+                $this->get_html(),
+            ]),
+            node::create('a.input-group-addon.btn.btn-default.fileinput-exists', ['data-dismiss' => 'fileinput'], 'Remove')
+        ]);
+        $html .= $this->post_text;
+        return $html;
     }
 
     public function get_save_sql() {
