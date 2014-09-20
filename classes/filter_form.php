@@ -12,6 +12,8 @@ class filter_form extends form {
     public $identifier;
     public $source_data;
 
+    public $bootstrap = [3, 9, 'form-horizontal'];
+
     public function __construct(field_collection $fields, collection $source_data) {
         $final_fields = [];
         $this->source_data = $source_data;

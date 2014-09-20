@@ -23,7 +23,7 @@ abstract class core {
     public static $inline_script = [];
     public static $global_script = [];
     public static $js = ['/js/'];
-    public static $css = ['/css/'];
+    public static $css = ['/css/styles.css'];
     public static $cms_modules;
     public static $cms_fields;
     /** @var page_config */

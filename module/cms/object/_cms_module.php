@@ -122,7 +122,7 @@ abstract class _cms_module extends table {
      */
     public function get_new_field_form() {
         $form = new add_field_form();
-        $form->mid = $this->mid;
+        $form->mid = $_REQUEST['mid'];
         die(
             node::create('div.modal-header', [], 'Add new field') .
             node::create('div.modal-body', [], $form->get_html()) .

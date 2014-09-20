@@ -17,6 +17,12 @@ abstract class node {
             if(is_array($value)) {
                 if($attr == 'class') {
                     $html .= ' ' . $attr . '="' . htmlentities(implode(' ', $value), ENT_QUOTES) . '"';
+                } else if ($attr == 'style') {
+                    $styles = [];
+                    foreach ($value as $_attr => $_value) {
+                        $styles[] = $_attr . ':' . $_value;
+                    }
+                    $html .= ' ' . $attr . '="' . htmlentities(implode(';', $styles), ENT_QUOTES) . '"';
                 } else {
                     $html .= ' ' . $attr . '=\'' . json_encode($value) . '\'';
                 }

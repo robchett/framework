@@ -8024,154 +8024,154 @@ button.close {
     display: none !important;
   }
 }
-/* line 18, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 18, ../scss/_1_bootswatch.scss */
 .navbar {
   filter: none;
   border: 1px solid rgba(0, 0, 0, 0.6);
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
 }
-/* line 24, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 24, ../scss/_1_bootswatch.scss */
 .navbar-inverse {
   filter: none;
 }
-/* line 27, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 27, ../scss/_1_bootswatch.scss */
 .navbar-inverse .badge {
   background-color: #5d6368;
 }
-/* line 32, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 32, ../scss/_1_bootswatch.scss */
 .navbar-nav > li > a {
   border-right: 1px solid rgba(0, 0, 0, 0.2);
   border-left: 1px solid rgba(255, 255, 255, 0.1);
 }
-/* line 36, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 36, ../scss/_1_bootswatch.scss */
 .navbar-nav > li > a:hover {
   filter: none;
   border-left-color: transparent;
 }
-/* line 42, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 42, ../scss/_1_bootswatch.scss */
 .navbar .nav .open > a {
   border-color: transparent;
 }
-/* line 46, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 46, ../scss/_1_bootswatch.scss */
 .navbar-nav > li.active > a {
   border-left-color: transparent;
 }
-/* line 50, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 50, ../scss/_1_bootswatch.scss */
 .navbar-form {
   margin-left: 5px;
   margin-right: 5px;
 }
 
-/* line 58, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 58, ../scss/_1_bootswatch.scss */
 .btn,
 .btn:hover {
   border-color: rgba(0, 0, 0, 0.6);
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
 }
 
-/* line 64, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 64, ../scss/_1_bootswatch.scss */
 .btn-default {
   filter: none;
 }
-/* line 67, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 67, ../scss/_1_bootswatch.scss */
 .btn-default:hover {
   filter: none;
 }
 
-/* line 72, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 72, ../scss/_1_bootswatch.scss */
 .btn-primary {
   filter: none;
 }
-/* line 75, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 75, ../scss/_1_bootswatch.scss */
 .btn-primary:hover {
   filter: none;
 }
 
-/* line 80, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 80, ../scss/_1_bootswatch.scss */
 .btn-success {
   filter: none;
 }
-/* line 83, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 83, ../scss/_1_bootswatch.scss */
 .btn-success:hover {
   filter: none;
 }
 
-/* line 88, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 88, ../scss/_1_bootswatch.scss */
 .btn-info {
   filter: none;
 }
-/* line 91, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 91, ../scss/_1_bootswatch.scss */
 .btn-info:hover {
   filter: none;
 }
 
-/* line 96, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 96, ../scss/_1_bootswatch.scss */
 .btn-warning {
   filter: none;
 }
-/* line 99, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 99, ../scss/_1_bootswatch.scss */
 .btn-warning:hover {
   filter: none;
 }
 
-/* line 104, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 104, ../scss/_1_bootswatch.scss */
 .btn-danger {
   filter: none;
 }
-/* line 107, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 107, ../scss/_1_bootswatch.scss */
 .btn-danger:hover {
   filter: none;
 }
 
-/* line 112, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 112, ../scss/_1_bootswatch.scss */
 .btn-link,
 .btn-link:hover {
   border-color: transparent;
 }
 
-/* line 119, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 119, ../scss/_1_bootswatch.scss */
 h1, h2, h3, h4, h5, h6 {
   text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.3);
 }
 
-/* line 123, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 123, ../scss/_1_bootswatch.scss */
 .text-primary,
 .text-primary:hover {
   color: #7A8288;
 }
 
-/* line 128, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 128, ../scss/_1_bootswatch.scss */
 .text-success,
 .text-success:hover {
   color: #62c462;
 }
 
-/* line 133, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 133, ../scss/_1_bootswatch.scss */
 .text-danger,
 .text-danger:hover {
   color: #ee5f5b;
 }
 
-/* line 138, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 138, ../scss/_1_bootswatch.scss */
 .text-warning,
 .text-warning:hover {
   color: #f89406;
 }
 
-/* line 143, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 143, ../scss/_1_bootswatch.scss */
 .text-info,
 .text-info:hover {
   color: #5bc0de;
 }
 
-/* line 152, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 152, ../scss/_1_bootswatch.scss */
 .table .success,
 .table .warning,
 .table .danger,
 .table .info {
   color: #fff;
 }
-/* line 165, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 165, ../scss/_1_bootswatch.scss */
 .table-bordered tbody tr.success td, .table-bordered tbody tr.success:hover td,
 .table-bordered tbody tr.warning td,
 .table-bordered tbody tr.warning:hover td,
@@ -8180,74 +8180,74 @@ h1, h2, h3, h4, h5, h6 {
   border-color: #1c1e22;
 }
 
-/* line 173, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 173, ../scss/_1_bootswatch.scss */
 .table-responsive > .table {
   background-color: #2e3338;
 }
 
-/* line 179, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 179, ../scss/_1_bootswatch.scss */
 input,
 textarea {
   color: #272B30;
 }
 
-/* line 185, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 185, ../scss/_1_bootswatch.scss */
 .has-warning .help-block,
 .has-warning .control-label,
 .has-warning .form-control-feedback {
   color: #f89406;
 }
-/* line 191, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 191, ../scss/_1_bootswatch.scss */
 .has-warning .form-control,
 .has-warning .form-control:focus {
   border-color: #f89406;
 }
-/* line 196, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 196, ../scss/_1_bootswatch.scss */
 .has-warning .input-group-addon {
   background-color: #272B30;
   border: none;
 }
 
-/* line 203, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 203, ../scss/_1_bootswatch.scss */
 .has-error .help-block,
 .has-error .control-label,
 .has-error .form-control-feedback {
   color: #ee5f5b;
 }
-/* line 209, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 209, ../scss/_1_bootswatch.scss */
 .has-error .form-control,
 .has-error .form-control:focus {
   border-color: #ee5f5b;
 }
-/* line 214, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 214, ../scss/_1_bootswatch.scss */
 .has-error .input-group-addon {
   background-color: #272B30;
   border: none;
 }
 
-/* line 221, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 221, ../scss/_1_bootswatch.scss */
 .has-success .help-block,
 .has-success .control-label,
 .has-success .form-control-feedback {
   color: #62c462;
 }
-/* line 227, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 227, ../scss/_1_bootswatch.scss */
 .has-success .form-control,
 .has-success .form-control:focus {
   border-color: #62c462;
 }
-/* line 232, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 232, ../scss/_1_bootswatch.scss */
 .has-success .input-group-addon {
   background-color: #272B30;
   border: none;
 }
 
-/* line 238, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 238, ../scss/_1_bootswatch.scss */
 legend {
   color: #fff;
 }
 
-/* line 242, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 242, ../scss/_1_bootswatch.scss */
 .input-group-addon {
   border-color: rgba(0, 0, 0, 0.6);
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
@@ -8255,101 +8255,101 @@ legend {
   color: #fff;
 }
 
-/* line 253, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 253, ../scss/_1_bootswatch.scss */
 .nav .open > a,
 .nav .open > a:hover,
 .nav .open > a:focus {
   border-color: rgba(0, 0, 0, 0.6);
 }
 
-/* line 263, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 263, ../scss/_1_bootswatch.scss */
 .nav-pills > li > a {
   filter: none;
   border: 1px solid rgba(0, 0, 0, 0.6);
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
 }
-/* line 268, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 268, ../scss/_1_bootswatch.scss */
 .nav-pills > li > a:hover {
   filter: none;
   border: 1px solid rgba(0, 0, 0, 0.6);
 }
-/* line 274, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 274, ../scss/_1_bootswatch.scss */
 .nav-pills > li.active > a, .nav-pills > li.active > a:hover {
   background-color: none;
   filter: none;
   border: 1px solid rgba(0, 0, 0, 0.6);
 }
-/* line 281, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 281, ../scss/_1_bootswatch.scss */
 .nav-pills > li.disabled > a, .nav-pills > li.disabled > a:hover {
   filter: none;
 }
 
-/* line 289, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 289, ../scss/_1_bootswatch.scss */
 .pagination > li > a, .pagination > li > span {
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
   filter: none;
 }
-/* line 294, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 294, ../scss/_1_bootswatch.scss */
 .pagination > li > a:hover, .pagination > li > span:hover {
   filter: none;
 }
-/* line 299, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 299, ../scss/_1_bootswatch.scss */
 .pagination > li.active > a, .pagination > li.active > span {
   filter: none;
 }
-/* line 304, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 304, ../scss/_1_bootswatch.scss */
 .pagination > li.disabled > a, .pagination > li.disabled > a:hover, .pagination > li.disabled > span, .pagination > li.disabled > span:hover {
   background-color: transparent;
   filter: none;
 }
 
-/* line 315, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 315, ../scss/_1_bootswatch.scss */
 .pager > li > a {
   filter: none;
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
 }
-/* line 319, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 319, ../scss/_1_bootswatch.scss */
 .pager > li > a:hover {
   filter: none;
 }
-/* line 324, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 324, ../scss/_1_bootswatch.scss */
 .pager > li.disabled > a, .pager > li.disabled > a:hover {
   background-color: transparent;
   filter: none;
 }
 
-/* line 331, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 331, ../scss/_1_bootswatch.scss */
 .breadcrumb {
   border: 1px solid rgba(0, 0, 0, 0.6);
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
   filter: none;
 }
 
-/* line 341, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 341, ../scss/_1_bootswatch.scss */
 .alert .alert-link,
 .alert a {
   color: #fff;
   text-decoration: underline;
 }
-/* line 347, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 347, ../scss/_1_bootswatch.scss */
 .alert .close {
   color: #000;
   text-decoration: none;
 }
 
-/* line 357, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 357, ../scss/_1_bootswatch.scss */
 a.thumbnail:hover,
 a.thumbnail:focus,
 a.thumbnail.active {
   border-color: #0c0d0e;
 }
 
-/* line 363, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 363, ../scss/_1_bootswatch.scss */
 .jumbotron {
   border: 1px solid rgba(0, 0, 0, 0.6);
 }
 
-/* line 373, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_1_bootswatch.scss */
+/* line 373, ../scss/_1_bootswatch.scss */
 .panel-primary .panel-heading,
 .panel-success .panel-heading,
 .panel-danger .panel-heading,
@@ -8358,40 +8358,307 @@ a.thumbnail.active {
   border-color: #000;
 }
 
-/* line 1, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
+/*!
+ * Jasny Bootstrap v3.1.0 (http://jasny.github.com/bootstrap)
+ * Copyright 2011-2014 Arnold Daniels.
+ * Licensed under Apache-2.0 (https://github.com/jasny/bootstrap/blob/master/LICENSE)
+ */
+/* line 7, ../scss/_2_boostrap_plugins.scss */
+.nav-tabs-bottom {
+  border-bottom: 0;
+  border-top: 1px solid #dddddd;
+}
+
+/* line 12, ../scss/_2_boostrap_plugins.scss */
+.nav-tabs-bottom > li {
+  margin-bottom: 0;
+  margin-top: -1px;
+}
+
+/* line 17, ../scss/_2_boostrap_plugins.scss */
+.nav-tabs-bottom > li > a {
+  border-radius: 0 0 4px 4px;
+}
+
+/* line 21, ../scss/_2_boostrap_plugins.scss */
+.nav-tabs-bottom > li > a:hover,
+.nav-tabs-bottom > li > a:focus,
+.nav-tabs-bottom > li.active > a,
+.nav-tabs-bottom > li.active > a:hover,
+.nav-tabs-bottom > li.active > a:focus {
+  border: 1px solid #dddddd;
+  border-top-color: transparent;
+}
+
+/* line 30, ../scss/_2_boostrap_plugins.scss */
+.nav-tabs-left {
+  border-bottom: 0;
+  border-right: 1px solid #dddddd;
+}
+
+/* line 35, ../scss/_2_boostrap_plugins.scss */
+.nav-tabs-left > li {
+  margin-bottom: 0;
+  margin-right: -1px;
+  float: none;
+}
+
+/* line 41, ../scss/_2_boostrap_plugins.scss */
+.nav-tabs-left > li > a {
+  border-radius: 4px 0 0 4px;
+  margin-right: 0;
+  margin-bottom: 2px;
+}
+
+/* line 47, ../scss/_2_boostrap_plugins.scss */
+.nav-tabs-left > li > a:hover,
+.nav-tabs-left > li > a:focus,
+.nav-tabs-left > li.active > a,
+.nav-tabs-left > li.active > a:hover,
+.nav-tabs-left > li.active > a:focus {
+  border: 1px solid #dddddd;
+  border-right-color: transparent;
+}
+
+/* line 56, ../scss/_2_boostrap_plugins.scss */
+.row > .nav-tabs-left {
+  padding-right: 0;
+  padding-left: 15px;
+  margin-right: -1px;
+  position: relative;
+  z-index: 1;
+}
+
+/* line 64, ../scss/_2_boostrap_plugins.scss */
+.row > .nav-tabs-left + .tab-content {
+  border-left: 1px solid #dddddd;
+}
+
+/* line 68, ../scss/_2_boostrap_plugins.scss */
+.nav-tabs-right {
+  border-bottom: 0;
+  border-left: 1px solid #dddddd;
+}
+
+/* line 73, ../scss/_2_boostrap_plugins.scss */
+.nav-tabs-right > li {
+  margin-bottom: 0;
+  margin-left: -1px;
+  float: none;
+}
+
+/* line 79, ../scss/_2_boostrap_plugins.scss */
+.nav-tabs-right > li > a {
+  border-radius: 0 4px 4px 0;
+  margin-left: 0;
+  margin-bottom: 2px;
+}
+
+/* line 85, ../scss/_2_boostrap_plugins.scss */
+.nav-tabs-right > li > a:hover,
+.nav-tabs-right > li > a:focus,
+.nav-tabs-right > li.active > a,
+.nav-tabs-right > li.active > a:hover,
+.nav-tabs-right > li.active > a:focus {
+  border: 1px solid #dddddd;
+  border-left-color: transparent;
+}
+
+/* line 94, ../scss/_2_boostrap_plugins.scss */
+.row > .nav-tabs-right {
+  padding-left: 0;
+  padding-right: 15px;
+}
+
+/* line 99, ../scss/_2_boostrap_plugins.scss */
+.btn-file {
+  overflow: hidden;
+  position: relative;
+  vertical-align: middle;
+}
+
+/* line 105, ../scss/_2_boostrap_plugins.scss */
+.btn-file > input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 0;
+  opacity: 0;
+  filter: alpha(opacity=0);
+  font-size: 23px;
+  height: 100%;
+  width: 100%;
+  direction: ltr;
+  cursor: pointer;
+}
+
+/* line 119, ../scss/_2_boostrap_plugins.scss */
+.fileinput {
+  margin-bottom: 9px;
+  display: inline-block;
+}
+
+/* line 124, ../scss/_2_boostrap_plugins.scss */
+.fileinput .form-control {
+  padding-top: 7px;
+  padding-bottom: 5px;
+  display: inline-block;
+  margin-bottom: 0px;
+  vertical-align: middle;
+  cursor: text;
+}
+
+/* line 133, ../scss/_2_boostrap_plugins.scss */
+.fileinput .thumbnail {
+  overflow: hidden;
+  display: inline-block;
+  margin-bottom: 5px;
+  vertical-align: middle;
+  text-align: center;
+}
+
+/* line 141, ../scss/_2_boostrap_plugins.scss */
+.fileinput .thumbnail > img {
+  max-height: 100%;
+}
+
+/* line 145, ../scss/_2_boostrap_plugins.scss */
+.fileinput .btn {
+  vertical-align: middle;
+}
+
+/* line 149, ../scss/_2_boostrap_plugins.scss */
+.fileinput-exists .fileinput-new,
+.fileinput-new .fileinput-exists {
+  display: none;
+}
+
+/* line 154, ../scss/_2_boostrap_plugins.scss */
+.fileinput-inline .fileinput-controls {
+  display: inline;
+}
+
+/* line 158, ../scss/_2_boostrap_plugins.scss */
+.fileinput-filename {
+  vertical-align: middle;
+  display: inline-block;
+  overflow: hidden;
+}
+
+/* line 164, ../scss/_2_boostrap_plugins.scss */
+.form-control .fileinput-filename {
+  vertical-align: bottom;
+}
+
+/* line 168, ../scss/_2_boostrap_plugins.scss */
+.fileinput.input-group {
+  display: table;
+}
+
+/* line 172, ../scss/_2_boostrap_plugins.scss */
+.fileinput.input-group > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* line 177, ../scss/_2_boostrap_plugins.scss */
+.fileinput.input-group > .btn-file {
+  z-index: 1;
+}
+
+/* line 181, ../scss/_2_boostrap_plugins.scss */
+.fileinput-new.input-group .btn-file,
+.fileinput-new .input-group .btn-file {
+  border-radius: 0 4px 4px 0;
+}
+
+/* line 186, ../scss/_2_boostrap_plugins.scss */
+.fileinput-new.input-group .btn-file.btn-xs, .fileinput-new.input-group .btn-group-xs > .btn-file.btn,
+.fileinput-new .input-group .btn-file.btn-xs,
+.fileinput-new .input-group .btn-group-xs > .btn-file.btn,
+.fileinput-new.input-group .btn-file.btn-sm,
+.fileinput-new.input-group .btn-group-sm > .btn-file.btn,
+.fileinput-new .input-group .btn-file.btn-sm,
+.fileinput-new .input-group .btn-group-sm > .btn-file.btn {
+  border-radius: 0 3px 3px 0;
+}
+
+/* line 193, ../scss/_2_boostrap_plugins.scss */
+.fileinput-new.input-group .btn-file.btn-lg, .fileinput-new.input-group .btn-group-lg > .btn-file.btn,
+.fileinput-new .input-group .btn-file.btn-lg,
+.fileinput-new .input-group .btn-group-lg > .btn-file.btn {
+  border-radius: 0 6px 6px 0;
+}
+
+/* line 198, ../scss/_2_boostrap_plugins.scss */
+.form-group.has-warning .fileinput .fileinput-preview {
+  color: #8a6d3b;
+}
+
+/* line 202, ../scss/_2_boostrap_plugins.scss */
+.form-group.has-warning .fileinput .thumbnail {
+  border-color: #faebcc;
+}
+
+/* line 206, ../scss/_2_boostrap_plugins.scss */
+.form-group.has-error .fileinput .fileinput-preview {
+  color: #a94442;
+}
+
+/* line 210, ../scss/_2_boostrap_plugins.scss */
+.form-group.has-error .fileinput .thumbnail {
+  border-color: #ebccd1;
+}
+
+/* line 214, ../scss/_2_boostrap_plugins.scss */
+.form-group.has-success .fileinput .fileinput-preview {
+  color: #3c763d;
+}
+
+/* line 218, ../scss/_2_boostrap_plugins.scss */
+.form-group.has-success .fileinput .thumbnail {
+  border-color: #d6e9c6;
+}
+
+/* line 222, ../scss/_2_boostrap_plugins.scss */
+.input-group-addon:not(:first-child) {
+  border-left: 0;
+}
+
+/* line 1, ../scss/_3_cms.scss */
 a {
   cursor: pointer;
 }
 
-/* line 6, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
+/* line 6, ../scss/_3_cms.scss */
 #filter_form .form-group {
   margin-right: 10px;
 }
 
-/* line 11, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
+/* line 11, ../scss/_3_cms.scss */
 .panel-heading .pagination {
   margin-top: 0px;
   margin-bottom: 0px;
 }
 
-/* line 18, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
+/* line 18, ../scss/_3_cms.scss */
 col.btn-col, th.btn-col, td.btn-col {
   width: 56px !important;
 }
-/* line 21, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
+/* line 21, ../scss/_3_cms.scss */
 col.btn-col2, th.btn-col2, td.btn-col2 {
   width: 96px !important;
 }
-/* line 26, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
+/* line 26, ../scss/_3_cms.scss */
 col.field_date, th.field_date, td.field_date {
   width: 90px !important;
 }
 
-/* line 33, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
+/* line 33, ../scss/_3_cms.scss */
 .module_list .edit, .module_list .position, .module_list .delete {
   vertical-align: middle;
 }
-/* line 36, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
+/* line 36, ../scss/_3_cms.scss */
 .module_list td {
   max-width: 500px;
 }
@@ -8399,7 +8666,7 @@ col.field_date, th.field_date, td.field_date {
 /* Side notes for calling out things
 -------------------------------------------------- */
 /* Base styles (regardless of theme) */
-/* line 45, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
+/* line 45, ../scss/_3_cms.scss */
 .bs-callout {
   margin: 20px 0;
   padding: 15px 30px 15px 15px;
@@ -8407,78 +8674,78 @@ col.field_date, th.field_date, td.field_date {
   color: #3b3b3b;
 }
 
-/* line 52, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
+/* line 52, ../scss/_3_cms.scss */
 .bs-callout h4 {
   margin-top: 0;
 }
 
-/* line 56, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
+/* line 56, ../scss/_3_cms.scss */
 .bs-callout p:last-child {
   margin-bottom: 0;
 }
 
-/* line 60, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
+/* line 60, ../scss/_3_cms.scss */
 .bs-callout code,
 .bs-callout .highlight {
   background-color: #fff;
 }
 
 /* Themes for different contexts */
-/* line 66, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
+/* line 66, ../scss/_3_cms.scss */
 .bs-callout-danger {
   background-color: #fcf2f2;
   border-color: #dFb5b4;
 }
 
-/* line 71, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
+/* line 71, ../scss/_3_cms.scss */
 .bs-callout-warning {
   background-color: #f1c49c;
   border-color: #fe8969;
 }
 
-/* line 76, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
+/* line 76, ../scss/_3_cms.scss */
 .bs-callout-info {
   background-color: #f0f7fd;
   border-color: #d0e3f0;
 }
 
-/* line 81, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
+/* line 81, ../scss/_3_cms.scss */
 .form-signin {
   max-width: 630px;
   padding: 15px;
   margin: 0 auto;
 }
 
-/* line 87, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
+/* line 87, ../scss/_3_cms.scss */
 .form-signin .form-signin-heading {
   margin-bottom: 10px;
 }
 
-/* line 91, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
+/* line 91, ../scss/_3_cms.scss */
 .form-signin .form-group {
   margin-bottom: 0;
 }
 
-/* line 95, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
+/* line 95, ../scss/_3_cms.scss */
 .form-signin label {
   display: none;
 }
 
-/* line 99, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
+/* line 99, ../scss/_3_cms.scss */
 .form-signin input[type="text"] {
   margin-bottom: -1px;
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
 }
 
-/* line 105, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
+/* line 105, ../scss/_3_cms.scss */
 .form-signin input[type="password"] {
   margin-bottom: 15px;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
 
-/* line 111, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
+/* line 111, ../scss/_3_cms.scss */
 .loading_shroud {
   position: absolute !important;
   width: 100% !important;
@@ -8489,12 +8756,12 @@ col.field_date, th.field_date, td.field_date {
   z-index: 99999 !important;
 }
 
-/* line 121, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
+/* line 121, ../scss/_3_cms.scss */
 tr.vertical-align > th, tr.vertical-align > td {
   vertical-align: middle !important;
 }
 
-/* line 125, ../../../../../../../../../var/www/vhosts/uknxcl/web/.core/module/cms/scss/_2_cms.scss */
+/* line 125, ../scss/_3_cms.scss */
 .col-md-0 {
   display: inline-block;
   padding-right: 15px;

@@ -14,7 +14,7 @@ admin_edit extends cms_view {
                 $this->module->module->get_cms_edit_module(),
                 $this->module->module->get_fields_list(),
                 node::create('button.btn.btn-default.btn-block', [
-                    'href'        => '/?module=' . get_class($this->module->module) . '&act=get_new_field_form',
+                    'href'        => '/?module=' . get_class($this->module->module) . '&act=get_new_field_form&mid=' . $this->module->module->mid,
                     'data-target' => '#modal',
                     'data-toggle' => 'modal'
                 ], 'Add another field'),

@@ -3,7 +3,7 @@
 namespace core\module\pages\object;
 
 use classes\get;
-use core\classes\table;
+use classes\table;
 use traits\table_trait;
 
 abstract class page extends table {

@@ -16,6 +16,7 @@ use object\image_size;
 
 /**
  * Class controller
+ *
  * @package cms
  */
 abstract class controller extends module {
@@ -43,7 +44,12 @@ abstract class controller extends module {
         \classes\compiler::disable();
         error_reporting(-1);
         \core::$css = ['/.core/module/cms/css/styles.css'];
-        \core::$js = ['/.core/js/jquery.js', '/.core/js/_ajax.js', '/.core/module/cms/js/cms.js', '/.core/js/colorbox.js', '/.core/plugins/ckeditor/ckeditor.js'];
+        \core::$js = [
+            '/.core/js/jquery.js',
+            '/.core/js/_ajax.js',
+            '/.core/module/cms/js/cms.js',
+            '/.core/js/colorbox.js',
+            '/.core/plugins/ckeditor/ckeditor.js'];
         if (\core::is_admin() && !isset($path[1])) {
             $path[1] = 'dashboard';
         }
@@ -128,7 +134,8 @@ abstract class controller extends module {
             );
             $cnt = 1;
             $fields->iterate(function (object\_cms_field $field) use (&$cnt) {
-                    db::update('_cms_field')->add_value('position', $cnt++)->filter_field('fid', $field->fid)->execute();
+                    db::update('_cms_field')->add_value('position', $cnt++)->filter_field('fid', $field->fid)
+                      ->execute();
                 }
             );
             table::reset_module_fields($this->module->mid);
@@ -165,11 +172,13 @@ abstract class controller extends module {
         if ($collection->count()) {
             $html .= $collection->iterate_return(function (_cms_module $module) {
                     $class = $module->get_class_name();
-                    $list = new _cms_table_list($module, 1);
+                    $list = new object\_cms_table_list($module, 1);
                     $list->where = [$this->module->primary_key => $this->current->get_primary_key()];
-                    return node::create('div.sub_module', [],
-                        node::create('h3', [], $module->title) .
-                        node::create('a.button', ['href' => '/cms/edit/' . $class::get_module_id() . '?' . $this->module->primary_key . '=' . $this->current->get_primary_key()], 'Add new ' . $module->title) .
+                    return node::create('div.sub_module.container-fluid', [],
+                        node::create('div.row', [], [
+                            node::create('div.col-md-6 h3.pull-left', [], $module->title),
+                            node::create('div.col-md-6 a.btn.btn-default.pull-right', ['href' => '/cms/edit/' . $class::get_module_id() . '?' . $this->module->primary_key . '=' . $this->current->get_primary_key()], 'Add new ' . $module->title)
+                        ]) .
                         $list->get_table()
                     );
                 }
@@ -181,13 +190,23 @@ abstract class controller extends module {
     protected function get_right_nav() {
         $nodes = [];
         if (isset($this->mid)) {
-            $nodes[] = node::create('li.right a', ['href' => '/cms/admin_edit/' . $this->mid, 'title' => 'Edit ' . get_class($this->current)], 'Edit Module');
-            $nodes[] = node::create('li.right a', ['href' => '/cms/edit/' . $this->mid, 'title' => 'Add new ' . ucwords(str_replace('_', ' ', get::__class_name($this->current)))], 'Add new ' . get::__class_name($this->current));
+            $nodes[] = node::create('li.right a', [
+                    'href'  => '/cms/admin_edit/' . $this->mid,
+                    'title' => 'Edit ' . get_class($this->current)], 'Edit Module');
+            $nodes[] = node::create('li.right a', [
+                    'href'  => '/cms/edit/' . $this->mid,
+                    'title' => 'Add new ' . ucwords(str_replace('_', ' ', get::__class_name($this->current)))], 'Add new ' . get::__class_name($this->current));
         } else if ($this->view === 'module_list') {
-            $nodes[] = node::create('li.right a', ['href' => '/cms/new_module/', 'title' => 'Add new module'], 'Add new module');
-            $nodes[] = node::create('li.right a', ['href' => "/cms/edit/" . object\_cms_group::get_module_id(), 'title' => 'Add new module group'], 'Add new module group');
+            $nodes[] = node::create('li.right a', [
+                    'href'  => '/cms/new_module/',
+                    'title' => 'Add new module'], 'Add new module');
+            $nodes[] = node::create('li.right a', [
+                    'href'  => "/cms/edit/" . object\_cms_group::get_module_id(),
+                    'title' => 'Add new module group'], 'Add new module group');
         }
-        $nodes[] = node::create('li.right a', ['href' => '/cms/module_list/', 'title' => 'View all modules'], 'All Modules');
+        $nodes[] = node::create('li.right a', [
+                'href'  => '/cms/module_list/',
+                'title' => 'View all modules'], 'All Modules');
         return $nodes;
     }
 
@@ -199,7 +218,7 @@ abstract class controller extends module {
         $html = node::create('nav#nav.navbar.navbar-default', ['role' => 'navigation'],
             node::create('div.container-fluid', [],
                 node::create('ul.nav.navbar-nav', [],
-                    node::create('li a.navbar-brand', ['href'=> '/cms'], 'CMS') .
+                    node::create('li a.navbar-brand', ['href' => '/cms'], 'CMS') .
                     $groups->iterate_return(
                         function (object\_cms_group $row) {
                             $modules = object\_cms_module::get_all([], [
@@ -208,7 +227,7 @@ abstract class controller extends module {
                                     'parent_mid' => 0]
                             ]);
                             return node::create('li', [],
-                                node::create('a.dropdown-toggle', ['data-toggle'=>'dropdown'], $row->title . node::create('span.caret', [], '')) .
+                                node::create('a.dropdown-toggle', ['data-toggle' => 'dropdown'], $row->title . node::create('span.caret', [], '')) .
                                 node::create('ul.dropdown-menu', ['role' => 'menu'],
                                     $modules->iterate_return(
                                         function (object\_cms_module $srow) {
@@ -234,7 +253,7 @@ abstract class controller extends module {
         $class = $module->get_class_name();
         $class::$retrieve_deleted = true;
         $object->do_retrieve_from_id(['deleted'], $_REQUEST['id']);
-        if($object->get_primary_key()){
+        if ($object->get_primary_key()) {
             $object->deleted = false;
             $object->do_save();
         }
@@ -248,7 +267,7 @@ abstract class controller extends module {
         $class = $module->get_class_name();
         $class::$retrieve_deleted = true;
         $object->do_retrieve_from_id(['deleted'], $_REQUEST['id']);
-        if($object->get_primary_key()){
+        if ($object->get_primary_key()) {
             if ($object->deleted) {
                 db::delete(get::__class_name($class))
                   ->filter($object->get_primary_key_name() . '=' . $_REQUEST['id'])

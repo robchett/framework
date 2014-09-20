@@ -70,6 +70,7 @@ abstract class table {
      * @param string $size
      * @param int $width
      * @param int $height
+     *
      * @return node
      * */
     public function get_padded_image($id, $size, $width, $height) {
@@ -77,7 +78,13 @@ abstract class table {
         $actual_size = getimagesize(root . $url);
         $vertical = ($height - $actual_size[1]) / 2;
         $horizontal = ($width - $actual_size[0]) / 2;
-        return node::create('span.padded_image', ['style' => 'padding:' . $vertical . 'px ' . $horizontal . 'px'], node::create('img', ['src' => $url]));
+        return node::create('span.padded_image', [
+            'style' => [
+                'padding' => $vertical . 'px ' . $horizontal . 'px',
+                'height'  => $height . 'px',
+                'width'   => $width . 'px'
+            ]
+        ], node::create('img', ['src' => $url]));
     }
 
     public function get_table_class() {
@@ -553,7 +560,7 @@ abstract class table {
      * @return form
      */
     public function get_form() {
-        $form = new table_form($this->get_fields()->getArrayCopy());
+        $form = new table_form($this);
         $form->id = str_replace('\\', '_', get_class($this) . '_form');
         if (isset($form->attributes['target'])) {
             $form->attributes['target'] = 'form_target_' . $form->id;
@@ -731,7 +738,7 @@ abstract class table {
         return
             node::create('td.btn-col a.btn.btn-primary', ['href' => '/cms/edit/' . static::get_module_id() . '/' . $this->get_primary_key()], icon::get('pencil')) .
             node::create('td.bnt-col a.btn.btn-primary', $live_attributes, icon::get($this->live ? 'ok' : 'remove')) .
-            ($nestable ? node::create('td.edit' . ($this->_has_child ? '' : '.no_expand'), $expand_attributes, ($this->_has_child ? node::create('a.expand.btn.btn-primary', [], icon::get(!$this->_is_expanded ? 'plus' : 'minus')) : '')) : '') .
+            ($nestable ? node::create('td.edit' . ($this->_has_child ? '' : '.no_expand'), [], ($this->_has_child ? node::create('a.expand.btn.btn-primary', $expand_attributes, icon::get(!$this->_is_expanded ? 'plus' : 'minus')) : '')) : '') .
             node::create('td.btn-col2', [],
                 node::create('a.btn.btn-primary', $up_attributes, icon::get('arrow-up')) .
                 node::create('a.btn.btn-primary', $down_attributes, icon::get('arrow-down'))
