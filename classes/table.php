@@ -70,6 +70,7 @@ abstract class table {
      * @param string $size
      * @param int $width
      * @param int $height
+     *
      * @return node
      * */
     public function get_padded_image($id, $size, $width, $height) {
@@ -77,7 +78,13 @@ abstract class table {
         $actual_size = getimagesize(root . $url);
         $vertical = ($height - $actual_size[1]) / 2;
         $horizontal = ($width - $actual_size[0]) / 2;
-        return node::create('span.padded_image', ['style' => 'padding:' . $vertical . 'px ' . $horizontal . 'px'], node::create('img', ['src' => $url]));
+        return node::create('span.padded_image', [
+            'style' => [
+                'padding' => $vertical . 'px ' . $horizontal . 'px',
+                'height'  => $height . 'px',
+                'width'   => $width . 'px'
+            ]
+        ], node::create('img', ['src' => $url]));
     }
 
     public function get_table_class() {
