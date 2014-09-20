@@ -93,7 +93,7 @@ class compiler {
         if (static::$disabled === 0) {
             $key = md5($url . serialize($parameters));
             $dependents = implode(',', array_unique(self::$dependants));
-            db::insert('_compiler_keys')
+            db::insert('_compiler_keys', 'DELAYED')
               ->add_value('file', $key)
               ->add_value('dependants', $dependents)
               ->execute();
