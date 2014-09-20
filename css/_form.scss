@@ -69,7 +69,7 @@ $form_disabled_color: #cacaca;
             left: -9999px;
           }
           .submit {
-            @include button($height);
+            @include button();
             display: block;
           }
         }
