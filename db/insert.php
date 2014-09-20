@@ -9,9 +9,15 @@ use db\query as _query;
 abstract class insert extends _query {
 
     protected $values = [];
+    protected $mode;
+
+    public function __construct($table, $mode = '') {
+        parent::__construct($table);
+        $this->mode = $mode;
+    }
 
     public function execute() {
-        $query = 'INSERT INTO ' . $this->table . ' SET ' . $this->get_values();
+        $query = 'INSERT ' . $this->mode. ' INTO ' . $this->table . ' SET ' . $this->get_values();
         _db::query($query, $this->parameters);
         $id = _db::insert_id();
         compiler::break_cache($this->table);

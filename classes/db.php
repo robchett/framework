@@ -40,8 +40,8 @@ abstract class db implements interfaces\database_interface {
         return new _select($table_name);
     }
 
-    public static function insert($table_name) {
-        return new _insert($table_name);
+    public static function insert($table_name, $mode = '') {
+        return new _insert($table_name, $mode);
     }
 
     public static function update($table_name) {
