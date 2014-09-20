@@ -44,7 +44,7 @@ abstract class edit_module_form extends form {
         if ($module->primary_key != $this->primary_key) {
             db::rename_column($this->table_name, $module->primary_key, $this->primary_key);
         }
-
+        table::rebuild_modules();
         $module->set_from_request();
         $module->do_save();
     }

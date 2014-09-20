@@ -86,6 +86,7 @@ abstract class add_field_form extends form {
         }
         $insert->execute();
 
+        table::rebuild_modules();
         table::reset_module_fields($module->mid);
 
         ajax::update($module->get_fields_list()->get());

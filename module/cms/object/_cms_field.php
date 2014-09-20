@@ -11,12 +11,26 @@ abstract class _cms_field extends table {
     use table_trait;
 
     protected static $cms_fields;
+    public static $default_fields = [
+        'fid',
+        'parent_fid',
+        'field_name',
+        'title',
+        'type',
+        'mid',
+        'list',
+        'filter',
+        'required',
+        'link_module',
+        'link_field'
+    ];
     public $fid;
     public $field_name;
     public $title;
     public $type;
     public $link_field;
     public $link_module;
+    public $primary_key = 'fid';
 
     public static function create($field_name, $structure, $module) {
         $field = new __cms_field();
@@ -45,6 +59,14 @@ abstract class _cms_field extends table {
         } else {
             throw new \Exception('Field ' . $field_name . ' already exists in module ' . $module);
         }
+        return $field;
+    }
+
+    public function get_field() {
+        $class = '\\form\\field_' . $this->type;
+        /** @var field $field */
+        $field = new $class($this->field_name, []);
+        $field->set_from_row($this);
         return $field;
     }
 

@@ -42,9 +42,12 @@ abstract class table {
      * @var collection
      */
     protected static $cms_modules;
+    protected static $cms_modules_id;
+    public static $default_fields = [];
     public $live;
     public $deleted;
     public $ts;
+    public $primary_key;
     /**
      * @var int
      */
@@ -177,15 +180,21 @@ abstract class table {
     }
 
     /**
-     * @param $row
-     * @param $links
+     * @param array      $row
+     * @param       $links
+     * @param array $mappings array mapping retrieved row to field name
      */
-    public function set_from_row($row, $links) {
+    public function set_from_row(array $row, $links, $mappings = []) {
+        /**
+         * @var string $key
+         * @var field  $field
+         */
+        foreach ($mappings as $key => $field) {
+            $this->$key = $field::sanitise_from_db($row[$key]);
+            unset ($row[$key]);
+        }
         foreach ($row as $key => $val) {
-            if ($field = $this->has_field($key)) {
-                /** @var field $field */
-                $this->$key = $field::sanitise_from_db($val);
-            } else if (strstr($key, '@')) {
+            if (strstr($key, '@')) {
                 list($module, $field) = explode('@', $key);
                 if (!isset($this->$module)) {
                     foreach ($links as $link_module => $link) {
@@ -294,11 +303,23 @@ abstract class table {
         $fields = $new_fields;
     }
 
+    public function get_field_mappings($keys = []) {
+        $mappings = [];
+        $fields = $this->get_fields();
+        foreach($keys as $key) {
+            if($fields->has_field($key)) {
+                $mappings[$key] = $fields->get_field($key);
+            }
+        }
+        return $mappings;
+    }
+
     /**
      * @param array $fields
      * @param array $options
      */
     public function do_retrieve(array $fields, array $options) {
+        self::set_cms_modules();
         $options['limit'] = 1;
         $this->set_default_retrieve($fields, $options);
         $links = $mlinks = [];
@@ -315,7 +336,8 @@ abstract class table {
         $res = $query->execute();
         //$before = memory_get_usage();
         if (_db::num($res)) {
-            $this->set_from_row(_db::fetch($res), $links);
+            $row = _db::fetch($res, null);
+            $this->set_from_row($row, $links, $this->get_field_mappings(array_keys($row)));
         }
         /** @var field_link $field */
         foreach ($mlinks as $module => $fields) {
@@ -603,78 +625,40 @@ abstract class table {
 
     private static function set_cms_modules() {
         if (!isset(self::$cms_modules)) {
-            $object = new _cms_module();
-            $object->_cms_field_elements = new _collection();
-            self::$cms_modules = new _collection(['module\cms\object\_cms_module' => $object]);
-            $modules = _cms_module::get_all([
-                    'mid',
-                    'primary_key',
-                    'namespace',
-                    'table_name',
-                    'nestable'
-                ]
-            );
-            $modules->iterate(function (_cms_module $module) {
-                    $module->_cms_field_elements = new field_collection();
-                    self::$cms_modules[trim($module->get_class_name(), '\\')] = $module;
+            $data = json_decode(file_get_contents(root . '/.cache/.modules.json'));
+            self::$cms_modules = new _collection();
+            self::$cms_modules_id = new _collection();
+            foreach($data as $module_data) {
+                $module = new _cms_module();
+                foreach(_cms_module::$default_fields as $field) {
+                    $module->$field = $module_data->$field;
                 }
-            );
-            $fields = _cms_field::get_all([
-                    'fid',
-                    'parent_fid',
-                    'field_name',
-                    'title',
-                    'type',
-                    'mid',
-                    'list',
-                    'filter',
-                    'required',
-                    'link_module',
-                    'link_field'
-                ]
-            );
-            $fields->iterate(function (_cms_field $row) {
-                    foreach (self::$cms_modules as &$module) {
-                        if ($module->mid == $row->mid) {
-                            $class = 'form\field_' . $row->type;
-                            /** @var field $field */
-                            $field = new $class($row->field_name, []);
-                            $field->label = $row->title;
-                            $field->set_from_row($row);
-                            $module->_cms_field_elements[] = $field;
-                            break;
-                        }
+                foreach($module_data->fields as $field_data) {
+                    $cms_field = new _cms_field();
+                    foreach(_cms_field::$default_fields as $field) {
+                        $cms_field->$field = $field_data->$field;
                     }
+                    $module->_field_elements[$cms_field->field_name] = $cms_field;
+                    $module->_field_elements[$cms_field->field_name] = $cms_field->get_field();
                 }
-            );
+                self::$cms_modules[trim($module->get_class_name(), '\\')] = $module;
+                self::$cms_modules_id[$module->mid] = $module;
+            }
         }
     }
 
     public static function reset_module_fields ($mid) {
-        $fields = _cms_field::get_all([
-                'fid',
-                'parent_fid',
-                'field_name',
-                'title',
-                'type',
-                'mid',
-                'list',
-                'filter',
-                'required',
-                'link_module',
-                'link_field'
-            ], ['where_equals'=>['mid'=>$mid]]
-        );
+        $fields = _cms_field::get_all(_cms_field::$default_fields, ['where_equals'=>['mid'=>$mid]]);
         $module = new _cms_module([], $mid);
         $module = self::$cms_modules[trim($module->get_class_name(), '\\')];
-        $module->_cms_field_elements = new field_collection();
+        $module->_field_elements = new field_collection();
         $fields->iterate(function (_cms_field $row) use ($module) {
                 $class = 'form\field_' . $row->type;
                 /** @var field $field */
                 $field = new $class($row->field_name, []);
                 $field->label = $row->title;
                 $field->set_from_row($row);
-                $module->_cms_field_elements[] = $field;
+                $module->_field_elements[] = $field;
             }
         );
     }
@@ -767,12 +751,7 @@ abstract class table {
      * @return field_collection
      */
     public function get_fields($clone = false) {
-        $fields = static::_get_fields($clone);
-        /*$fields->iterate(function ($field) {
-                $field->parent_form = $this;
-            }
-        );*/
-        return $fields;
+        return static::_get_fields($clone);
     }
 
     /**
@@ -783,7 +762,7 @@ abstract class table {
         self::set_cms_modules();
         $class = get_called_class();
         if (isset(self::$cms_modules[$class])) {
-            $fields = self::$cms_modules[$class]->_cms_field_elements;
+            $fields = self::$cms_modules[$class]->_field_elements;
         } else {
             trigger_error('Attempting to get a fields for a table that doesn\'t exist - ' . $class);
             $fields = new field_collection();
@@ -865,5 +844,28 @@ abstract class table {
 
     public function is_deleted() {
         return $this->deleted;
+    }
+
+    public static function rebuild_modules() {
+        $modules = _cms_module::get_all(_cms_module::$default_fields);
+        $fields = _cms_field::get_all(_cms_field::$default_fields);
+
+        $json = [];
+        $modules->iterate(function (_cms_module $row) use (&$json) {
+            $result = [];
+            foreach (_cms_module::$default_fields as $field) {
+                $result[$field] = $row->$field;
+            }
+            $json[$row->mid] = $result;
+        });
+        $fields->iterate(function (_cms_field $row) use (&$json) {
+            $result = [];
+            foreach (_cms_field::$default_fields as $field) {
+                $result[$field] = $row->$field;
+            }
+            $json[$row->mid]['fields'][$row->field_name] = $result;
+        });
+
+        file_put_contents(root . '/.cache/.modules.json', json_encode($json));
     }
 }

@@ -3,6 +3,7 @@ namespace core\module\cms\object;
 
 use classes\jquery;
 use classes\table;
+use form\field_collection;
 use html\node;
 use module\cms\form\add_field_form;
 use module\cms\form\cms_change_group_form;
@@ -15,12 +16,27 @@ abstract class _cms_module extends table {
 
     use table_trait;
 
+    public static $default_fields = [
+        'mid',
+        'primary_key',
+        'namespace',
+        'table_name',
+        'nestable'
+    ];
+    /** @var field_collection */
+    public $_field_elements;
+    public $_cms_field_elements;
     public $namespace;
     public $primary_key;
     public $table_name;
     public $title;
     public $gid;
     public $mid;
+
+    public function __construct($fields = [], $id = 0) {
+        parent::__construct($fields, $id);
+        $this->_field_elements = new field_collection();
+    }
 
 
     public function get_class_name() {

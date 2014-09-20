@@ -61,6 +61,7 @@ abstract class edit_field_form extends _add_field_form {
             ->filter_field('fid', $this->fid);
         $insert->execute();
 
+        table::rebuild_modules();
         table::reset_module_fields($module->mid);
 
         ajax::update($module->get_fields_list()->get());

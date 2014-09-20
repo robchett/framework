@@ -89,16 +89,18 @@ abstract class table_array extends _collection {
                 $select = _db::get_query($class, $fields_to_retrieve, $options);
                 $res = $select->execute();
                 if (_db::num($res)) {
-                    while ($row = _db::fetch($res, null)) {
+                    $row = _db::fetch($res, null);
+                    $mappings = $obj->get_field_mappings(array_keys($row));
+                    do {
                         /** @var table $class */
                         $object = new $class;
-                        $object->set_from_row($row, $links);
+                        $object->set_from_row($row, $links, $mappings);
                         foreach ($mlinks as $module => $blah) {
                             $object->{$module . '_elements'} = new \classes\table_array();
                             $object->$module = new _collection();
                         }
                         $this[] = $object;
-                    }
+                    } while ($row = _db::fetch($res, null));
                 }
                 $this->reset_iterator();
                 foreach ($mlinks as $module => $link_info) {
