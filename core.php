@@ -239,16 +239,7 @@ abstract class core {
         return session::is_set('admin');
     }
 
-    public function get_style_sheet() {
-        header("Content-type: text/css");
-        $css = new css(ini::get('css', 'compiler', 'less'));
-        $css->add_resource_root('/.core/css/');
-        $css->add_resource_root('/css/');
-        $css->cached_name = 'global_css';
-        echo $css->compile();
-    }
-
-    public function get_js_sheet() {
+   public function get_js_sheet() {
         \classes\js\js::get_js();
     }
 }
