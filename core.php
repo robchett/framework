@@ -22,7 +22,7 @@ abstract class core {
     public static $singleton;
     public static $inline_script = [];
     public static $global_script = [];
-    public static $js = ['/js/'];
+    public static $js = ['/js/script.js'];
     public static $css = ['/css/styles.css'];
     public static $cms_modules;
     public static $cms_fields;
@@ -237,9 +237,5 @@ abstract class core {
     public static function is_admin() {
         compiler::allow();
         return session::is_set('admin');
-    }
-
-   public function get_js_sheet() {
-        \classes\js\js::get_js();
     }
 }
