@@ -33,7 +33,8 @@ abstract class field_date extends \form\field {
     }
 
     public function get_value() {
-        return date('Y-m-d', (float) $this->parent_form->{$this->field_name});
+        $value = (float) $this->parent_form->{$this->field_name};
+        return $value ? date('Y-m-d', (float) $this->parent_form->{$this->field_name}) : '';
     }
 
 }
