@@ -105,7 +105,7 @@ abstract class form {
         if ($field instanceof _field_file) {
             $this->use_ajax = false;
         }
-        $this->fields[] = $field;
+        $this->fields[$field->field_name] = $field;
     }
 
     /**@return field */
@@ -150,12 +150,8 @@ abstract class form {
      */
     public function remove_field($field_name) {
         if (!cms) {
-            foreach ($this->fields as $key => $field) {
-                if ($field->field_name == $field_name) {
-                    unset($this->fields[$key]);
-                    return true;
-                }
-            }
+            unset($this->fields[$field_name]);
+            return true;
         }
         return false;
     }
@@ -188,16 +184,18 @@ abstract class form {
         }
     }
 
+    public function has_field($name) {
+        return isset($this->fields[$name]);
+    }
+
     /**
      * @param $name
      * @return field
      * @throws \Exception
      */
     public function get_field_from_name($name) {
-        foreach ($this->fields as $field) {
-            if ($field->field_name == $name) {
-                return $field;
-            }
+        if ($this->has_field($name)) {
+            return $this->fields[$name];
         }
         throw new \Exception('Field ' . $name . ' not found in ' . get_called_class());
     }
