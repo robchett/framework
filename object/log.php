@@ -20,7 +20,7 @@ class log {
 
     public function __construct($level, $file) {
         $this->log_level = $level;
-        $this->log_file = fopen(root . $file, 'a');
+        $this->log_file = fopen(root . str_replace(root, '', $file), 'a');
     }
 
     public function __destruct() {
