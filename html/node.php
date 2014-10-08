@@ -140,8 +140,12 @@ abstract class node {
         foreach ($this->children as $child) {
             $html .= $child->get();
         }
-        $html .= '</' . $this->type . '>';
+        $html .= $this->is_self_closing() ? '/>' : '</' . $this->type . '>';
         return $html;
+    }
+
+    public function is_self_closing () {
+        return ($this->type == 'input');
     }
 
     /* @return node */
