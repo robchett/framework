@@ -188,40 +188,6 @@ abstract class kml {
     }
 
     /**
-     *
-     */
-    public function set_animation_styles() {
-        for ($i = 0; $i < 10; $i++) {
-            for ($j = 0; $j < 360; $j += 5) {
-                $this->styles .= '<Style id="A' . $i . $j . '"><IconStyle><heading>' . $j . '</heading><Icon><href>http://' . host . '/img/Markers/' . _get::kml_colour($i) . '.gif' . '</href></Icon></IconStyle></Style>';
-            }
-        }
-    }
-
-    /**
-     *
-     */
-    public function set_folder_styles() {
-        $this->styles .= '<Style id="hideChildren"><ListStyle><listItemType>checkHideChildren</listItemType></ListStyle></Style>';
-        $this->styles .= '<Style id="radioFolder"><ListStyle><listItemType>radioFolder</listItemType></ListStyle></Style>';
-    }
-
-    /**
-     * @param int $full
-     */
-    public function set_gradient_styles($full = 0) {
-        $this->styles .= '<Style id="shadow"><LineStyle><color>AA000000</color><width>1</width></LineStyle><PolyStyle><color>55AAAAAA</color></PolyStyle></Style>';
-        if (!$full)
-            $this->styles .= '<Style id="S1"><LineStyle><color>' . _get::colour(0) . '</color><width>2</width></LineStyle></Style>';
-        else {
-            $grad = new gradient();
-            for ($i = 0; $i < 16; $i++) {
-                $this->styles .= '<Style id="S' . $i . '"><LineStyle><width>2</width><color>FF' . $grad->get_color_at_value($i / 16) . '</color></LineStyle></Style>';
-            }
-        }
-    }
-
-    /**
      * @return string
      */
     private function get_path() {
