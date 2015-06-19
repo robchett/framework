@@ -134,13 +134,17 @@ abstract class node {
             if(!isset($attributes['class'])) $attributes['class'] = [];
             $attributes['class'] = array_merge($attributes['class'], $this->class);
         }
-        $html = '<' . $this->type . static::get_attributes($attributes) . '>';
-        $html .= $this->combine_nodes($this->content);
-        /** @var node $child */
-        foreach ($this->children as $child) {
-            $html .= $child->get();
+        if ($this->is_self_closing()) {
+            $html = '<' . $this->type . static::get_attributes($attributes) . '/>';
+        } else {
+            $html = '<' . $this->type . static::get_attributes($attributes) . '>';
+            $html .= $this->combine_nodes($this->content);
+            /** @var node $child */
+            foreach ($this->children as $child) {
+                $html .= $child->get();
+            }
+            $html .= '</' . $this->type . '>';
         }
-        $html .= $this->is_self_closing() ? '/>' : '</' . $this->type . '>';
         return $html;
     }
 
