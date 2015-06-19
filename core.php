@@ -105,7 +105,6 @@ abstract class core {
         try {
             $compiler_page = $compiler->load(uri, $options);
         } catch (\Exception $e) {
-
             if ($this->path) {
                 if (!is_numeric($this->path[0])) {
                     $this->module_name = $this->path[0];

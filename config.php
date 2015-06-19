@@ -16,7 +16,6 @@ if(!class_exists('\\classes\\autoloader', false)) {
 $auto_loader = new \classes\auto_loader();
 
 set_error_handler(['\classes\error_handler', 'handle_error']);
-register_shutdown_function(['\classes\error_handler', 'shutdown']);
 
 define('dev', in_array(host, \classes\ini::get('domain', 'development', [])));
 define('local', in_array(host, \classes\ini::get('domain', 'local', ['localhost'])));
