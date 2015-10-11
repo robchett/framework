@@ -6,8 +6,7 @@ use form\field_link;
 use form\field_mlink;
 use object\filter;
 
-abstract class
-collection extends \ArrayObject {
+abstract class collection extends \ArrayObject {
 
     private $first_index = 0;
     /** @var  \arrayIterator */
@@ -79,10 +78,12 @@ collection extends \ArrayObject {
 
     public function iterate_return($function, &$cnt = 0) {
         $res = '';
-        foreach ($this as $object) {
+        // Hack for php7 support
+        $array = $this->exchangeArray([]);
+        foreach ($array as $cnt => $object) {
             $res .= call_user_func_array($function, [$object, $cnt]);
-            $cnt++;
         }
+        $this->exchangeArray($array);
         return $res;
     }
 
