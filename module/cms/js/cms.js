@@ -221,3 +221,6 @@ $('[data-toggle="modal"]').on('click', function(){
     })
 
 }(window.jQuery);
+
+
+$(".auto-collapse").collapseText();
