@@ -1,0 +1,14 @@
+{
+  "name": "rchettleburgh.core",
+  "version": "0.1.0",
+  "devDependencies": {
+    "grunt": "*",
+    "grunt-task-loader": "*",
+    "grunt-contrib-watch": "*",
+    "grunt-contrib-jshint": "*",
+    "grunt-contrib-uglify": "*",
+    "grunt-sass": "*",
+    "grunt-sass-globbing": "*",
+    "grunt-contrib-concat": "*"
+  }
+}

@@ -84,4 +84,8 @@ abstract class _cms_field extends table {
         }
         return isset(self::$cms_fields[$fid]) ? self::$cms_fields[$fid] : false;
     }
+
+    public function get_primary_key_name() {
+        return 'fid';
+    }
 }
