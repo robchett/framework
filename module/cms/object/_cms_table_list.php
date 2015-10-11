@@ -212,7 +212,9 @@ JS;
         }
         $nodes[] = node::create('col.btn-col2');
         $obj->get_fields()->iterate(function ($field) use (&$nodes) {
-            $nodes[] = node::create('col.' .  get::__class_name($field));
+            if ($field->list) {
+                $nodes[] = node::create('col.' .  get::__class_name($field));
+            }
         });
         $nodes[] = node::create('col.btn-col');
         $nodes = [node::create('colgroup', [], $nodes)];
