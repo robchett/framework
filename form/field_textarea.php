@@ -12,4 +12,8 @@ abstract class field_textarea extends \form\field {
     public function get_database_create_query() {
         return 'TEXT';
     }
+
+        public function get_cms_list_wrapper($value, $object_class, $id) {
+        return \html\node::create('div.well.well-small.auto-collapse', ['data-collapse-height' => "200px"], $value);
+    }
 }

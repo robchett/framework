@@ -47,6 +47,7 @@ abstract class controller extends module {
         \core::$js = [
             '/.core/js/jquery.js',
             '/.core/js/_ajax.js',
+            '/.core/js/content_collapse.js',
             '/.core/module/cms/js/cms.js',
             '/.core/js/colorbox.js',
             '/.core/plugins/ckeditor/ckeditor.js'];

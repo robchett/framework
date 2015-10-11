@@ -6343,3 +6343,8 @@ tr.vertical-align > th, tr.vertical-align > td {
   display: inline-block;
   padding-right: 15px;
   padding-left: 15px; }
+
+.collapse-button {
+  margin-top: 10px;
+  display: block;
+  background-color: #999; }
