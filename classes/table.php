@@ -560,7 +560,11 @@ abstract class table {
             if ($field instanceof field_file) {
                 $form->action = '/index.php?module=' . get_class($this) . '&act=do_form_submit&no_ajax=on&ajax_origin=' . $form->id;
             } else if ($field instanceof field_textarea) {
-                \core::$inline_script[] = 'CKEDITOR.replace("' . $field->field_name . '");';
+                $options = [];
+                if (file_exists(root . '/js/ckeditor.js')) {
+                    $options['customConfig'] = '/js/ckeditor.js';
+                }
+                \core::$inline_script[] = 'CKEDITOR.replace("' . $field->field_name . '"' . ($options ? ', ' . json_encode($options) : '') . ');';
             } else if ($field instanceof field_mlink) {
                 $class = $field->get_link_object();
                 $class_name = get::__class_name($class);
