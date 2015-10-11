@@ -247,7 +247,7 @@ abstract class form {
         }
         $html->nest($this->get_html_body());
         if (!$this->use_ajax) {
-            $html->add_child(node::create('iframe#form_target_' . $this->id . '.form_frame', ['width' => 1, 'height' => 1, 'frame-border' => 0, 'border' => 0, 'src' => '/inc/module/blank.html', 'name' => 'form_target_' . $this->id]));
+            $html->add_child(node::create('iframe#form_target_' . $this->id . '.form_frame', ['style' => 'display:none', 'src' => '/inc/module/blank.html', 'name' => 'form_target_' . $this->id]));
         }
         return $html;
     }
