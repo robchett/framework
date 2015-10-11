@@ -568,7 +568,7 @@ abstract class table {
             } else if ($field instanceof field_link) {
                 $field->order = 'title';
             }
-            $field->label .= '<br/><small class="field_name">' . $field->field_name . '</small>';
+            $field->label .= ' <small class="field_name">(' . $field->field_name . ')</small>';
             $field->raw = true;
         }
         if (!$this->get_primary_key()) {
@@ -625,6 +625,10 @@ abstract class table {
 
     private static function set_cms_modules() {
         if (!isset(self::$cms_modules)) {
+            self::$cms_modules = [];
+            if (!file_exists(root . '/.cache/.modules.json')) {
+                static::rebuild_modules();
+            }
             $data = json_decode(file_get_contents(root . '/.cache/.modules.json'));
             self::$cms_modules = new _collection();
             self::$cms_modules_id = new _collection();
@@ -849,7 +853,6 @@ abstract class table {
     public static function rebuild_modules() {
         $modules = _cms_module::get_all(_cms_module::$default_fields);
         $fields = _cms_field::get_all(_cms_field::$default_fields);
-
         $json = [];
         $modules->iterate(function (_cms_module $row) use (&$json) {
             $result = [];
