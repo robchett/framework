@@ -3,15 +3,15 @@ namespace core\object;
 
 class log {
 
-    const OFF = -1;
-    const DEBUG = 0;
-    const INFO = 1;
-    const NOTICE = 2;
-    const WARNING = 3;
-    const ERROR = 4;
-    const CRITICAL = 5;
-    const ALERT = 6;
-    const EMERGENCY = 7;
+    const OFF       = -1;
+    const DEBUG     = 1;
+    const INFO      = 2;
+    const NOTICE    = 4;
+    const WARNING   = 8;
+    const ERROR     = 16;
+    const CRITICAL  = 32;
+    const ALERT     = 64;
+    const EMERGENCY = 128;
 
     protected $log_file;
     protected $log_level = 0;
@@ -28,6 +28,7 @@ class log {
     }
 
     protected function log($message, $level) {
+        \classes\l8::write($level, \classes\l8::LOG_STATEMENT, $message, '', '', []);
         if ($this->log_level <= $level) {
             fwrite($this->log_file, sprintf("%21s %80s\r\n", date('Y-m-d H:i:s'), $message));
         }
