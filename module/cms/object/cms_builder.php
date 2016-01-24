@@ -191,7 +191,8 @@ class cms_builder {
         $cnt = 0;
         foreach ($json->fieldset as $field => $structure) {
             if (!$structure->is_default) {
-                _cms_field::create($field, $structure, $module_id, $cnt++);
+                $cnt++
+                _cms_field::create($field, $structure, $module_id);
             }
         }
         foreach ($json->fieldset as $field => $structure) {

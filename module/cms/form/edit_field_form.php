@@ -49,7 +49,7 @@ abstract class edit_field_form extends _add_field_form {
         }
         if ($field->title == 'mlink' && $old_field->type !== 'mlink') {
             $source_module = new _cms_module(['table_name', 'primary_key'], $this->link_module);
-            db::create_table_join(get::__class_name($this), $source_module->table_name);
+            db::create_table_join(\classes\get::__class_name($this), $source_module->table_name);
         }
 
         $insert = db::update('_cms_field')

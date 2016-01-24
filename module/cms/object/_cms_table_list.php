@@ -182,7 +182,7 @@ JS;
      */
     protected function get_list() {
         return [
-            $this->get_filters($this->class),
+            $this->get_filters(),
             $this->get_list_inner(),
             node::create('div.container-fluid', [], $this->get_pagi()),
         ];

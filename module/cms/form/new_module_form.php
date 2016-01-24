@@ -124,7 +124,7 @@ class ' . $this->table_name . ' extends ' . (class_exists('\\core\\' . $class_na
 }'
             );
         }
-        table::rebuild_modules();
+        \classes\table::rebuild_modules();
         ajax::add_script('window.location = window.location');
     }
 }

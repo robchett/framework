@@ -64,7 +64,7 @@ abstract class _cms_field extends table {
 
     public function get_field() {
         $class = '\\form\\field_' . $this->type;
-        /** @var field $field */
+        /** @var \form\field $field */
         $field = new $class($this->field_name, []);
         $field->set_from_row($this);
         return $field;
