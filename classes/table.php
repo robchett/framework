@@ -3,7 +3,6 @@
 namespace core\classes;
 
 use classes\ajax as _ajax;
-use classes\ajax;
 use classes\collection as _collection;
 use classes\collection;
 use classes\db as _db;
@@ -803,7 +802,7 @@ abstract class table {
                 _db::update(_get::__class_name($object))->add_value('position', $object->position - 1)->filter_field($object->get_primary_key_name(), $object->get_primary_key())->execute();
             }
             $list = new _cms_table_list(self::$cms_modules[get_called_class()], 1);
-            ajax::update($list->get_table());
+            _ajax::update($list->get_table());
         }
     }
 
@@ -817,7 +816,7 @@ abstract class table {
             $module = new _cms_module();
             $module->do_retrieve([], ['where_equals' => ['mid' => $_REQUEST['mid']]]);
             $list = new _cms_table_list($module, 1);
-            ajax::update($list->get_table());
+            _ajax::update($list->get_table());
         }
     }
 
@@ -838,7 +837,7 @@ abstract class table {
             }
 
             $list = new _cms_table_list($module, 1);
-            ajax::update($list->get_table());
+            _ajax::update($list->get_table());
         }
     }
 

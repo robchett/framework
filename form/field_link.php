@@ -139,7 +139,7 @@ abstract class field_link extends \form\field {
             }
             $title = implode(' - ', $parts);
         } else {
-            $title = $object->$title_fields;
+            $title = $object->$fields;
         }
         for ($i = 0; $i < $depth; $i++) {
             $title = ' - ' . $title;

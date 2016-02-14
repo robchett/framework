@@ -1,7 +1,6 @@
 <?php
 namespace core\classes;
 
-use classes\filter_field;
 use classes\session;
 use form\field_collection;
 use form\form;

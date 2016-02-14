@@ -1,7 +1,6 @@
 <?php
 namespace core\classes;
 
-use classes\filter_field;
 use form\form;
 
 class search_form extends form {

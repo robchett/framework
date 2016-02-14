@@ -1,15 +1,8 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: root
- * Date: 19/01/16
- * Time: 22:03
- */
 
 namespace classes;
 
 
-class l8
-{
+class l8 extends \core\classes\l8{
 
 }

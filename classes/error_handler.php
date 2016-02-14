@@ -197,7 +197,7 @@ class error_handler {
         );
 
         if ($type == '-') {
-            throw new Exception($result);
+            throw new \Exception($result);
         } elseif ($type == '$') {
             if ($result == -1) {
                 $result = null;
