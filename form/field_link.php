@@ -132,7 +132,7 @@ abstract class field_link extends \form\field {
             foreach ($fields as $part) {
                 if(strpos($part,'.')) {
                     $part = explode('.', $part);
-                    $parts[] = $object->$part[0]->$part[1];
+                    $parts[] = $object->{$part[0]}->{$part[1]};
                 } else {
                     $parts[] = $object->$part;
                 }
