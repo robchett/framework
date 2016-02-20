@@ -191,7 +191,7 @@ class cms_builder {
         $cnt = 0;
         foreach ($json->fieldset as $field => $structure) {
             if (!$structure->is_default) {
-                $cnt++
+                $cnt++;
                 _cms_field::create($field, $structure, $module_id);
             }
         }
@@ -319,7 +319,7 @@ class cms_builder {
 
             $cms_user = new _cms_user();
             $cms_user->title = ***REMOVED***;
-            $cms_user->password = '***REMOVED***';
+            $cms_user->password = ***REMOVED***;
             $cms_user->ulid = 3;
             $cms_user->do_save();
 
