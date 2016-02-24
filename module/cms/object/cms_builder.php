@@ -318,8 +318,8 @@ class cms_builder {
             $user_level->do_save();
 
             $cms_user = new _cms_user();
-            $cms_user->title = ***REMOVED***;
-            $cms_user->password = ***REMOVED***;
+            $cms_user->title = 'admin';
+            $cms_user->password = 'password';
             $cms_user->ulid = 3;
             $cms_user->do_save();
 
