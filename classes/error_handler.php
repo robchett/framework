@@ -77,6 +77,19 @@ class error_handler {
     }
 
 
+    public static function fatal_handler() {
+        $error = error_get_last();
+        if( $error !== NULL) {
+            $errno   = $error["type"];
+            $errfile = $error["file"];
+            $errline = $error["line"];
+            $errstr  = $error["message"];
+            static::handle_error($errno, $errstr, $errfile, $errline);
+        }
+    }
+
+
+
     public static function handle_error($errno, $message, $file = '', $line = 0, $context = array()) {
         if (!is_array($context)) {
             $context = array($context);
