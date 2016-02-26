@@ -41,7 +41,7 @@ abstract class field_file extends \form\field {
                 node::create('span.fileinput-new', [], 'Select File'),
                 $this->get_html(),
             ]),
-            node::create('a.input-group-addon.btn.btn-default.fileinput-exists', ['data-dismiss' => 'fileinput'], 'Remove')
+            node::create('a.input-group-addon.btn.btn-default.fileinput-exists.fileremove', ['data-dismiss' => 'fileinput'], 'Remove')
         ]);
         $html .= $this->post_text;
         return $html;
