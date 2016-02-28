@@ -33,6 +33,10 @@ class _cms_table_list {
         $this->allowed_keys = ['' => 0] + (session::is_set('cms', 'expand', $module->mid) ? session::get('cms', 'expand', $module->mid) : []);
         $this->where = [];
 
+        if ($module->order && preg_match('/[a-zA-Z0-9,\s]+/', $module->order)) {
+            $this->order = $module->order;
+        }
+
         $class = $this->module->get_class_name();
         $this->class_name = $class;
         $this->class = new $class();
