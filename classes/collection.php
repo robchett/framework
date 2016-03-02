@@ -80,8 +80,9 @@ abstract class collection extends \ArrayObject {
         $res = '';
         // Hack for php7 support
         $array = $this->exchangeArray([]);
-        foreach ($array as $cnt => $object) {
-            $res .= call_user_func_array($function, [$object, $cnt]);
+        $cnt = 0;
+        foreach ($array as $object) {
+            $res .= call_user_func_array($function, [$object, $cnt++]);
         }
         $this->exchangeArray($array);
         return $res;
