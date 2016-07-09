@@ -97,6 +97,12 @@ abstract class field extends node {
             $error_array[$this->field_name] = $this->field_name . ' is required field';
         }
     }
+    public function set_attrs($attrs) {
+        foreach ($attrs as $attr => $val) {
+            $this->$attr = $val;
+        }
+        return $this;
+    }
 
     public function set_attr($attr, $val) {
         $this->$attr = $val;
