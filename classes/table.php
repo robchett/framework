@@ -125,9 +125,11 @@ abstract class table {
     /**
      * @param array $fields
      * @param $id
+     *
+     * @return bool
      */
     public function do_retrieve_from_id(array $fields, $id) {
-        $this->do_retrieve($fields, ['limit' => '1', 'where_equals' => [$this->get_primary_key_name() => $id]]);
+        return $this->do_retrieve($fields, ['limit' => '1', 'where_equals' => [$this->get_primary_key_name() => $id]]);
     }
 
     /**
@@ -316,6 +318,8 @@ abstract class table {
     /**
      * @param array $fields
      * @param array $options
+     *
+     * @return bool
      */
     public function do_retrieve(array $fields, array $options) {
         self::set_cms_modules();
@@ -333,7 +337,6 @@ abstract class table {
         }
         $query = _db::get_query(get_class($this), $fields, $options);
         $res = $query->execute();
-        //$before = memory_get_usage();
         if (_db::num($res)) {
             $row = _db::fetch($res, null);
             $this->set_from_row($row, $links, $this->get_field_mappings(array_keys($row)));
@@ -342,7 +345,7 @@ abstract class table {
         foreach ($mlinks as $module => $fields) {
             $this->retrieve_link($fields['field'], $fields['retrieve']);
         }
-        //print_r('memory usage: ' . $this->class_name() . ' ' . (memory_get_usage() - $before) . "\n");
+        return $this->get_primary_key();
     }
 
     public function retrieve_link($field, $fields = []) {
