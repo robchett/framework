@@ -8,6 +8,9 @@ abstract class auto_loader {
 
     public function __construct() {
         spl_autoload_register(['self', 'load']);
+        if (file_exists(root . '/vendor/autoload.php')) {
+            require root . '/vendor/autoload.php';
+        }
         $this->load_cache();
     }
 
