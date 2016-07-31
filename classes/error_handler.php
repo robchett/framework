@@ -95,6 +95,10 @@ class error_handler {
             $context = array($context);
         }
 
+        if (is_callable('xdebug_break')) {
+            xdebug_break();
+        }
+
         $map = array(
             E_ERROR             => array('E_ERROR', static::ERROR),
             E_WARNING           => array('E_WARNING', static::WARNING),
