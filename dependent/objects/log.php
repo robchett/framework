@@ -1,5 +1,5 @@
 <?php
-namespace object;
+namespace objects;
 
 class log extends \core\objects\log {
 

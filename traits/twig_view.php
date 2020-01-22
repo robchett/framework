@@ -16,7 +16,9 @@ trait twig_view {
         return \classes\twig::singleton()->render_file($this->get_template_file(), $this->get_template_data());
     }
 
-    abstract function get_template_file();
+    function get_template_file() {
+        return str_replace('.php', '.twig', __FILE__);
+    }
 
     abstract function get_template_data();
 
