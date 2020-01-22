@@ -7,8 +7,8 @@ use classes\table;
 use form\field_boolean;
 use form\form;
 use html\node;
-use module\cms\object\_cms_module;
-use module\cms\object\_cms_table_list;
+use module\cms\objects\_cms_module;
+use module\cms\objects\_cms_table_list;
 
 abstract class cms_filter_form extends form {
 

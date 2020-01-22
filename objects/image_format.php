@@ -1,14 +1,15 @@
 <?php
-namespace core\module\cms\object;
+namespace core\objects;
 
 use classes\table;
 use traits\table_trait;
 
-class _cms_user_level extends table {
+/**
+ */
+class image_format extends table {
 
     use table_trait;
 
     public $title;
-
 }
  

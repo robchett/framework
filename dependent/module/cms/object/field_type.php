@@ -1,6 +1,6 @@
 <?php
-namespace module\cms\object;
+namespace module\cms\objects;
 
-class field_type extends \core\module\cms\object\field_type {
+class field_type extends \core\module\cms\objects\field_type {
 
 }

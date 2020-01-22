@@ -1,6 +1,6 @@
 <?php
 
-namespace core\module\pages\object;
+namespace core\module\pages\objects;
 
 use classes\get;
 use classes\table;

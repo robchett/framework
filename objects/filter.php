@@ -1,5 +1,5 @@
 <?php
-namespace core\object;
+namespace core\objects;
 
 use classes\table;
 use form\field;
@@ -26,7 +26,7 @@ class filter extends table {
      */
     public static function get_all(array $fields, array $options = []) {
         $array = new field_collection();
-        $array->get_all('\\object\\filter', $fields, $options);
+        $array->get_all('\\objects\\filter', $fields, $options);
         return $array;
     }
 

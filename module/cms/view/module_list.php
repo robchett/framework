@@ -3,7 +3,7 @@ namespace core\module\cms\view;
 
 use html\a;
 use html\node;
-use module\cms\object\_cms_module;
+use module\cms\objects\_cms_module;
 
 abstract class module_list extends cms_view {
 

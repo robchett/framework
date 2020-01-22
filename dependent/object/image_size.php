@@ -1,7 +1,7 @@
 <?php
 namespace object;
 
-class image_size extends \core\object\image_size {
+class image_size extends \core\objects\image_size {
 
 }
  

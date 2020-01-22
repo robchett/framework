@@ -7,7 +7,7 @@ use classes\session;
 use form\form;
 use html\node;
 use module\cms\controller;
-use module\cms\object\_cms_user;
+use module\cms\objects\_cms_user;
 
 abstract class cms_login_form extends form {
 

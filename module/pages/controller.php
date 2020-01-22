@@ -4,7 +4,7 @@ namespace core\module\pages;
 use classes\get;
 use classes\module;
 use classes\push_state;
-use module\pages\object\page;
+use module\pages\objects\page;
 
 abstract class controller extends module {
 

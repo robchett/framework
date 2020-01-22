@@ -1,9 +1,9 @@
 <?php
-namespace core\object;
+namespace core\objects;
 
 use classes\table;
-use module\cms\object\_cms_field;
-use module\cms\object\_cms_module;
+use module\cms\objects\_cms_field;
+use module\cms\objects\_cms_module;
 use traits\table_trait;
 
 class image_size extends table {

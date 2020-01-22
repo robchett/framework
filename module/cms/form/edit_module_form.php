@@ -3,7 +3,7 @@ namespace core\module\cms\form;
 
 use classes\db;
 use form\form;
-use module\cms\object\_cms_module;
+use module\cms\objects\_cms_module;
 
 abstract class edit_module_form extends form {
 
@@ -23,7 +23,7 @@ abstract class edit_module_form extends form {
     public function __construct() {
         parent::__construct(
             [
-                form::create('field_link', 'gid', ['link_module' => '\module\cms\object\_cms_group', 'link_field' => 'title', 'label' => 'Group']),
+                form::create('field_link', 'gid', ['link_module' => '\module\cms\objects\_cms_group', 'link_field' => 'title', 'label' => 'Group']),
                 form::create('field_string', 'primary_key', ['label' => 'Primary Key']),
                 form::create('field_string', 'title', ['label' => 'Title']),
                 form::create('field_string', 'table_name', ['label' => 'Table Name']),

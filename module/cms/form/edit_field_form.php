@@ -7,9 +7,9 @@ use classes\table;
 use form\field_hidden;
 use form\form;
 use module\cms\form\add_field_form as _add_field_form;
-use module\cms\object\_cms_field;
-use module\cms\object\_cms_module;
-use module\cms\object\field_type;
+use module\cms\objects\_cms_field;
+use module\cms\objects\_cms_module;
+use module\cms\objects\field_type;
 
 /**
  * @property mixed field_name

@@ -1,7 +1,7 @@
 <?php
 
-namespace module\cms\object;
+namespace module\cms\objects;
 
-class _cms_table_list extends \core\module\cms\object\_cms_table_list {
+class _cms_table_list extends \core\module\cms\objects\_cms_table_list {
 
 } 

@@ -2,7 +2,7 @@
 namespace core\form;
 
 use form\field_link as _field_link;
-use module\cms\object\_cms_module;
+use module\cms\objects\_cms_module;
 
 abstract class field_mlink extends _field_link {
 

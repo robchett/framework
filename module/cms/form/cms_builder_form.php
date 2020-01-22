@@ -6,7 +6,7 @@ use classes\db;
 use classes\get;
 use classes\ini;
 use form\form;
-use module\cms\object\_cms_user;
+use module\cms\objects\_cms_user;
 
 abstract class cms_builder_form extends form {
 
@@ -121,7 +121,7 @@ abstract class cms_builder_form extends form {
         );
         ini::reload();
         db::default_connection();
-        $cms_builder = new \module\cms\object\cms_builder();
+        $cms_builder = new \module\cms\objects\cms_builder();
         $cms_builder->manage();
 
         $i = 0;

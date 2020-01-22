@@ -10,8 +10,8 @@ use classes\table;
 use core\core;
 use html\node;
 use module\cms\form\new_module_form;
-use module\cms\object\_cms_module;
-use module\cms\object;
+use module\cms\objects\_cms_module;
+use module\cms\objects;
 use object\image_size;
 
 /**

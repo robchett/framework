@@ -1,7 +1,7 @@
 <?php
 namespace object;
 
-class filter extends \core\object\filter {
+class filter extends \core\objects\filter {
 
 }
  

@@ -1,5 +1,5 @@
 <?php
-namespace core\module\cms\object;
+namespace core\module\cms\objects;
 
 use classes\db;
 use classes\get;
@@ -7,12 +7,12 @@ use classes\glob;
 use classes\table;
 use core\db\stub\field;
 use core\db\stub\module;
-use module\cms\object\_cms_field;
-use module\cms\object\_cms_group;
-use module\cms\object\_cms_module;
-use module\cms\object\_cms_user;
-use module\cms\object\_cms_user_level;
-use module\cms\object\field_type;
+use module\cms\objects\_cms_field;
+use module\cms\objects\_cms_group;
+use module\cms\objects\_cms_module;
+use module\cms\objects\_cms_user;
+use module\cms\objects\_cms_user_level;
+use module\cms\objects\field_type;
 
 class cms_builder {
 

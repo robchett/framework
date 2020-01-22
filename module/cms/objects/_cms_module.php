@@ -1,5 +1,5 @@
 <?php
-namespace core\module\cms\object;
+namespace core\module\cms\objects;
 
 use classes\jquery;
 use classes\table;
@@ -9,7 +9,7 @@ use module\cms\form\add_field_form;
 use module\cms\form\cms_change_group_form;
 use module\cms\form\edit_field_form;
 use module\cms\form\edit_module_form;
-use module\cms\object\_cms_field;
+use module\cms\objects\_cms_field;
 use traits\table_trait;
 
 abstract class _cms_module extends table {
@@ -41,9 +41,9 @@ abstract class _cms_module extends table {
 
     public function get_class_name() {
         if ($this->namespace) {
-            return '\\module\\' . $this->namespace . '\\object\\' . $this->table_name;
+            return '\\module\\' . $this->namespace . '\\objects\\' . $this->table_name;
         } else {
-            return '\\object\\' . $this->table_name;
+            return '\\objects\\' . $this->table_name;
         }
     }
 
@@ -68,7 +68,7 @@ abstract class _cms_module extends table {
     }
 
     public static function create($title, $table_name, $primary_key, $group, $namespace = '') {
-        $module = new \module\cms\object\_cms_module();
+        $module = new \module\cms\objects\_cms_module();
         $module->do_retrieve(['title'], ['where_equals' => ['table_name' => $table_name]]);
         if (!$module->get_primary_key()) {
             $module->title = $title;

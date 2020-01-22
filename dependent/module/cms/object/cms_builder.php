@@ -1,7 +1,7 @@
 <?php
-namespace module\cms\object;
+namespace module\cms\objects;
 
-class cms_builder extends \core\module\cms\object\cms_builder {
+class cms_builder extends \core\module\cms\objects\cms_builder {
 
 }
  

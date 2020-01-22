@@ -1,5 +1,5 @@
 <?php
-namespace core\module\cms\object;
+namespace core\module\cms\objects;
 
 use classes\ajax;
 use classes\collection;
@@ -11,7 +11,7 @@ use classes\table_array;
 use html\bootstrap\modal;
 use html\node;
 use module\cms\form\cms_filter_form;
-use module\cms\object\_cms_module as __cms_module;
+use module\cms\objects\_cms_module as __cms_module;
 
 class _cms_table_list {
 
@@ -169,7 +169,7 @@ JS;
         $paginate->npp = $this->npp;
         $paginate->page = $this->page;
         $paginate->base_url = '/cms/module/' . $this->module->mid;
-        $paginate->act = '\module\cms\object\_cms_table_list:do_paginate';
+        $paginate->act = '\module\cms\objects\_cms_table_list:do_paginate';
         $paginate->post_data = ['_mid' => $this->module->mid];
         return $paginate->get();
     }

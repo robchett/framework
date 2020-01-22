@@ -2,10 +2,10 @@
 /**
  * Class _cms_group
  */
-namespace core\module\cms\object;
+namespace core\module\cms\objects;
 
 use classes\table;
-use module\cms\object\_cms_group as __cms_group;
+use module\cms\objects\_cms_group as __cms_group;
 use traits\table_trait;
 
 abstract class _cms_group extends table {

@@ -12,7 +12,7 @@ use db\select as _select;
 use db\replace as _replace;
 use db\update as _update;
 use html\node;
-use module\cms\object\_cms_module;
+use module\cms\objects\_cms_module;
 
 abstract class db implements interfaces\database_interface {
 

@@ -1,9 +1,9 @@
 <?php
-namespace core\module\cms\object;
+namespace core\module\cms\objects;
 
 use classes\table;
-use module\cms\object\_cms_field as __cms_field;
-use module\cms\object\_cms_module as __cms_module;
+use module\cms\objects\_cms_field as __cms_field;
+use module\cms\objects\_cms_module as __cms_module;
 use traits\table_trait;
 
 abstract class _cms_field extends table {

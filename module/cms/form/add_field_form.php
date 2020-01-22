@@ -6,8 +6,8 @@ use classes\db;
 use classes\get;
 use classes\table;
 use form\form;
-use module\cms\object\_cms_module;
-use module\cms\object\field_type;
+use module\cms\objects\_cms_module;
+use module\cms\objects\field_type;
 
 /**
  * @property mixed field_name
@@ -24,9 +24,9 @@ abstract class add_field_form extends form {
         parent::__construct([
                 form::create('field_string', 'title'),
                 form::create('field_string', 'field_name'),
-                form::create('field_link', 'type')->set_attr('link_module', '\module\cms\object\field_type')->set_attr('link_field', 'title'),
-                form::create('field_link', 'link_module')->set_attr('link_module', '\module\cms\object\_cms_module')->set_attr('link_field', 'title'),
-                form::create('field_link', 'link_field')->set_attr('link_module', '\module\cms\object\_cms_field')->set_attr('link_field', 'title'),
+                form::create('field_link', 'type')->set_attr('link_module', '\module\cms\objects\field_type')->set_attr('link_field', 'title'),
+                form::create('field_link', 'link_module')->set_attr('link_module', '\module\cms\objects\_cms_module')->set_attr('link_field', 'title'),
+                form::create('field_link', 'link_field')->set_attr('link_module', '\module\cms\objects\_cms_field')->set_attr('link_field', 'title'),
                 form::create('field_int', 'mid')->set_attr('hidden', true)
             ]
         );

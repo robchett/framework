@@ -24,7 +24,7 @@ abstract class new_module_form extends form {
     public function __construct() {
         parent::__construct(
             [
-                form::create('field_link', 'gid', ['link_module' => '\module\cms\object\_cms_group', 'link_field' => 'title', 'label' => 'Group']),
+                form::create('field_link', 'gid', ['link_module' => '\module\cms\objects\_cms_group', 'link_field' => 'title', 'label' => 'Group']),
                 form::create('field_string', 'primary_key', ['label' => 'Primary Key']),
                 form::create('field_string', 'title', ['label' => 'Title']),
                 form::create('field_string', 'title_label', ['label' => 'Title Label']),

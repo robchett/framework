@@ -26,9 +26,9 @@ use form\field_textarea;
 use form\form;
 use html\a;
 use html\node;
-use module\cms\object\_cms_field;
-use module\cms\object\_cms_module;
-use module\cms\object\_cms_table_list;
+use module\cms\objects\_cms_field;
+use module\cms\objects\_cms_module;
+use module\cms\objects\_cms_table_list;
 use object\filter;
 use object\image_size;
 

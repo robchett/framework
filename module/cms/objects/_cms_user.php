@@ -1,5 +1,5 @@
 <?php
-namespace core\module\cms\object;
+namespace core\module\cms\objects;
 
 use classes\table;
 use traits\table_trait;

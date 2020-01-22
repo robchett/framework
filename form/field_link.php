@@ -3,7 +3,7 @@ namespace core\form;
 
 use classes\collection;
 use classes\table;
-use module\cms\object\_cms_field;
+use module\cms\objects\_cms_field;
 
 abstract class field_link extends \form\field {
 

@@ -1,6 +1,6 @@
 <?php
-namespace module\pages\object;
+namespace module\pages\objects;
 
-class page extends \core\module\pages\object\page {
+class page extends \core\module\pages\objects\page {
 
 }

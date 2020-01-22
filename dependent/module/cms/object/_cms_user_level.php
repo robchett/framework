@@ -1,7 +1,7 @@
 <?php
-namespace module\cms\object;
+namespace module\cms\objects;
 
-class _cms_user_level extends \core\module\cms\object\_cms_user_level {
+class _cms_user_level extends \core\module\cms\objects\_cms_user_level {
 
 }
  

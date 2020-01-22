@@ -1,10 +1,10 @@
 <?php
-namespace core\module\cms\object;
+namespace core\objects;
 
 use classes\table;
 use traits\table_trait;
 
-class _cms_setting extends table {
+class image_crop extends table {
 
     use table_trait;
 

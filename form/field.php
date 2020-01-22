@@ -162,7 +162,7 @@ abstract class field extends node {
         $cols = [];
         $cols[] = node::create('td span.btn.btn-default.live' . ($this->live ? '' : '.not_live'), [], icon::get($this->live ? 'ok' : 'remove'));
         $cols[] = node::create('td span.btn.btn-default.edit', [
-            'href'        => '/' . $this->fid . '/?module=\module\cms\object\_cms_module&act=get_edit_field_form&fid=' . $this->fid,
+            'href'        => '/' . $this->fid . '/?module=\module\cms\objects\_cms_module&act=get_edit_field_form&fid=' . $this->fid,
             'data-target' => '#modal',
             'data-toggle' => 'modal'
         ], icon::get('pencil'));

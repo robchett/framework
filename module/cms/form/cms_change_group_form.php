@@ -3,7 +3,7 @@ namespace core\module\cms\form;
 
 use classes\ajax;
 use form\form;
-use module\cms\object\_cms_module;
+use module\cms\objects\_cms_module;
 
 abstract class cms_change_group_form extends form {
 

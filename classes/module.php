@@ -8,7 +8,7 @@ use classes\ini as _ini;
 use classes\push_state;
 use html\node;
 use module\cms\form\cms_builder_form;
-use module\pages\object\page;
+use module\pages\objects\page;
 
 abstract class module {
 
