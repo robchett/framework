@@ -10,7 +10,7 @@ use classes\ini;
 use classes\page_config;
 use classes\push_state;
 use classes\session;
-use module\pages\object\page;
+use module\pages\objects\page;
 use template\html;
 
 abstract class core {
